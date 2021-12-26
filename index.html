@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quarkz!</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css"
+        integrity="sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"
+        integrity="sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js"
+        integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR"
+        crossorigin="anonymous"></script>
+    <!-- Purification Of Marked JS-->
+    <link rel="icon" href="favicon.png" type="image/icon type">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div id="watermark" style="display: flex; flex-direction: row;align-items: center;width:98vw;position: relative;">
+        <span id="logo" style="font-family: Arial;font-size: 4vh;font-weight: bold; margin-left: 2vw;"><img
+                src="Quarkz.png" style="height:6vh;"></span>
+        <!-- <span style="font-family:Arial;font-size:2vh; font-weight:bolder;">By MTT</span> -->
+        <span id="spoints" style="position: absolute;right:10vw;" class="no-print"></span>
+        <span style="background-color: turquoise;border-radius: 100px;position: absolute;right:1vw;padding:1vh;"
+            id="dsh_btn" class="no-print">☰</span>
+    </div>
+
+    <div id="login" class="full_page flex_type" style="justify-content: center;">
+        <div id="lgn_bx" class=""
+            style="display: flex;justify-content: center;align-items: center;flex-direction: column;background-color: rgb(31, 30, 30);border-radius: 10vw;padding:4vw;">
+            <span style="font-size: 5vh;">Welcome to Quarkz</span>
+            <input type="text" id="lg_uname"
+                style="font-size: 4vh;background-color: transparent;text-decoration: none;border:none;border-bottom: 3px solid lime;outline:none;color: white;"
+                placeholder="Username">
+            <input type="password" id="lg_pass"
+                style="font-size: 4vh;background-color: transparent;text-decoration: none;border:none;border-bottom: 3px solid lime;outline:none;color: white;"
+                placeholder="Password">
+            <div class=""><button class="tst_btn" id="sgn_in">Sign In</button>
+                <!-- <button class = "tst_btn" id = "sgn_in_ggl">Sign In With Google</button> -->
+                <button class="tst_btn" id="reg_in">Register</button>
+            </div>
+            <span>The App Is Currently <span class="sp_txt">Invite Only</span>. Will Be Coming Soon!</span>
+        </div>
+    </div>
+
+    <div id="aboutus" class="full_page flex_type" style="justify-content: center;">
+        <span style="font-size: 5vh;">About Us</span>
+        <img src="https://avatars1.githubusercontent.com/u/64828294?s=460&amp;v=4" alt="MTT Profile Photo"
+            style="border-radius: 50%;width:250px;height:250px;border: greenyellow ; border-style: solid;">
+        <span>I Am Mr Techtroid The Main Developer Of <span class="sp_txt">Quarkz!</span></span>
+        <span>I Built This Website As A Way For Schools To Head Towards Online Learning</span>
+        <span>Its Built In A Way That It Is Easy For Both Teachers And Students To Use</span>
+        <span>Quarkz Is Currently Under Beta Version And Many Features Will Come In The Future</span>
+        <span>Contact Mail: <span class="sp_txt">mrtechtroid@outlook.com</span></span>
+        <button id = "lgl_btn" class = "tst_btn">Legal</button>
+    </div>
+    <div id = "legal" class="full_page flex_type" style="justify-content: center;text-align: center;">
+        <span style="font-size: 5vh;">Disclaimer And TOC</span>
+        <span class="sp_txt">Copyright 2021 Quarkz By Mr Techtroid</span>
+    <span>All Codes,Graphics,Assets,And Information Used  is part of Quarkz.</span>
+    <span>Usage, Reproducing Any Of The Code Without Prior Consent Of Owner Mr Techtroid</span>
+    <span>Is Prohibited.</span>
+    <span>Parts Of Quarkz Released In Github Under Open Source Licenses And Usage</span>
+    <span>Of Those Are Allowed after following the License Terms There. </span>
+    <span>Youtube Videos Which Are Used In This Website Belong To Their Respective Channel Owners</span>
+    <span>Usage Of Questions And Notes Are From Fair Use Under Education,Teaching And Research Category</span>
+    </div>
+    <div id="schedule" class="full_page flex_type">
+        <span style="font-size: 5vh;">Schedule</span>
+        <iframe id="tmt_frame" src="" style="border: 0" width="100%" height="90%" frameborder="0" scrolling="no"
+            style="background-color: black;color:white"></iframe>
+    </div>
+    <div id="profile" class="full_page flex_type" style="justify-content: center;">
+        <span style="font-size: 5vh;">Profile</span>
+        <table class="pro_table" style="border:lime 3px solid;">
+            <tr>
+                <td class="sp_txt">Name:</td>
+                <td id="prf_name"></td>
+            </tr>
+            <tr>
+                <td class="sp_txt">Username:</td>
+                <td id="prf_uname"></td>
+            </tr>
+            <tr>
+                <td class="sp_txt">Phone:</td>
+                <td id="prf_phone"></td>
+            </tr>
+            <tr>
+                <td class="sp_txt">Email:</td>
+                <td id="prf_email"></td>
+            </tr>
+            <tr>
+                <td class="sp_txt">Course:</td>
+                <td id="prf_course"></td>
+            </tr>
+            <tr>
+                <td class="sp_txt">Class:</td>
+                <td id="prf_class"></td>
+            </tr>
+            <tr>
+                <td class="sp_txt">Batch:</td>
+                <td id="prf_batch"></td>
+            </tr>
+            <tr style="display: none;">
+                <td class="sp_txt">Profile Photo:</td>
+                <td>
+                    <div id="prf_pphoto" style="width:100px;height:100px;"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="register" class="full_page flex_type">
+        <span style="font-size:5vh;">Register</span>
+        <input type="tel" id="rg_mbleno" class="_in_reg" placeholder="Mobile No">
+        <input type="text" id="rg_uname" class="_in_reg" placeholder="Email Address">
+        <input type="password" id="rg_pass" class="_in_reg" placeholder="Password">
+        <input type="password" id="rg_pass1" class="_in_reg" placeholder="Confirm Password">
+        <input type="text" id="rg_name" class="_in_reg" placeholder="Name">
+        <label for="class">Class</label>
+        <select name="class" id="rg_class">
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+        </select>
+        <button class="tst_btn" id="rg_in">Register</button>
+    </div>
+    <div id="printable" class="full_page flex_type">
+        <span style="font-size: 5vh;" class="no-print">Export</span>
+        <hr color="white" width="100%" class="no-print">
+        <span><button class="tst_btn no-print" onclick="print()">Print</button><button class="tst_btn no-print"
+                id="shf_btn">Shuffle</button><button class="tst_btn no-print" id="tsinf_btn">Bank Info</button></span>
+        <hr color="white" width="100%">
+        <span style="font-size: 3vh;color:yellow" id="qb_title">ERROR</span>
+        <hr color="white" width="100%">
+        <div id="pe_gi">
+            <span id="pe_gi_inf"></span>
+            <hr color="white" width="100vw;">
+        </div>
+        <div id="pe_tst_info" class="flex_type no-print" style="display: none;">
+            <span>Test<input type="radio"></span>
+            <span id="">General Instructions<input type="radio"></span>
+            <textarea type="answer" id="pe_gi_ins" class="_in_aq" style="resize: none;overflow-y: scroll;"
+                placeholder="General Instructions"></textarea>
+            <span>MCQ:<input type="number" id="pe_mcq_pno" class="_in_pq" value="3"><input type="number" id="pe_mcq_nno"
+                    class="_in_pq" value="-1"></span>
+            <span>MCQ Multiple:<input type="number" id="pe_mcmul_pno" class="_in_pq" value="3"><input type="number"
+                    id="pe_mcmul_nno" class="_in_pq" value="-1"></span>
+            <span>Numerical:<input type="number" id="pe_taf_pno" class="_in_pq" value="4"><input type="number"
+                    id="pe_taf_nno" class="_in_pq" value="0"></span>
+            <span>True Or False:<input type="number" id="pe_faf_pno" class="_in_pq" value="1"><input type="number"
+                    id="pe_faf_fno" class="_in_pq" value="0"></span>
+            <span>Explain:<input type="number" id="pe_exp_pno" class="_in_pq" value="4"><input type="number"
+                    id="pe_expl_nno" class="_in_pq" value="0"></span>
+            <span>Matrix<input type="number" id="pe_mat_pno" class="_in_pq" value="12"><input type="number"
+                    id="pe_mat_nno" class="_in_pq" value="-4"></span>
+        </div>
+        <ol id="eqb_add" style="width:90%;height:80%;font-size: 2vh;" type="1">
+        </ol>
+        <div class="divFooter">Quarkz!</div>
+    </div>
+    <div id="additem" class="full_page flex_type" style="overflow-y: scroll;">
+        <span style="font-size: 5vh;" class="">Add</span>
+        <select name="type" id="aq_mode" class="_in_aq" style="color:red">
+            <option value="question">Question</option>
+            <option value="lesson">Lesson</option>
+            <option value="topic">Topic</option>
+            <option value="uplimg">Upload Images</option>
+            <option value="quebnk">Question Bank</option>
+        </select>
+        <div class="flex_type" id="aq_upl">
+            <input type="file" id="aq_file" class="_in_aq">
+            <button class="tst_btn" id="upl_files"></button>
+            <input class="_in_aq" id="aq_uplurl" type="text">
+        </div>
+        <div class="flex_type" id="aq_tpc">
+
+        </div>
+        <div class="flex_type" id="aq_qbk">
+
+        </div>
+        <div class="flex_type" id="aq_all">
+            <textarea type="tel" id="aq_qtext" class="_in_aq" placeholder="Add A Question/Title"
+                style="resize: none;overflow-y: scroll;height:20vh;"></textarea>
+            <input type="answer" id="aq_answer" class="_in_aq" placeholder="Answer">
+            <input type="url" id="aq_imgurl" class="_in_aq" placeholder="Image URL">
+            <input type="url" id="aq_yurl" class="_in_aq" placeholder="Youtube URL">
+            <select name="type" id="aq_subject" class="_in_aq" style="color:red">
+                <option value="physics">Physics</option>
+                <option value="chemistry">Chemistry</option>
+                <option value="maths">Maths</option>
+                <option value="biology">Biology</option>
+                <option value="english">English</option>
+                <option value="hindi">Hindi</option>
+                <option value="sanskrit">Sanskrit</option>
+                <option value="computer">Computer</option>
+                <option value="statistics">Statistics</option>
+                <option value="kvpy">KVPY</option>
+                <option value="unfiled">Unfiled</option>
+            </select>
+            <select name="type" id="aq_topic" class="_in_aq" style="color:red"></select>
+            <textarea type="answer" id="aq_expl" class="_in_aq" style="resize: none;overflow-y: scroll;"
+                placeholder="Explanation Text"></textarea>
+            <textarea type="answer" id="aq_hint" class="_in_aq" style="resize: none;overflow-y: scroll;"
+                placeholder="Hint"></textarea>
+
+
+        </div>
+        <div id="aq_ans_hold">
+            <select name="type" id="aq_type" class="_in_aq" style="color:red">
+                <option value="mcq">MCQ</option>
+                <option value="mcq_multiple">MCQ multiple</option>
+                <option value="matrix">Matrix</option>
+                <option value="numerical">Numerical</option>
+                <option value="explain">Explain</option>
+                <option value="fill">Fill In The Blanks</option>
+            </select>
+            <div id="aq_mcq_con" class="flex_type">
+                <div class="aq_mcq_p" onclick="changeColor(this)"><input class="aq_mcq"></div>
+                <div class="aq_mcq_p" onclick="changeColor(this)"><input class="aq_mcq"></div>
+                <div class="aq_mcq_p" onclick="changeColor(this)"><input class="aq_mcq"></div>
+                <div class="aq_mcq_p" onclick="changeColor(this)"><input class="aq_mcq"></div>
+            </div>
+            <div id="aq_matrix">
+                <table>
+                    <tr>
+                        <td><input class="aq_i1"><input class="aq_i2"></td>
+                    </tr>
+                    <tr>
+                        <td><input class="aq_i1"><input class="aq_i2"></td>
+                    </tr>
+                    <tr>
+                        <td><input class="aq_i1"><input class="aq_i2"></td>
+                    </tr>
+                    <tr>
+                        <td><input class="aq_i1"><input class="aq_i2"></td>
+                    </tr>
+                </table>
+            </div>
+            <button class="tst_btn" id="aq_ao">Add Option</button>
+            <button class="tst_btn" id="aq_ro">Remove Option</button>
+        </div>
+
+        <div>
+            <button class="tst_btn" id="aq_save">Save</button>
+        </div>
+        <div id="aq_renderer" style="border:hotpink solid 3px;width:80%;height:max-content;"></div>
+
+    </div>
+    <div id="users" class="full_page flex_type">
+        <span style="font-size:5vh;">Users</span>
+        <hr color="white" width="100%">
+        <div
+            style="border:orangered 3px solid;border-radius: 30px;display: flex;flex-direction: column;align-items: center;width:80%;">
+            <span style="font-size:3vh;color:yellow;width:80%;">Add Users</span><iframe href="http://localhost:5500/Quarkz/#/register"></iframe>
+        </div>
+        <hr color="white" width="50%">
+        <input type="answer" id="us_user" class="_in_aq" placeholder="username">
+
+    </div>
+    <div id="error_page" class="full_page flex_type">
+        <span style="font-size:5vh;">404</span>
+        <hr color="white" width="100%">
+
+        <span style="font-size: 3vh;">You don't have access to this page.</span>
+    </div>
+    <div id="dashboard" class="full_page flex_type">
+        <span style="font-size:5vh;">Dashboard</span>
+        <div class="flex_type" style="flex-direction: row;flex-wrap: wrap;align-items: center;justify-content: center;">
+            <div class="dshbox" id="tstinf_btn" style="display:none">Test Infos</div>
+            <div class="dshbox" id="tstrep_btn" style="display:none">Test Reports</div>
+            <div class="dshbox" id="tmt_btn">Time Table</div>
+            <div class="dshbox" id="abt_btn">About Us</div>
+            <div class="dshbox" id="prf_btn">Your Profile</div>
+            <div class="dshbox" id="tpc_btn">Topics</div>
+            <div class="dshbox" id="lvq_btn" style="display:none">Live Quiz</div>
+            <div class="dshbox" id="frm_btn">Forum</div>
+            <div class="dshbox" id="qba_btn">Question Bank</div>
+            <div id="adminonly" style="display:none;">
+                <div class="dshbox" id="adi_btn">Add</div>
+                <div class="dshbox" id="pqb_btn">Print</div>
+                <div class="dshbox" id="usc_btn">Users</div>
+            </div>
+            <div class="dshbox" id="lgt_btn">Logout</div>
+        </div>
+    </div>
+    <div id="singletestreport" class="full_page flex_type">
+        <span style="font-size: 5vh;">Random Test 1</span>
+        <hr color="white" width="100%">
+        <div class="progressbar_tr">
+            <div class="pb_tr_in" style="width: 70%;"><span>70%</span></div>
+        </div><br>
+        <table class="pro_table">
+            <tr>
+                <th>Parameters</th>
+                <th>Your Stats</th>
+            </tr>
+            <tr>
+                <td>Rank:</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>Percent:</td>
+                <td>70%</td>
+            </tr>
+            <tr>
+                <td>Positive:</td>
+                <td>74</td>
+            </tr>
+            <tr>
+                <td>Negitive:</td>
+                <td>-4</td>
+            </tr>
+            <tr>
+                <td>Total Questions:</td>
+                <td>100</td>
+            </tr>
+            <tr>
+                <td>Time Taken:</td>
+                <td>1:55:12</td>
+            </tr>
+            <tr>
+                <td>Top 3:</td>
+                <td>A,B,C</td>
+            </tr>
+        </table><br>
+        <table class="pro_table">
+            <tr>
+                <th>Parameters</th>
+                <th>Your Stats</th>
+                <th>Average</th>
+                <th>Highest</th>
+            </tr>
+            <tr>
+                <td>Marks:</td>
+                <td>70/100</td>
+                <td>35/100</td>
+                <td>84/100</td>
+            </tr>
+            <tr>
+                <td>Physics:</td>
+                <td>24/25</td>
+                <td>12/25</td>
+                <td>24/25</td>
+            </tr>
+            <tr>
+                <td>Chemistry:</td>
+                <td>13/25</td>
+                <td>12/25</td>
+                <td>24/25</td>
+            </tr>
+            <tr>
+                <td>Maths:</td>
+                <td>13/25</td>
+                <td>12/25</td>
+                <td>24/25</td>
+            </tr>
+            <tr>
+                <td>Biology:</td>
+                <td>20/25</td>
+                <td>12/25</td>
+                <td>24/25</td>
+            </tr>
+        </table>
+    </div>
+    <div id="testsummary" class="full_page flex_type">
+        <span style="font-size: 5vh;">Test Summary</span>
+        <hr color="white" width="100%">
+        <table class="pro_table">
+            <tr>
+                <th>Test Name</th>
+                <th>Percent</th>
+                <th>Marks/Total</th>
+                <th>Class Average</th>
+                <th>Class Highest</th>
+                <th>Rank</th>
+                <th>Date</th>
+            </tr>
+            <tr>
+                <td>Random Test 1</td>
+                <td>70%</td>
+                <td>70/100</td>
+                <td>35/100</td>
+                <td>84/100</td>
+                <td>4</td>
+                <td>26th Aug 2021</td>
+            </tr>
+        </table>
+    </div>
+    <div id="tests_1" class="full_page flex_type">
+        <span style="font-size: 5vh;">Tests</span>
+        <hr color="white" width="100%">
+        <div><button class="tst_btn">Active Tests</button><button class="tst_btn">Missed Tests</button><button
+                class="tst_btn">Upcoming Tests</button></div>
+        <div id="testlinks">
+            <div class="tlinks">Complex Numbers</div>
+            <div class="tlinks">Straight Lines</div>
+        </div>
+    </div>
+    <div id="livequiz" class="full_page flex_type">
+        <span style="font-size:5vh;">Live Quiz</span>
+        <div>
+            <span style="font-size: 5vh;color:yellow" id="lq_title">Tests</span>
+        </div>
+        <div style="margin:10px;border:orangered 3px solid;border-radius: 40px;padding:10px;height:max-content">
+            <div>
+                <span id="lq_title">What Is The Unit Of Speed?</span>
+            </div>
+            <div>
+                <div id="lq_mcq_con" class="flex_type">
+                    <span id="mcq_1" class="lq_mcq">LT</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="forum" class="full_page flex_type">
+        <span style="font-size: 5vh;color:yellow" id="fm_title">Forum</span>
+        <hr width="100%" color="white">
+        <div id="forum_live" style="height:60vh;width:80%;border:hotpink 3px solid;overflow-y: scroll;">
+        </div>
+        <div>
+            <input type="text" id="fm_message" class="_in_aq" placeholder="Message">
+            <button class="tst_btn" id="fm_send">Send</button>
+            <button class="tst_btn" id="fm_lmsg">Load Messages</button>
+        </div>
+
+    </div>
+    <div id="topic" class="full_page flex_type" style="height: max-content;">
+        <span style="font-size: 5vh;color:yellow" id="tp_title">Topic Name</span>
+        <hr width="100%" color="white">
+        <div>
+            <span style="font-size: 3vh;color:yellow" id="tp_lsno">Lesson Name</span>
+            <button class="tst_btn" id="tp_nxt">Next</button>
+            <button class="tst_btn" id="tp_prv">Previous</button>
+        </div>
+        <hr width="100%" color="white">
+        <div id="tp_lesson" style="width: 80%;">
+            <center>
+                <div
+                    style="text-align:center; top: 50%; z-index: 2; border-style: solid; border-color: lime;border-width: 3px; width: 80%">
+                    <!-- <iframe id = "video" style = "width:80%; height: 450px; border-style: solid; border-color: lime;border-width: 10px;" hidden = "True"  allow = "autoplay"></iframe> -->
+                    <div style="pointer-events: none;">
+                        <div id="player" style="width:80%; height: 300px;"></div>
+                    </div>
+
+                    <span id="watermark"
+                        style="top:40%; left:50%; z-index: 4;color: blue;position: absolute;font-family: Consolas; font-size: 20px;"><img
+                            src="favicon.png" style="height:60px"></span>
+                </div>
+
+                <div id="toolbar"
+                    style="text-align:center;border-style: solid; border-color: lime; z-index: 3;width:80%;color: white;">
+                    <span class="fa fa-backward btncmd" id="tp_bw_btn"
+                        onclick="player.seekTo(player.getCurrentTime()-10)" title="-10 Seconds"></span>
+                    <span class="fa fa-play btncmd" id="tp_pl_btn" title="Play" onclick="player.playVideo()"></span>
+                    <span class="fa fa-pause btncmd" id="tb_pa_btn" title="Pause" onclick="player.pauseVideo()"></span>
+                    <span class="fa fa-stop btncmd" onclick="player.stopVideo()" id="tb_st_btn" title="Stop"></span>
+                    <span class="fa fa-forward btncmd" id="tb_fw_btn"
+                        onclick="player.seekTo(player.getCurrentTime()+10)" title="+10 Seconds"></span>
+                    <span id="mute" class="fa fa-volume-up btncmd" id="tb_um_btn" onclick="volumetype()"
+                        title="Mute/Unmute"></span>
+                    <span class="fa fa-youtube-play" id="tb_wy_btn" onclick="window.open(player.getVideoUrl())"
+                        title="Watch On Youtube"></span>
+                    <input type="range" min="0" max="100" value="50" id="tb_vl_br" style="background-color: grey;"
+                        onchange="volumechange()" oninput="volumechange()">
+                </div>
+                <div>
+                    <div id="tp_expl" style="width:80%;height:max-content;min-height: 12vh;">Explanation</div>
+                    <img id="tp_lsimg">
+                </div>
+            </center>
+        </div>
+
+        <div id="tp_question" style="width: 80%;align-items: center;display: flex;flex-direction: column;">
+            <div id="tp_qtext" style="width:80%;height:max-content;min-height: 12vh;">Question</div>
+            <img id="tp_img" src="Quarkz.png">
+            <div id="tp_ans_hold">
+                <input type="answer" id="tp_answer" class="_in_aq" placeholder="Answer">
+                <div id="tp_mcq_con" class="flex_type">
+                </div>
+                <div id="tp_matrix">
+                    <table>
+                        <tr>
+                            <td><span class="tp_i1"></span><span class="tp_i2"></span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="tp_i1"></span><span class="tp_i2"></span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="tp_i1"></span><span class="tp_i2"></span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="tp_i1"></span><span class="tp_i2"></span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div>
+                <button class="tst_btn" id="tp_sbm">Submit</button>
+            </div>
+            <div id="tp_hint" style="width:80%;height:max-content;min-height: 12vh;display: none;">Hint</div>
+            <div id="tp_answer" style="width:80%;height:max-content;min-height: 12vh;display: none;">Answer</div>
+            <div id="tp_expl" style="width:80%;height:max-content;min-height: 12vh;display: none;">Explanation</div>
+        </div>
+    </div>
+    <div id = "topiclist" class = "full_page flex_type">
+        <span style="font-size: 5vh;">Topic List</span>
+        <hr color="white" width="100%">
+        <div id = "tli_cont" style="overflow-y: scroll;height:50vh;" class="flex_type">
+        </div>
+    </div>
+    <div id = "qbanklist" class = "full_page flex_type">
+        <span style="font-size: 5vh;">Question Banks</span>
+        <hr color="white" width="100%">
+        <div id = "qb_cont" style="overflow-y: scroll;height:50vh;" class="flex_type">
+        </div>
+    </div>
+    <script src="js/main.js" type="module"></script>
+    <script src="js/extras.js"></script>
+    <script>setInterval(function (){console.clear()},1000)</script>
+</body>
+
+</html>
