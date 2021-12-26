@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum - MTT</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div id="watermark" style="display: flex; flex-direction: row;align-items: center;width:98vw;position: relative;">
+        <span id="logo" style="font-family: Arial;font-size: 4vh;font-weight: bold; margin-left: 2vw;"><img
+                src="Quarkz.png" style="height:6vh;"></span>
+        <!-- <span style="font-family:Arial;font-size:2vh; font-weight:bolder;">By MTT</span> -->
+        <span style="background-color: turquoise;border-radius: 100px;position: absolute;right:1vw;padding:1vh;"
+            id="dsh_btn" class="no-print" onclick = "window.location = 'index.html#/dashboard'">☰</span>
+    </div>
+    <div id="forum" class="full_page flex_type">
+        <span style="font-size: 5vh;color:yellow" id="fm_title">Forum</span>
+        <hr width="100%" color="white">
+        <div id="forum_live" style="height:60vh;width:80%;border:hotpink 3px solid;overflow-y: scroll;display: flex;flex-direction: column;">
+        </div>
+        <div>
+            <input type="text" id="fm_message" class="_in_aq" placeholder="Message">
+            <button class="tst_btn" id="fm_send">Send</button>
+        </div>
+
+    </div>
+    <script src="js/forum.js" type="module"></script>
+</body>
+</html>

@@ -64,7 +64,7 @@ function signUp() {
   var name = dE("rg_name").value;
   var mblno = dE("rg_mbleno").value;
   var stclass = dE("rg_class").value;
-  if (password != dE("rg_pass1").value) { 
+  if (password != dE("rg_pass1").value) {
     // console.log("ERROR") 
   }
   else {
@@ -134,12 +134,14 @@ function locationHandler(newloc, n1) {
     case "testinfo": handlebox = "tests_1"; break;
     case "legal": handlebox = "legal"; break;
     case "forum": handlebox = "forum"; break;
-    case "qblist": handlebox = "qbanklist";tpcList(2);break;
-    case "tpclist": handlebox = "topiclist";tpcList(1);break;
+    case "qblist": handlebox = "qbanklist"; tpcList(2); break;
+    case "tpclist": handlebox = "topiclist"; tpcList(1); break;
+    case "simlist": handlebox = "simlist"; getsims(); break;
     default: handlebox = "error_page"; break;
   }
-  
+
   // console.log(iorole)
+  if (location1.includes("sims")) { handlebox = "simulations"; getsiminfo() }
   if (location1.includes("qbanks")) { handlebox = "topic"; gettopicinfo(2); }
   if (location1.includes("printable/qbank") && iorole == true) { handlebox = "printable"; prtqbank(1); }
   if (location1.includes("printable/topic") && iorole == true) { handlebox = "printable"; prtqbank(2); }
@@ -157,31 +159,125 @@ function locationHandler(newloc, n1) {
   chgby = 1;
   stpVid()
 }
-async function userUpdate(){}
-function tpcList(type){
-  var m,n,b;
-  if (type == 1){m = "tli_cont";n = "topic/"
-  dE(m).innerHTML = ""
-  for (let ele of topiclist){
-    var a = "<span class = 'tlinks' id = 'tl"+ele[1]+"'>"+ele[0]+"</span>"
-    dE(m).insertAdjacentHTML('beforeend', a);
-    dE("tl"+ele[1]).addEventListener("click",function(){
-      locationHandler(n+this.id.split("tl")[1],1);
-    })
+async function getsiminfo() {
+  var simid = window.location.hash.split("sims/")[1]
+  var docRef = doc(db, 'sims', simid)
+  var docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    var docJSON = docSnap.data();
+    dE("sms_name").innerText = docJSON.name
+    dE("sms_prov").innerText = docJSON.provider
+    dE("sim_frame").src = docJSON.url
   }
+  else { locationHandler("error_page", 1); throw new Error }
 }
-  else if (type == 2){m = "qb_cont";n = "qbanks/"
-  dE(m).innerHTML = ""
-  for (let ele of qlist){
-    var a = "<span class = 'tlinks' id = 'qbq"+ele[1]+"'>"+ele[0]+"</span>"
-    dE(m).insertAdjacentHTML('beforeend', a);
-    dE("qbq"+ele[1]).addEventListener("click",function(){
-      locationHandler(n+this.id.split("qbq")[1],1);
-    })
+async function userUpdate() { }
+function tpcList(type) {
+  var m, n, b;
+  if (type == 1) {
+    m = "tli_cont"; n = "topic/"
+    dE(m).innerHTML = ""
+    for (let ele of topiclist) {
+      var a = "<span class = 'tlinks' id = 'tl" + ele[1] + "'>" + ele[0] + "</span>"
+      dE(m).insertAdjacentHTML('beforeend', a);
+      dE("tl" + ele[1]).addEventListener("click", function () {
+        locationHandler(n + this.id.split("tl")[1], 1);
+      })
+    }
   }
+  else if (type == 2) {
+    m = "qb_cont"; n = "qbanks/"
+    dE(m).innerHTML = ""
+    for (let ele of qlist) {
+      var a = "<span class = 'tlinks' id = 'qbq" + ele[1] + "'>" + ele[0] + "</span>"
+      dE(m).insertAdjacentHTML('beforeend', a);
+      dE("qbq" + ele[1]).addEventListener("click", function () {
+        locationHandler(n + this.id.split("qbq")[1], 1);
+      })
+    }
+  }
+
+
 }
-  
-  
+async function getsimid(simname) {
+  var fiou;
+  const q = query(collection(db, "sims"), where("name", "==", simname));
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    fiou = doc.id
+  });
+  locationHandler("sims/" + fiou, 1)
+}
+function simclicker() {
+  console.log(this.innerText)
+  getsimid(this.innerText)
+}
+async function getsims() {
+  dE("sim_cont").innerHTML = ""
+  var docRef = doc(db, 'sims', 'sims')
+  var docSnap = await getDoc(docRef);
+  if (docSnap.exists()) { var docJSON = docSnap.data(); }
+  else { locationHandler("error_page", 1); throw new Error }
+  var asa, sio;
+  try {
+    for (let ele of docJSON.physics) {
+      console.log(ele)
+      if (ele != "") {
+        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks" style = "color:pink" id="sim' + btoa(ele) + '">' + ele + '</span>')
+        dE("sim" + btoa(ele)).addEventListener('click', simclicker)
+      }
+    }
+  } catch { }
+  // console.log(docJSON.chemistry)
+  try {
+    for (let ele of docJSON.chemistry) {
+      console.log(ele)
+      if (ele != "") {
+        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks" style = "color:red" id="sim' + btoa(ele) + '">' + ele + '</span>')
+        dE("sim" + btoa(ele)).addEventListener('click', simclicker)
+      }
+    }
+  } catch { }
+  try {
+    for (let ele of docJSON.maths) {
+      if (ele != "") {
+        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks" style = "color:blue" id="sim' + btoa(ele) + '">' + ele + '</span>')
+        dE("sim" + btoa(ele)).addEventListener('click', simclicker)
+      }
+    }
+  } catch { }
+  try {
+    for (let ele of docJSON.biology) {
+      if (ele != "") {
+        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks" style = "color:green" id="sim' + btoa(ele) + '">' + ele + '</span>')
+        dE("sim" + btoa(ele)).addEventListener('click', simclicker)
+      }
+    }
+  } catch { }
+  try {
+    for (let ele of docJSON.computer) {
+      if (ele != "") {
+        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks" style = "color:violet" id="sim' + btoa(ele) + '">' + ele + '</span>')
+        dE("sim" + btoa(ele)).addEventListener('click', simclicker)
+      }
+    }
+  } catch { }
+  try {
+    for (let ele of docJSON.statistics) {
+      if (ele != "") {
+        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks" style = "color:orange" id="sim' + btoa(ele) + '">' + ele + '</span>')
+        dE("sim" + btoa(ele)).addEventListener('click', simclicker)
+      }
+    }
+  } catch { }
+  try {
+    for (let ele of docJSON.unfiled) {
+      if (ele != "") {
+        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks" style = "color:white" id="sim' + btoa(ele) + '">' + ele + '</span>')
+        dE("sim" + btoa(ele[0])).addEventListener('click', simclicker)
+      }
+    }
+  } catch { }
 }
 async function gettopicinfo(type) {
   var ioun = ""; var ioup = "";
@@ -418,6 +514,77 @@ async function addqtoweb() {
         console.error('Error writing new message to Firebase Database', error);
       }
     };
+  } else if (qmode == "sims") {
+    var docRef = doc(db, "sims", "simno");
+    var docSnap = await getDoc(docRef);
+    var i = 0;
+    var simno;
+    if (docSnap.exists()) {
+      var docJSON = docSnap.data()
+      simno = docJSON.no;
+      // console.log(lsno)
+      async function eio() {
+        try { await setDoc(doc(db, 'sims', 'simno'), { no: simno }) }
+        catch (error) {
+          console.error('Error writing new message to Firebase Database', error);
+        }
+      }
+      try {
+        await setDoc(doc(db, 'sims', simno), {
+          name: dE("aq_simname").value,
+          license: dE("aq_simlicense").value,
+          provider: dE("aq_simprov").value,
+          url: dE("aq_simurl").value
+        });
+        var subj = dE("aq_simsubj").value
+        if (subj == "physics") {
+          await updateDoc(doc(db, 'sims', 'sims'), {
+            physics: arrayUnion(dE("aq_simname").value)
+          })
+        }
+        if (subj == "chemistry") {
+          await updateDoc(doc(db, 'sims', 'sims'), {
+            chemistry: arrayUnion(dE("aq_simname").value)
+          })
+        }
+        if (subj == "maths") {
+          await updateDoc(doc(db, 'sims', 'sims'), {
+            maths: arrayUnion(dE("aq_simname").value)
+          })
+        }
+        if (subj == "computer") {
+          await updateDoc(doc(db, 'sims', 'sims'), {
+            computer: arrayUnion(dE("aq_simname").value)
+          })
+        }
+        if (subj == "biology") {
+          await updateDoc(doc(db, 'sims', 'sims'), {
+            biology: arrayUnion(dE("aq_simname").value)
+          })
+        }
+        if (subj == "statistics") {
+          await updateDoc(doc(db, 'sims', 'sims'), {
+            statistics: arrayUnion(dE("aq_simname").value)
+          })
+        }
+        if (subj == "unfiled") {
+          await updateDoc(doc(db, 'sims', 'sims'), {
+            unfiled: arrayUnion(dE("aq_simname").value)
+          })
+        }
+        i = 1;
+        simno = simno.split("S")[1]
+        simno = parseInt(simno)
+        simno = simno + 1;
+        simno = simno.toString();
+        var qww = simno.length
+        simno = "S" + simno
+        eio();
+        clearAQ();
+      } catch (error) {
+        console.error('Error writing new message to Firebase Database', error);
+      }
+    };
   }
 }
 function rendererMK(eleid, toid) {
@@ -440,18 +607,21 @@ async function changeItem(t) {
   var qqall = dE("aq_all")
   var qtpc = dE("aq_tpc")
   var qqbk = dE("aq_qbk")
+  var qsims = dE("aq_sims")
   var qsubj = dE("aq_subject").value
   if (mode == "question") {
-    iu(qyurl); io(qcont); io(qtype); io(qans); iu(qimgupl); qif(qqall);
+    iu(qyurl); io(qcont); io(qtype); io(qans); iu(qimgupl); qif(qqall); iu(qsims);
   } else if (mode == "lesson") {
-    io(qyurl); iu(qcont); iu(qtype); iu(qans); iu(qimgupl); qif(qqall);
+    io(qyurl); iu(qcont); iu(qtype); iu(qans); iu(qimgupl); qif(qqall); iu(qsims);
   } else if (mode == "uplimg") {
-    qif(qimgupl); iu(qqall); iu(qcont);
+    qif(qimgupl); iu(qqall); iu(qcont); iu(qsims);
   } else if (mode == "topic") {
-    iu(qimgupl); iu(qqall); iu(qcont); qif(qtpc)
+    iu(qimgupl); iu(qqall); iu(qcont); qif(qtpc); iu(qsims);
   }
   else if (mode == "quebnk") {
-    iu(qimgupl); iu(qqall); iu(qcont); qif(qqbk)
+    iu(qimgupl); iu(qqall); iu(qcont); qif(qqbk); iu(qsims);
+  } else if (mode == "sims") {
+    iu(qimgupl); iu(qqall); iu(qcont); iu(qqbk); qif(qsims)
   }
   if (qtype.value == "mcq" || qtype.value == "mcq_multiple") {
     qif(qmcq); iu(qmat); iu(qans)
@@ -479,7 +649,7 @@ async function lessonRenderer(lessonid) {
   var docRef = doc(db, "lesson", lessonid)
   var docSnap = await getDoc(docRef);
   if (docSnap.exists()) { var docJSON = docSnap.data(); }
-  else { locationHandler("error_page", 1);throw new Error }
+  else { locationHandler("error_page", 1); throw new Error }
   // console.log(docJSON)
   loadVid(docJSON.y_url)
   dE("tp_lsno").innerText = docJSON.title
@@ -498,7 +668,8 @@ async function questionRenderer(qid, type) {
   dE("tp_lesson").style.display = "none"
   var docRef = doc(db, "question", qid)
   var docSnap = await getDoc(docRef);
-  if (docSnap.exists()) { var docJSON = docSnap.data(); 
+  if (docSnap.exists()) {
+    var docJSON = docSnap.data();
     // console.log(docJSON) 
   }
   else { locationHandler("error_page", 1); throw new Error }
@@ -527,7 +698,7 @@ async function questionRenderer(qid, type) {
     iu(tpmcqcon); iu(tpmatrix); io(tpanswer)
   } else if (docJSON.type == "taf") {
     qif(tpmcqcon); iu(tpmatrix); iu(tpanswer)
-      var asi = '<div class="tp_mcq_p">True</div><div class="tp_mcq_p">False</div>'
+    var asi = '<div class="tp_mcq_p">True</div><div class="tp_mcq_p">False</div>'
     dE("tp_mcq_con").insertAdjacentHTML('beforeend', asi)
   } else {
     iu(tpmcqcon); iu(tpmatrix); iu(tpanswer);
@@ -543,7 +714,7 @@ async function topicHandler(type) {
   } else if (type == 1 && (topicjsonno > 1)) {
     topicjsonno = topicjsonno + pol
   }
-  if (type == 3){topicjsonno = 1}
+  if (type == 3) { topicjsonno = 1 }
   var a = topicjson[0]
   // console.log(a)
   if (a[0] == "title") {
@@ -629,26 +800,26 @@ async function authStateObserver(user) {
     }
     docRef = doc(db, "batch", batchno)
     var docSnap = await getDoc(docRef);
-    if (docSnap.exists()) { 
-      var docJSON = docSnap.data(); 
-      batch.textContent = docJSON.name; 
-      calenid = docJSON.timetable 
+    if (docSnap.exists()) {
+      var docJSON = docSnap.data();
+      batch.textContent = docJSON.name;
+      calenid = docJSON.timetable
       // console.log(docJSON)
-      for (var i = 0; i<docJSON.topics.topicname.length;i++){
-        topiclist.push([docJSON.topics.topicname[i],docJSON.topics.topicno[i]])
+      for (var i = 0; i < docJSON.topics.topicname.length; i++) {
+        topiclist.push([docJSON.topics.topicname[i], docJSON.topics.topicno[i]])
       }
-      for (var i = 0;i<docJSON.qbank.qbanktitle.length;i++){
-        qlist.push([docJSON.qbank.qbanktitle[i],docJSON.qbank.qbankid[i]])
+      for (var i = 0; i < docJSON.qbank.qbanktitle.length; i++) {
+        qlist.push([docJSON.qbank.qbanktitle[i], docJSON.qbank.qbankid[i]])
       }
       // console.log(topiclist)
     }
     docRef = doc(db, "course", courseno)
     var docSnap = await getDoc(docRef);
-    if (docSnap.exists()) { 
-      var docJSON = docSnap.data(); 
+    if (docSnap.exists()) {
+      var docJSON = docSnap.data();
       course.textContent = docJSON.title;
     }
-    
+
     var iframeurl = "https://calendar.google.com/calendar/embed?src=" + calenid + "%40group.calendar.google.com&amp;ctz=Asia%2FKolkata"
     tmtifr.src = iframeurl
     spoints.style.display = "block"
@@ -716,6 +887,7 @@ function checkQuestion() {
 }
 
 function chItem() { changeItem(1) }
+function simHand() { locationHandler("simlist", 1) }
 function abtHand() { locationHandler("about", 1) }
 function tmtHand() { locationHandler("timetable", 1) }
 function regHand() { locationHandler("register", 1) }
@@ -729,7 +901,7 @@ function tpcHand() { locationHandler("tpclist", 1) }
 function lvqHand() { locationHandler("livequiz", 1) }
 function frmHand() { locationHandler("forum", 1) }
 function lglHand() { locationHandler("legal", 1) }
-function qbaHand(){locationHandler("qblist",1)}
+function qbaHand() { locationHandler("qblist", 1) }
 function prvHand() { topicHandler(1) }
 function nxtHand() { topicHandler(2) }
 function plyVid() { window.player.playVideo() }
@@ -753,11 +925,13 @@ var plphoto = dE("pl_photo");
 var editorrole, adminrole, userrole;
 var topiclist = []
 var qlist = []
+var simlist = []
+var simbtn = dE("sim_btn").addEventListener("click", simHand)
 var sgnbtn = dE("sgn_in").addEventListener("click", signIn);
 var regbtn = dE("reg_in").addEventListener("click", regHand);;
 var rgbtn = dE("rg_in").addEventListener("click", signUp);
 var sgnout = dE("lgt_btn").addEventListener("click", signOutUser);
-var lmsgbtn = dE("fm_lmsg").addEventListener("click", gtMsg);
+
 var tmtbtn = dE("tmt_btn").addEventListener("click", tmtHand);
 var prfbtn = dE("prf_btn").addEventListener("click", prfHand);
 var abtbtn = dE("abt_btn").addEventListener("click", abtHand);
@@ -778,12 +952,11 @@ var tpcbtn = dE("tpc_btn").addEventListener("click", tpcHand)
 var uscbtn = dE("usc_btn").addEventListener("click", uscHand)
 var lvqbtn = dE("lvq_btn").addEventListener("click", lvqHand)
 var frmbtn = dE("frm_btn").addEventListener("click", frmHand)
-var fmsend = dE("fm_send").addEventListener("click", sndMsg)
 var tpnxt = dE("tp_nxt").addEventListener("click", nxtHand)
 var tpprv = dE("tp_prv").addEventListener("click", prvHand)
 var tpsbm = dE("tp_sbm").addEventListener("click", checkQuestion)
-var lglbtn = dE("lgl_btn").addEventListener("click",lglHand)
-var qbabtn = dE("qba_btn").addEventListener("click",qbaHand)
+var lglbtn = dE("lgl_btn").addEventListener("click", lglHand)
+var qbabtn = dE("qba_btn").addEventListener("click", qbaHand)
 // sgngoogle.addEventListener("click",signInWithGoogle);
 var chgby = 1;
 window.onhashchange = locationHandler

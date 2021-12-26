@@ -177,7 +177,23 @@
             <option value="topic">Topic</option>
             <option value="uplimg">Upload Images</option>
             <option value="quebnk">Question Bank</option>
+            <option value="sims">Simulations</option>
         </select>
+        <div class = "flex_type" id = "aq_sims">
+            <input type="text" id="aq_simname" class="_in_aq" placeholder="Simulation Name">
+            <input type="url" id="aq_simurl" class="_in_aq" placeholder="Simulation URL">
+            <input type="text" id="aq_simprov" class="_in_aq" placeholder="Simulation Provider">
+            <input type="text" id="aq_simlicense" class="_in_aq" placeholder="Simulation License">
+            <select name="type" id="aq_simsubj" class="_in_aq" style="color:red">
+                <option value="physics">Physics</option>
+                <option value="chemistry">Chemistry</option>
+                <option value="maths">Maths</option>
+                <option value="biology">Biology</option>
+                <option value="computer">Computer</option>
+                <option value="statistics">Statistics</option>
+                <option value="unfiled">Unfiled</option>
+            </select>
+        </div>
         <div class="flex_type" id="aq_upl">
             <input type="file" id="aq_file" class="_in_aq">
             <button class="tst_btn" id="upl_files"></button>
@@ -284,8 +300,9 @@
             <div class="dshbox" id="prf_btn">Your Profile</div>
             <div class="dshbox" id="tpc_btn">Topics</div>
             <div class="dshbox" id="lvq_btn" style="display:none">Live Quiz</div>
-            <div class="dshbox" id="frm_btn">Forum</div>
+            <div class="dshbox" id="frm_btn" onclick = "window.location = 'forum.html'">Forum</div>
             <div class="dshbox" id="qba_btn">Question Bank</div>
+            <div class="dshbox" id="sim_btn">Simulations</div>
             <div id="adminonly" style="display:none;">
                 <div class="dshbox" id="adi_btn">Add</div>
                 <div class="dshbox" id="pqb_btn">Print</div>
@@ -423,18 +440,6 @@
             </div>
         </div>
     </div>
-    <div id="forum" class="full_page flex_type">
-        <span style="font-size: 5vh;color:yellow" id="fm_title">Forum</span>
-        <hr width="100%" color="white">
-        <div id="forum_live" style="height:60vh;width:80%;border:hotpink 3px solid;overflow-y: scroll;">
-        </div>
-        <div>
-            <input type="text" id="fm_message" class="_in_aq" placeholder="Message">
-            <button class="tst_btn" id="fm_send">Send</button>
-            <button class="tst_btn" id="fm_lmsg">Load Messages</button>
-        </div>
-
-    </div>
     <div id="topic" class="full_page flex_type" style="height: max-content;">
         <span style="font-size: 5vh;color:yellow" id="tp_title">Topic Name</span>
         <hr width="100%" color="white">
@@ -526,9 +531,28 @@
         <div id = "qb_cont" style="overflow-y: scroll;height:50vh;" class="flex_type">
         </div>
     </div>
+    <div id = "simlist" class = "full_page flex_type">
+        <span style="font-size: 5vh;">Simulations List</span>
+        <hr color="white" width="100%">
+        <div id = "sim_cont" style="overflow-y: scroll;height:50vh;" class="flex_type">
+        </div>
+    </div>
+    <div id = "simulations" class = "full_page flex_type">
+        <span style="font-size: 5vh;">Simulations</span>
+        <hr color="white" width="100%">
+        <span style="font-size: 5vh;" id = "sms_name">Sim Name</span>
+        <div>
+            <iframe id="sim_frame" src="" frameborder="0" scrolling="no" style="width:80vw;height:70vh;background-color: black;color:white"></iframe>
+        </div>
+        <div>
+            <span style="font-size: 2vh;">Provided By</span>
+            <span style="font-size: 2vh;" id = "sms_prov">Sim Name</span>
+        </div>
+        
+    </div>
     <script src="js/main.js" type="module"></script>
     <script src="js/extras.js"></script>
-    <script>setInterval(function (){console.clear()},1000)</script>
+    <!-- <script>setInterval(function (){console.clear()},1000)</script> -->
 </body>
 
 </html>
