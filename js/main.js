@@ -114,7 +114,7 @@ function addSizeToGoogleProfilePic(url) {
 }
 function locationHandler(newloc, n1) {
   var iorole = adminrole == true || editorrole == true
-  if (iorole) { dE("adminonly").style.display = "flex" } else { dE("adminonly").style.display = "none" }
+  if (iorole) { dE("adminonly").style.display = "flex" } else { dE("adminonly").style.display = "none";dE("tp_pnt").style.display = "block" }
   if (location1 == undefined) { newloc = "login" }
   dE(handlebox).classList.remove("_open")
   if (n1 == 1) { window.location.hash = "#/" + newloc }
@@ -150,7 +150,6 @@ function locationHandler(newloc, n1) {
   if (location1.includes("update") && iorole == true) { handlebox = "additem"; changeItem() }
   if (location1.includes("users") && iorole == true) { handlebox = "users"; userUpdate() }
   if (location1.includes("topic")) { handlebox = "topic"; gettopicinfo(1); }
-  if (location1.includes("qbank")) { handlebox = "topic"; gettopicinfo(2); }
   if (location1.includes("livequiz")) { handlebox = "livequiz"; lquizinit(); }
   if (userrole == false || userrole == null || userrole == undefined) { handlebox = "error_page" }
   if (location1 == "login") { handlebox = "login" }
@@ -178,7 +177,7 @@ function tpcList(type) {
     m = "tli_cont"; n = "topic/"
     dE(m).innerHTML = ""
     for (let ele of topiclist) {
-      var a = "<span class = 'tlinks' id = 'tl" + ele[1] + "'>" + ele[0] + "</span>"
+      var a = "<span class = 'tlinks rpl' id = 'tl" + ele[1] + "'>" + ele[0] + "</span>"
       dE(m).insertAdjacentHTML('beforeend', a);
       dE("tl" + ele[1]).addEventListener("click", function () {
         locationHandler(n + this.id.split("tl")[1], 1);
@@ -189,7 +188,7 @@ function tpcList(type) {
     m = "qb_cont"; n = "qbanks/"
     dE(m).innerHTML = ""
     for (let ele of qlist) {
-      var a = "<span class = 'tlinks' id = 'qbq" + ele[1] + "'>" + ele[0] + "</span>"
+      var a = "<span class = 'tlinks rpl' id = 'qbq" + ele[1] + "'>" + ele[0] + "</span>"
       dE(m).insertAdjacentHTML('beforeend', a);
       dE("qbq" + ele[1]).addEventListener("click", function () {
         locationHandler(n + this.id.split("qbq")[1], 1);
@@ -214,66 +213,66 @@ function simclicker() {
 }
 async function getsims() {
   dE("sim_cont").innerHTML = ""
-  var docRef = doc(db, 'sims', 'sims')
-  var docSnap = await getDoc(docRef);
-  if (docSnap.exists()) { var docJSON = docSnap.data(); }
-  else { locationHandler("error_page", 1); throw new Error }
+  if (simlist = []){
+    var docRef = doc(db, 'sims', 'sims')
+    var docSnap = await getDoc(docRef);
+    if (docSnap.exists()) { var docJSON = docSnap.data(); simlist = docJSON}
+    else { locationHandler("error_page", 1); throw new Error }
+  }
+  
   var asa, sio;
   try {
-    for (let ele of docJSON.physics) {
-      console.log(ele)
+    for (let ele of simlist.physics) {
       if (ele != "") {
-        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks" style = "color:pink" id="sim' + btoa(ele) + '">' + ele + '</span>')
-        dE("sim" + btoa(ele)).addEventListener('click', simclicker)
-      }
-    }
-  } catch { }
-  // console.log(docJSON.chemistry)
-  try {
-    for (let ele of docJSON.chemistry) {
-      console.log(ele)
-      if (ele != "") {
-        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks" style = "color:red" id="sim' + btoa(ele) + '">' + ele + '</span>')
+        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:pink" id="sim' + btoa(ele) + '">' + ele + '</span>')
         dE("sim" + btoa(ele)).addEventListener('click', simclicker)
       }
     }
   } catch { }
   try {
-    for (let ele of docJSON.maths) {
+    for (let ele of simlist.chemistry) {
       if (ele != "") {
-        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks" style = "color:blue" id="sim' + btoa(ele) + '">' + ele + '</span>')
+        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:red" id="sim' + btoa(ele) + '">' + ele + '</span>')
         dE("sim" + btoa(ele)).addEventListener('click', simclicker)
       }
     }
   } catch { }
   try {
-    for (let ele of docJSON.biology) {
+    for (let ele of simlist.maths) {
       if (ele != "") {
-        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks" style = "color:green" id="sim' + btoa(ele) + '">' + ele + '</span>')
+        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:blue" id="sim' + btoa(ele) + '">' + ele + '</span>')
         dE("sim" + btoa(ele)).addEventListener('click', simclicker)
       }
     }
   } catch { }
   try {
-    for (let ele of docJSON.computer) {
+    for (let ele of simlist.biology) {
       if (ele != "") {
-        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks" style = "color:violet" id="sim' + btoa(ele) + '">' + ele + '</span>')
+        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:green" id="sim' + btoa(ele) + '">' + ele + '</span>')
         dE("sim" + btoa(ele)).addEventListener('click', simclicker)
       }
     }
   } catch { }
   try {
-    for (let ele of docJSON.statistics) {
+    for (let ele of simlist.computer) {
       if (ele != "") {
-        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks" style = "color:orange" id="sim' + btoa(ele) + '">' + ele + '</span>')
+        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:violet" id="sim' + btoa(ele) + '">' + ele + '</span>')
         dE("sim" + btoa(ele)).addEventListener('click', simclicker)
       }
     }
   } catch { }
   try {
-    for (let ele of docJSON.unfiled) {
+    for (let ele of simlist.statistics) {
       if (ele != "") {
-        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks" style = "color:white" id="sim' + btoa(ele) + '">' + ele + '</span>')
+        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:orange" id="sim' + btoa(ele) + '">' + ele + '</span>')
+        dE("sim" + btoa(ele)).addEventListener('click', simclicker)
+      }
+    }
+  } catch { }
+  try {
+    for (let ele of simlist.unfiled) {
+      if (ele != "") {
+        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:white" id="sim' + btoa(ele) + '">' + ele + '</span>')
         dE("sim" + btoa(ele[0])).addEventListener('click', simclicker)
       }
     }
@@ -680,7 +679,7 @@ async function questionRenderer(qid, type) {
     qif(tpmcqcon); iu(tpmatrix); iu(tpanswer)
     var qop = docJSON.op; var asi = "";
     for (let ele1 of qop) {
-      asi += '<div class="tp_mcq_p">' + ele1 + '</div>'
+      asi += '<div class="tp_mcq_p rpl">' + ele1 + '</div>'
     }
     dE("tp_mcq_con").insertAdjacentHTML('beforeend', asi)
   } else if (docJSON.type == "matrix") {
@@ -698,7 +697,7 @@ async function questionRenderer(qid, type) {
     iu(tpmcqcon); iu(tpmatrix); io(tpanswer)
   } else if (docJSON.type == "taf") {
     qif(tpmcqcon); iu(tpmatrix); iu(tpanswer)
-    var asi = '<div class="tp_mcq_p">True</div><div class="tp_mcq_p">False</div>'
+    var asi = '<div class="tp_mcq_p rpl">True</div><div class="tp_mcq_p rpl">False</div>'
     dE("tp_mcq_con").insertAdjacentHTML('beforeend', asi)
   } else {
     iu(tpmcqcon); iu(tpmatrix); iu(tpanswer);
@@ -824,6 +823,7 @@ async function authStateObserver(user) {
     tmtifr.src = iframeurl
     spoints.style.display = "block"
     dE("dsh_btn").style.display = "block"
+    
   } else {
     uname.textContent = ""
     name.textContent = ""
@@ -834,6 +834,7 @@ async function authStateObserver(user) {
     locationHandler("login", 1)
     spoints.style.display = "none"
     dE("dsh_btn").style.display = "none"
+    dE("tp_pnt").style.display = "none"
   }
 }
 function upl1() { uploadImages("aq_upl", "aq_uplurl") }
@@ -885,23 +886,33 @@ async function gtMsg() {
 function checkQuestion() {
 
 }
-
+function printStuff(){
+  if (window.location.hash.includes("topic")){
+    changeLocationHash("printable/topic/"+ window.location.hash.split("topic/")[1],1)
+  } else if (window.location.hash.includes("qbanks")){
+    changeLocationHash("printable/qbank/"+ window.location.hash.split("qbanks/")[1],1)
+  }
+}
+function changeLocationHash(ele,v){
+  window.location.hash = "#/"+ele
+  if (ele == "dashboard"){locationHandler("dashboard",1)}
+}
 function chItem() { changeItem(1) }
-function simHand() { locationHandler("simlist", 1) }
-function abtHand() { locationHandler("about", 1) }
-function tmtHand() { locationHandler("timetable", 1) }
-function regHand() { locationHandler("register", 1) }
-function prfHand() { locationHandler("profile", 1) }
-function dshHand() { locationHandler("dashboard", 1) }
-function adiHand() { locationHandler("add", 1) }
-function pqbHand() { locationHandler("printable/qbank", 1) }
-function tstinfHand() { locationHandler("testinfo", 1) }
-function uscHand() { locationHandler("users", 1) }
-function tpcHand() { locationHandler("tpclist", 1) }
-function lvqHand() { locationHandler("livequiz", 1) }
-function frmHand() { locationHandler("forum", 1) }
-function lglHand() { locationHandler("legal", 1) }
-function qbaHand() { locationHandler("qblist", 1) }
+function simHand() { changeLocationHash("simlist", 1) }
+function abtHand() { changeLocationHash("about", 1) }
+function tmtHand() { changeLocationHash("timetable", 1) }
+function regHand() { changeLocationHash("register", 1) }
+function prfHand() { changeLocationHash("profile", 1) }
+function dshHand() { changeLocationHash("dashboard", 1) }
+function adiHand() { changeLocationHash("add", 1) }
+function pqbHand() { changeLocationHash("printable/qbank", 1) }
+function tstinfHand() { changeLocationHash("testinfo", 1) }
+function uscHand() { changeLocationHash("users", 1) }
+function tpcHand() { changeLocationHash("tpclist", 1) }
+function lvqHand() { changeLocationHash("livequiz", 1) }
+function frmHand() { changeLocationHash("forum", 1) }
+function lglHand() { changeLocationHash("legal", 1) }
+function qbaHand() { changeLocationHash("qblist", 1) }
 function prvHand() { topicHandler(1) }
 function nxtHand() { topicHandler(2) }
 function plyVid() { window.player.playVideo() }
@@ -957,6 +968,7 @@ var tpprv = dE("tp_prv").addEventListener("click", prvHand)
 var tpsbm = dE("tp_sbm").addEventListener("click", checkQuestion)
 var lglbtn = dE("lgl_btn").addEventListener("click", lglHand)
 var qbabtn = dE("qba_btn").addEventListener("click", qbaHand)
+var tppnt = dE("tp_pnt").addEventListener("click",printStuff)
 // sgngoogle.addEventListener("click",signInWithGoogle);
 var chgby = 1;
 window.onhashchange = locationHandler
