@@ -42,9 +42,9 @@
             <input type="password" id="lg_pass"
                 style="font-size: 4vh;background-color: transparent;text-decoration: none;border:none;border-bottom: 3px solid lime;outline:none;color: white;"
                 placeholder="Password">
-            <div class=""><button class="tst_btn" id="sgn_in">Sign In</button>
-                <!-- <button class = "tst_btn" id = "sgn_in_ggl">Sign In With Google</button> -->
-                <button class="tst_btn" id="reg_in">Register</button>
+            <div class=""><button class="tst_btn rpl" id="sgn_in">Sign In</button>
+                <!-- <button class = "tst_btn rpl" id = "sgn_in_ggl">Sign In With Google</button> -->
+                <button class="tst_btn rpl" id="reg_in">Register</button>
             </div>
             <span>The App Is Currently <span class="sp_txt">Invite Only</span>. Will Be Coming Soon!</span>
         </div>
@@ -59,7 +59,7 @@
         <span>Its Built In A Way That It Is Easy For Both Teachers And Students To Use</span>
         <span>Quarkz Is Currently Under Beta Version And Many Features Will Come In The Future</span>
         <span>Contact Mail: <span class="sp_txt">mrtechtroid@outlook.com</span></span>
-        <button id = "lgl_btn" class = "tst_btn">Legal</button>
+        <button id = "lgl_btn" class = "tst_btn rpl">Legal</button>
     </div>
     <div id = "legal" class="full_page flex_type" style="justify-content: center;text-align: center;">
         <span style="font-size: 5vh;">Disclaimer And TOC</span>
@@ -133,13 +133,13 @@
             <option value="11">11</option>
             <option value="12">12</option>
         </select>
-        <button class="tst_btn" id="rg_in">Register</button>
+        <button class="tst_btn rpl" id="rg_in">Register</button>
     </div>
     <div id="printable" class="full_page flex_type">
         <span style="font-size: 5vh;" class="no-print">Export</span>
         <hr color="white" width="100%" class="no-print">
-        <span><button class="tst_btn no-print" onclick="print()">Print</button><button class="tst_btn no-print"
-                id="shf_btn">Shuffle</button><button class="tst_btn no-print" id="tsinf_btn">Bank Info</button></span>
+        <span><button class="tst_btn rpl no-print" onclick="print()">Print</button><button class="tst_btn rpl no-print"
+                id="shf_btn">Shuffle</button><button class="tst_btn rpl no-print" id="tsinf_btn">Bank Info</button></span>
         <hr color="white" width="100%">
         <span style="font-size: 3vh;color:yellow" id="qb_title">ERROR</span>
         <hr color="white" width="100%">
@@ -196,7 +196,7 @@
         </div>
         <div class="flex_type" id="aq_upl">
             <input type="file" id="aq_file" class="_in_aq">
-            <button class="tst_btn" id="upl_files"></button>
+            <button class="tst_btn rpl" id="upl_files"></button>
             <input class="_in_aq" id="aq_uplurl" type="text">
         </div>
         <div class="flex_type" id="aq_tpc">
@@ -263,12 +263,12 @@
                     </tr>
                 </table>
             </div>
-            <button class="tst_btn" id="aq_ao">Add Option</button>
-            <button class="tst_btn" id="aq_ro">Remove Option</button>
+            <button class="tst_btn rpl" id="aq_ao">Add Option</button>
+            <button class="tst_btn rpl" id="aq_ro">Remove Option</button>
         </div>
 
         <div>
-            <button class="tst_btn" id="aq_save">Save</button>
+            <button class="tst_btn rpl" id="aq_save">Save</button>
         </div>
         <div id="aq_renderer" style="border:hotpink solid 3px;width:80%;height:max-content;"></div>
 
@@ -289,26 +289,27 @@
         <hr color="white" width="100%">
 
         <span style="font-size: 3vh;">You don't have access to this page.</span>
+        <span style="font-size: 2vh;">To Go To Dashboard Click On ☰ at the top</span>
     </div>
     <div id="dashboard" class="full_page flex_type">
         <span style="font-size:5vh;">Dashboard</span>
         <div class="flex_type" style="flex-direction: row;flex-wrap: wrap;align-items: center;justify-content: center;">
-            <div class="dshbox" id="tstinf_btn" style="display:none">Test Infos</div>
-            <div class="dshbox" id="tstrep_btn" style="display:none">Test Reports</div>
-            <div class="dshbox" id="tmt_btn">Time Table</div>
-            <div class="dshbox" id="abt_btn">About Us</div>
-            <div class="dshbox" id="prf_btn">Your Profile</div>
-            <div class="dshbox" id="tpc_btn">Topics</div>
-            <div class="dshbox" id="lvq_btn" style="display:none">Live Quiz</div>
-            <div class="dshbox" id="frm_btn" onclick = "window.location = 'forum.html'">Forum</div>
-            <div class="dshbox" id="qba_btn">Question Bank</div>
-            <div class="dshbox" id="sim_btn">Simulations</div>
+            <div class="dshbox rpl" id="tstinf_btn" style="display:none">Test Infos</div>
+            <div class="dshbox rpl" id="tstrep_btn" style="display:none">Test Reports</div>
+            <div class="dshbox rpl" id="tmt_btn">Time Table</div>
+            <div class="dshbox rpl" id="abt_btn">About Us</div>
+            <div class="dshbox rpl" id="prf_btn">Your Profile</div>
+            <div class="dshbox rpl" id="tpc_btn">Topics</div>
+            <div class="dshbox rpl" id="lvq_btn" style="display:none">Live Quiz</div>
+            <div class="dshbox rpl" id="frm_btn" onclick = "window.location = 'forum.html'">Forum</div>
+            <div class="dshbox rpl" id="qba_btn">Question Bank</div>
+            <div class="dshbox rpl" id="sim_btn">Simulations</div>
             <div id="adminonly" style="display:none;">
-                <div class="dshbox" id="adi_btn">Add</div>
-                <div class="dshbox" id="pqb_btn">Print</div>
-                <div class="dshbox" id="usc_btn">Users</div>
+                <div class="dshbox rpl" id="adi_btn">Add</div>
+                <div class="dshbox rpl" id="pqb_btn">Print</div>
+                <div class="dshbox rpl" id="usc_btn">Users</div>
             </div>
-            <div class="dshbox" id="lgt_btn">Logout</div>
+            <div class="dshbox rpl" id="lgt_btn" style = "color:red">Logout</div>
         </div>
     </div>
     <div id="singletestreport" class="full_page flex_type">
@@ -417,8 +418,8 @@
     <div id="tests_1" class="full_page flex_type">
         <span style="font-size: 5vh;">Tests</span>
         <hr color="white" width="100%">
-        <div><button class="tst_btn">Active Tests</button><button class="tst_btn">Missed Tests</button><button
-                class="tst_btn">Upcoming Tests</button></div>
+        <div><button class="tst_btn rpl">Active Tests</button><button class="tst_btn rpl">Missed Tests</button><button
+                class="tst_btn rpl">Upcoming Tests</button></div>
         <div id="testlinks">
             <div class="tlinks">Complex Numbers</div>
             <div class="tlinks">Straight Lines</div>
@@ -443,10 +444,11 @@
     <div id="topic" class="full_page flex_type" style="height: max-content;">
         <span style="font-size: 5vh;color:yellow" id="tp_title">Topic Name</span>
         <hr width="100%" color="white">
-        <div>
+        <div class = "flex_type" style="flex-direction: row;">
             <span style="font-size: 3vh;color:yellow" id="tp_lsno">Lesson Name</span>
-            <button class="tst_btn" id="tp_nxt">Next</button>
-            <button class="tst_btn" id="tp_prv">Previous</button>
+            <button class="tst_btn rpl" id="tp_nxt">Next</button>
+            <button class="tst_btn rpl" id="tp_prv">Previous</button>
+            <button class="tst_btn rpl" id="tp_pnt" style = "display: none;">Export</button>
         </div>
         <hr width="100%" color="white">
         <div id="tp_lesson" style="width: 80%;">
@@ -512,7 +514,7 @@
             </div>
 
             <div>
-                <button class="tst_btn" id="tp_sbm">Submit</button>
+                <button class="tst_btn rpl" id="tp_sbm">Submit</button>
             </div>
             <div id="tp_hint" style="width:80%;height:max-content;min-height: 12vh;display: none;">Hint</div>
             <div id="tp_answer" style="width:80%;height:max-content;min-height: 12vh;display: none;">Answer</div>
@@ -542,13 +544,12 @@
         <hr color="white" width="100%">
         <span style="font-size: 5vh;" id = "sms_name">Sim Name</span>
         <div>
-            <iframe id="sim_frame" src="" frameborder="0" scrolling="no" style="width:80vw;height:70vh;background-color: black;color:white"></iframe>
+            <iframe id="sim_frame" src="" frameborder="0"  style="width:80vw;height:70vh;background-color: black;color:white"></iframe>
         </div>
         <div>
             <span style="font-size: 2vh;">Provided By</span>
             <span style="font-size: 2vh;" id = "sms_prov">Sim Name</span>
         </div>
-        
     </div>
     <script src="js/main.js" type="module"></script>
     <script src="js/extras.js"></script>

@@ -1,0 +1,291 @@
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 3vh;
+}
+.full_page {
+    width:97vw;
+    height:90vh;
+    background-color: black;
+    overflow:hidden;
+    border-radius: 30px 30px 30px 30px;
+    margin:5px;
+    color:white;
+    /* visibility:hidden; */
+    display: none !important;
+
+}
+._open {
+  display: flex !important;
+}
+.flex_type {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+#spoints::after {
+    content: "🔥"
+}
+.pro_table {
+    border-collapse: collapse;
+}
+.pro_table td{
+    border:lime 3px solid;
+    width:20vw;
+}
+.pro_table th{
+    border:orangered 3px solid;
+    width:20vh;
+}
+.progressbar_tr {
+    background-color: rgb(0, 225, 255);
+  border-radius: 13px;
+  padding: 3px;
+  width: 90vw;;
+}
+.pb_tr_in {
+    background-color: orange;
+  height: 20px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: right;
+  position: relative;
+}
+.tst_btn {
+    padding:5px;
+    border: cyan 3px solid;
+    background-color: transparent;
+    color:white;
+    font-family: Arial ;
+    font-size: 3vh;
+    margin:3px;
+}
+.tlinks{
+    height:3vh;
+    border:yellow 1px solid;
+    padding:10px;
+    width:50vw;
+    border-radius: 100px;
+    margin:6px;
+}
+.aq_mcq_p,.tp_mcq_p, .lq_mcq{
+  height:max-content;
+  border:yellow 1px solid;
+  padding:10px;
+  width:50vw;
+  border-radius: 100px;
+  margin:6px;
+  background-color: black;
+  color:white;
+
+}
+.aq_mcq {
+  width:100%;
+  background-color: black;
+  /* pointer-events: none; */
+  color:white;
+  border: none;
+  text-decoration: none;
+}
+.aq_i1, .aq_i2,.tp_i1,.tp_i2 {
+  background-color: black;
+  border-color:magenta;
+  color:white;
+  padding: 2px;
+  width:30vw;
+  height: 3vh;
+}
+.tp_i1,.tp_i2 {
+  width:10vw;
+}
+.sp_txt {
+    color:magenta;
+}
+  /* The dropdown container */
+  .dropdown {
+    float: right;
+    overflow: hidden;
+  }
+  
+  /* Dropdown button */
+  .dropdown .dropbtn {
+    z-index: 2;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 14px 16px;
+    background-color: inherit;
+    font-family: inherit; /* Important for vertical align on mobile phones */
+    margin: 0; /* Important for vertical align on mobile phones */
+  }
+  
+  /* Add a red background color to navbar links on hover */
+  .navbar a:hover, .dropdown:hover .dropbtn {
+    background-color: red;
+  }
+  
+  /* Dropdown content (hidden by default) */
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    right:2vw;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  /* Links inside the dropdown */
+  .dropdown-content span {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+  }
+  
+  /* Add a grey background color to dropdown links on hover */
+  .dropdown-content span:hover {
+    background-color: #ddd;
+  }
+  
+  /* Show the dropdown menu on hover */
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  ._in_reg {
+    font-size: 4vh;background-color: transparent;text-decoration: none;border:none;border-bottom: 3px solid lime;outline:none;color: white;
+  }
+  ._in_aq,._in_pq {
+    font-size: 3vh;background-color: transparent;text-decoration: none;border:none;border-bottom: 3px solid lime;outline:none;color: white;
+  }
+  ._in_aq {
+    width: 70vw;
+  }
+  ._in_pq {
+    width:5vw;
+  }
+  .qb_q_ty {
+    float:right;
+    color:magenta;
+  }
+  .qb_q {
+  }
+  .qb_mcq{
+    display: flex;
+    flex-direction: column;
+  }
+  
+  @media print
+{    
+  @page  { size: A4; margin: 25mm 25mm 25mm 25mm;  }
+  /* body {
+    margin:10px;
+  } */
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+    div,.qb_ttl,.qb_img,.qb_q_ty,.qb_mcq {
+      page-break-inside: avoid !important;
+      overflow: visible;
+      break-inside: avoid-page;
+    }
+    .qb_q {
+      font-size:14px;
+      color:black;
+      border-bottom: black 1px solid;
+    }
+    footer:before {
+      content: "Quarkz!"
+    }
+    hr {
+      color:black;
+    }
+}
+#printable,#topic {
+  height:max-content !important;
+}
+@media screen {
+  div.divFooter {
+    display: none;
+  }
+}
+@media print {
+  div.divFooter {
+    position: fixed;
+    bottom: 0;
+    font-size: 15px;
+  }
+}
+.dshbox {
+  padding: 4vw;
+  border:lime 3px solid;
+  border-radius: 30px;
+  margin: 1vw;
+  /* background:radial-gradient(black,blue,pink); */
+}
+.slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 5px; /* Specified height */
+  background: #d3d3d3; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+
+/* Mouse-over effects */
+.slider:hover {
+  opacity: 1; 
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  background: url("http://192.168.1.5:5500/assets/Arrow-Right.png");
+  cursor: pointer; 
+}
+
+.slider::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  background: url(/assets/Arrow-Right.png); 
+  cursor: pointer;
+}
+#volumebar::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+  appearance: none;
+    background: red;
+}
+#volumebar::-moz-range-thumb{
+    background: red;
+}
+.btncmd:hover{
+    color:red
+}
+.btncmd{
+    font-size: 20px;
+}
+.dmName {
+  color:mediumspringgreen;
+}
+.rpl {
+  background-position: center;
+  transition: background 0.8s;
+}
+.rpl:hover {
+  background: #2c2c2c radial-gradient(circle, transparent 1%, #2a2a2b 1%) center/15000%;
+}
+.rpl:active {
+  background-color: #6eb9f7;
+  background-size: 100%;
+  transition: background 0s;
+}
