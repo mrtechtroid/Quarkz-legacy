@@ -141,6 +141,7 @@ function locationHandler(newloc, n1) {
   }
 
   // console.log(iorole)
+  if (location1.includes("cyberhunt")){handlebox = "cyberhunt";cyberhuntinfo()}
   if (location1.includes("sims")) { handlebox = "simulations"; getsiminfo() }
   if (location1.includes("qbanks")) { handlebox = "topic"; gettopicinfo(2); }
   if (location1.includes("printable/qbank") && iorole == true) { handlebox = "printable"; prtqbank(1); }
@@ -169,6 +170,9 @@ async function getsiminfo() {
     dE("sim_frame").src = docJSON.url
   }
   else { locationHandler("error_page", 1); throw new Error }
+}
+async function cyberhuntinfo(){
+
 }
 async function userUpdate() { }
 function tpcList(type) {
@@ -768,7 +772,7 @@ async function authStateObserver(user) {
   var name = dE("prf_name")
   var phone = dE("prf_phone")
   var email = dE("prf_email")
-  var course = dE("prf_course")
+  // var course = dE("prf_course")
   var stclass = dE("prf_class")
   var batch = dE("prf_batch")
   var tmtifr = dE("tmt_frame")
@@ -812,12 +816,12 @@ async function authStateObserver(user) {
       }
       // console.log(topiclist)
     }
-    docRef = doc(db, "course", courseno)
-    var docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      var docJSON = docSnap.data();
-      course.textContent = docJSON.title;
-    }
+    // docRef = doc(db, "course", courseno)
+    // var docSnap = await getDoc(docRef);
+    // if (docSnap.exists()) {
+    //   var docJSON = docSnap.data();
+    //   course.textContent = docJSON.title;
+    // }
 
     var iframeurl = "https://calendar.google.com/calendar/embed?src=" + calenid + "%40group.calendar.google.com&amp;ctz=Asia%2FKolkata"
     tmtifr.src = iframeurl
@@ -899,6 +903,7 @@ function changeLocationHash(ele,v){
 }
 function chItem() { changeItem(1) }
 function simHand() { changeLocationHash("simlist", 1) }
+function cybHand() {changeLocationHash("cyberhunt",1)}
 function abtHand() { changeLocationHash("about", 1) }
 function tmtHand() { changeLocationHash("timetable", 1) }
 function regHand() { changeLocationHash("register", 1) }
@@ -969,6 +974,7 @@ var tpsbm = dE("tp_sbm").addEventListener("click", checkQuestion)
 var lglbtn = dE("lgl_btn").addEventListener("click", lglHand)
 var qbabtn = dE("qba_btn").addEventListener("click", qbaHand)
 var tppnt = dE("tp_pnt").addEventListener("click",printStuff)
+var cybbtn = dE("cyb_btn").addEventListener("click",cybHand)
 // sgngoogle.addEventListener("click",signInWithGoogle);
 var chgby = 1;
 window.onhashchange = locationHandler

@@ -50,7 +50,7 @@
         </div>
     </div>
 
-    <div id="aboutus" class="full_page flex_type" style="justify-content: center;">
+    <div id="aboutus" class="full_page flex_type" style="justify-content: center;text-align: center;">
         <span style="font-size: 5vh;">About Us</span>
         <img src="https://avatars1.githubusercontent.com/u/64828294?s=460&amp;v=4" alt="MTT Profile Photo"
             style="border-radius: 50%;width:250px;height:250px;border: greenyellow ; border-style: solid;">
@@ -64,13 +64,12 @@
     <div id = "legal" class="full_page flex_type" style="justify-content: center;text-align: center;">
         <span style="font-size: 5vh;">Disclaimer And TOC</span>
         <span class="sp_txt">Copyright 2021 Quarkz By Mr Techtroid</span>
-    <span>All Codes,Graphics,Assets,And Information Used  is part of Quarkz.</span>
-    <span>Usage, Reproducing Any Of The Code Without Prior Consent Of Owner Mr Techtroid</span>
-    <span>Is Prohibited.</span>
-    <span>Parts Of Quarkz Released In Github Under Open Source Licenses And Usage</span>
-    <span>Of Those Are Allowed after following the License Terms There. </span>
+    <span>All Codes,Graphics,Assets,And Information Used  is part of Quarkz With Certain Exceptions Mentioned Below.</span>
+    <span>Usage, Reproducing Any Of The Code Without Prior Consent Of Owner Mr Techtroid Is Prohibited.</span>
+    <span>Parts Of Quarkz Released In Github Under Open Source Licenses And Usage Of Those Are Allowed after following the License Terms There. </span>
     <span>Youtube Videos Which Are Used In This Website Belong To Their Respective Channel Owners</span>
     <span>Usage Of Questions And Notes Are From Fair Use Under Education,Teaching And Research Category</span>
+    <span>Simulations Used In THis Website Belong To The Respective Providers Mentioned</span>
     </div>
     <div id="schedule" class="full_page flex_type">
         <span style="font-size: 5vh;">Schedule</span>
@@ -96,10 +95,10 @@
                 <td class="sp_txt">Email:</td>
                 <td id="prf_email"></td>
             </tr>
-            <tr>
+            <!-- <tr>
                 <td class="sp_txt">Course:</td>
                 <td id="prf_course"></td>
-            </tr>
+            </tr> -->
             <tr>
                 <td class="sp_txt">Class:</td>
                 <td id="prf_class"></td>
@@ -304,6 +303,7 @@
             <div class="dshbox rpl" id="frm_btn" onclick = "window.location = 'forum.html'">Forum</div>
             <div class="dshbox rpl" id="qba_btn">Question Bank</div>
             <div class="dshbox rpl" id="sim_btn">Simulations</div>
+            <div class="dshbox rpl" id="cyb_btn">Cyberhunts</div>
             <div id="adminonly" style="display:none;">
                 <div class="dshbox rpl" id="adi_btn">Add</div>
                 <div class="dshbox rpl" id="pqb_btn">Print</div>
@@ -550,6 +550,18 @@
             <span style="font-size: 2vh;">Provided By</span>
             <span style="font-size: 2vh;" id = "sms_prov">Sim Name</span>
         </div>
+    </div>
+    <div id = "cyberhunt" class = "full_page flex_type">
+        <div id = "cyb_code" class = "flex_type">
+            <span style="font-size: 5vh;">Join Cyberhunt!</span>
+            <hr color="white" width="100%">
+            <span>Do You Want To Join A Cyberhunt?Enter The Cyberhunt Code Below:</span>
+            <input id = "cyb_cd_in" class = "_in_aq"  placeholder="i2a01pmzshn1">
+            <button class="tst_btn rpl" id="cyb_cd_sbm" onclick ="if (document.getElementById('cyb_cd_in').value != ''){window.location.hash = '/cyberhunt/'+document.getElementById('cyb_cd_in').value}">Submit</button>
+        </div>
+    </div>
+    <div id = "cyb_editor">
+        
     </div>
     <script src="js/main.js" type="module"></script>
     <script src="js/extras.js"></script>
