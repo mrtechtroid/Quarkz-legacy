@@ -27,30 +27,23 @@ const analytics = getAnalytics(app);
 const db = getFirestore();
 const auth = getAuth();
 const storage = getStorage();
-async function signInWithGoogle() {
-  // Sign in Firebase using popup auth and Google as the identity provider.
-  var provider = new GoogleAuthProvider();
-  await signInWithPopup(getAuth(), provider);
-  await locationHandler("dashboard", 1);
-}
 async function signIn() {
   var email = dE("lg_uname").value;
   var password = dE("lg_pass").value;
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      // Signed in 
       const user = userCredential.user;
-      // console.log(user.uid)
       locationHandler("dashboard", 1);
       dE("lg_uname").value = ""
       dE("lg_pass").value = ""
       spoints.style.display = "block"
       dE("dsh_btn").style.display = "block"
-      // ...
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
+      dE("lgn_err").style.display = "block"
+      dE("lg_pass").value = ""
     });
 }
 function signOutUser() {
@@ -102,23 +95,13 @@ function signUp() {
   }
 
 }
-function getUserName() {
-  return getAuth().currentUser.displayName;
-}
-function addSizeToGoogleProfilePic(url) {
-  if (url.indexOf('googleusercontent.com') !== -1 && url.indexOf('?') === -1) {
-    // console.log(url)
-    return url + '?sz=150';
-  }
-  return url;
-}
-function locationHandler(newloc, n1) {
+function locationHandler(newlocation, n1) {
   var iorole = adminrole == true || editorrole == true
   if (iorole) { dE("adminonly").style.display = "flex" } else { dE("adminonly").style.display = "none";dE("tp_pnt").style.display = "block" }
-  if (location1 == undefined) { newloc = "login" }
+  if (location1 == undefined) { newlocation = "login" }
   dE(handlebox).classList.remove("_open")
-  if (n1 == 1) { window.location.hash = "#/" + newloc }
-  handlebox = newloc
+  if (n1 == 1) { window.location.hash = "#/" + newlocation }
+  handlebox = newlocation
   location1 = window.location.hash.split("#/")[1]
   switch (location1) {
     case "profile": handlebox = "profile"; break;
@@ -134,23 +117,23 @@ function locationHandler(newloc, n1) {
     case "testinfo": handlebox = "tests_1"; break;
     case "legal": handlebox = "legal"; break;
     case "forum": handlebox = "forum"; break;
-    case "qblist": handlebox = "qbanklist"; tpcList(2); break;
-    case "tpclist": handlebox = "topiclist"; tpcList(1); break;
-    case "simlist": handlebox = "simlist"; getsims(); break;
+    case "qblist": handlebox = "qbanklist"; topicList(2); break;
+    case "tpclist": handlebox = "topiclist"; topicList(1); break;
+    case "simlist": handlebox = "simlist"; getSimList(); break;
     default: handlebox = "error_page"; break;
   }
 
   // console.log(iorole)
-  if (location1.includes("cyberhunt")){handlebox = "cyberhunt";cyberhuntinfo()}
-  if (location1.includes("sims")) { handlebox = "simulations"; getsiminfo() }
-  if (location1.includes("qbanks")) { handlebox = "topic"; gettopicinfo(2); }
-  if (location1.includes("printable/qbank") && iorole == true) { handlebox = "printable"; prtqbank(1); }
-  if (location1.includes("printable/topic") && iorole == true) { handlebox = "printable"; prtqbank(2); }
-  if (location1.includes("printable/tests") && iorole == true) { handlebox = "printable"; prtqbank(3); }
+  if (location1.includes("cyberhunt")){handlebox = "cyberhunt";getyberhunt()}
+  if (location1.includes("sims")) { handlebox = "simulations"; getSimulation() }
+  if (location1.includes("qbanks")) { handlebox = "topic"; getTopic(2); }
+  if (location1.includes("printable/qbank") && iorole == true) { handlebox = "printable"; printQBank(1); }
+  if (location1.includes("printable/topic") && iorole == true) { handlebox = "printable"; printQBank(2); }
+  if (location1.includes("printable/tests") && iorole == true) { handlebox = "printable"; printQBank(3); }
   if (location1 == "add" && iorole == true) { handlebox = "additem"; changeItem() }
   if (location1.includes("update") && iorole == true) { handlebox = "additem"; changeItem() }
   if (location1.includes("users") && iorole == true) { handlebox = "users"; userUpdate() }
-  if (location1.includes("topic")) { handlebox = "topic"; gettopicinfo(1); }
+  if (location1.includes("topic")) { handlebox = "topic"; getTopic(1); }
   if (location1.includes("livequiz")) { handlebox = "livequiz"; lquizinit(); }
   if (userrole == false || userrole == null || userrole == undefined) { handlebox = "error_page" }
   if (location1 == "login") { handlebox = "login" }
@@ -159,7 +142,7 @@ function locationHandler(newloc, n1) {
   chgby = 1;
   stpVid()
 }
-async function getsiminfo() {
+async function getSimulation() {
   var simid = window.location.hash.split("sims/")[1]
   var docRef = doc(db, 'sims', simid)
   var docSnap = await getDoc(docRef);
@@ -171,51 +154,40 @@ async function getsiminfo() {
   }
   else { locationHandler("error_page", 1); throw new Error }
 }
-async function cyberhuntinfo(){
+async function getCyberhunt(){
 
 }
 async function userUpdate() { }
-function tpcList(type) {
-  var m, n, b;
-  if (type == 1) {
-    m = "tli_cont"; n = "topic/"
-    dE(m).innerHTML = ""
-    for (let ele of topiclist) {
-      var a = "<span class = 'tlinks rpl' id = 'tl" + ele[1] + "'>" + ele[0] + "</span>"
-      dE(m).insertAdjacentHTML('beforeend', a);
-      dE("tl" + ele[1]).addEventListener("click", function () {
-        locationHandler(n + this.id.split("tl")[1], 1);
-      })
-    }
-  }
-  else if (type == 2) {
-    m = "qb_cont"; n = "qbanks/"
-    dE(m).innerHTML = ""
-    for (let ele of qlist) {
-      var a = "<span class = 'tlinks rpl' id = 'qbq" + ele[1] + "'>" + ele[0] + "</span>"
-      dE(m).insertAdjacentHTML('beforeend', a);
-      dE("qbq" + ele[1]).addEventListener("click", function () {
-        locationHandler(n + this.id.split("qbq")[1], 1);
-      })
-    }
-  }
 
-
+function topicList(type) {
+  var divID,urlID,childID,eleList;
+  if (type == 1){
+    divID = "tli_cont"; urlID = "topic/"; eleList = topiclist;childID = "tl";
+  } else if (type == 2){
+    divID = "qb_cont"; urlID = "qbanks/"; eleList = qlist;childID = "qbq";
+  }
+  dE(divID).innerHTML = ""
+  for (let ele of eleList) {
+    var a = "<span class = 'tlinks rpl' id = '"+childID + ele[1] + "'>" + ele[0] + "</span>"
+    dE(divID).insertAdjacentHTML('beforeend', a);
+    dE(childID + ele[1]).addEventListener("click", function () {
+      locationHandler(urlID + this.id.split(childID)[1], 1);
+    })
+  }
 }
-async function getsimid(simname) {
-  var fiou;
-  const q = query(collection(db, "sims"), where("name", "==", simname));
+async function getSimID(sim_name) {
+  var docID;
+  const q = query(collection(db, "sims"), where("name", "==", sim_name));
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
-    fiou = doc.id
+    docID = doc.id
   });
-  locationHandler("sims/" + fiou, 1)
+  locationHandler("sims/" + docID, 1)
 }
-function simclicker() {
-  console.log(this.innerText)
-  getsimid(this.innerText)
+function simClicker() {
+  getSimID(this.innerText)
 }
-async function getsims() {
+async function getSimList() {
   dE("sim_cont").innerHTML = ""
   if (simlist = []){
     var docRef = doc(db, 'sims', 'sims')
@@ -224,20 +196,20 @@ async function getsims() {
     else { locationHandler("error_page", 1); throw new Error }
   }
   
-  var asa, sio;
   try {
     for (let ele of simlist.physics) {
       if (ele != "") {
         dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:pink" id="sim' + btoa(ele) + '">' + ele + '</span>')
-        dE("sim" + btoa(ele)).addEventListener('click', simclicker)
+        dE("sim" + btoa(ele)).addEventListener('click', simClicker)
       }
     }
   } catch { }
+
   try {
     for (let ele of simlist.chemistry) {
       if (ele != "") {
         dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:red" id="sim' + btoa(ele) + '">' + ele + '</span>')
-        dE("sim" + btoa(ele)).addEventListener('click', simclicker)
+        dE("sim" + btoa(ele)).addEventListener('click', simClicker)
       }
     }
   } catch { }
@@ -245,7 +217,7 @@ async function getsims() {
     for (let ele of simlist.maths) {
       if (ele != "") {
         dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:blue" id="sim' + btoa(ele) + '">' + ele + '</span>')
-        dE("sim" + btoa(ele)).addEventListener('click', simclicker)
+        dE("sim" + btoa(ele)).addEventListener('click', simClicker)
       }
     }
   } catch { }
@@ -253,7 +225,7 @@ async function getsims() {
     for (let ele of simlist.biology) {
       if (ele != "") {
         dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:green" id="sim' + btoa(ele) + '">' + ele + '</span>')
-        dE("sim" + btoa(ele)).addEventListener('click', simclicker)
+        dE("sim" + btoa(ele)).addEventListener('click', simClicker)
       }
     }
   } catch { }
@@ -261,7 +233,7 @@ async function getsims() {
     for (let ele of simlist.computer) {
       if (ele != "") {
         dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:violet" id="sim' + btoa(ele) + '">' + ele + '</span>')
-        dE("sim" + btoa(ele)).addEventListener('click', simclicker)
+        dE("sim" + btoa(ele)).addEventListener('click', simClicker)
       }
     }
   } catch { }
@@ -269,7 +241,7 @@ async function getsims() {
     for (let ele of simlist.statistics) {
       if (ele != "") {
         dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:orange" id="sim' + btoa(ele) + '">' + ele + '</span>')
-        dE("sim" + btoa(ele)).addEventListener('click', simclicker)
+        dE("sim" + btoa(ele)).addEventListener('click', simClicker)
       }
     }
   } catch { }
@@ -277,71 +249,53 @@ async function getsims() {
     for (let ele of simlist.unfiled) {
       if (ele != "") {
         dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:white" id="sim' + btoa(ele) + '">' + ele + '</span>')
-        dE("sim" + btoa(ele[0])).addEventListener('click', simclicker)
+        dE("sim" + btoa(ele)).addEventListener('click', simClicker)
       }
     }
   } catch { }
 }
-async function gettopicinfo(type) {
-  var ioun = ""; var ioup = "";
-  if (type == 1) { ioun = "topic"; ioup = "topic" }
-  else if (type == 2) { ioup = "qbanks"; ioun = "qbank" }
-  else { ioun = "topic" }
-  var itt8 = ioup + "/"
-  var topicno = window.location.hash.split(itt8)[1]
-  // console.log(topicno)
-  var docRef = doc(db, ioun, topicno)
+async function getTopic(type) {
+  var fireID = ""; var urlID = "";
+  if (type == 1) { fireID = "topic"; urlID = "topic" }
+  else if (type == 2) { urlID = "qbanks"; fireID = "qbank" }
+  else { fireID = "topic" }
+
+  var urlC = urlID + "/"
+  var topicno = window.location.hash.split(urlC)[1]
+
+  var docRef = doc(db, fireID, topicno)
   var docSnap = await getDoc(docRef);
   if (docSnap.exists()) { var docJSON = docSnap.data(); }
   else { locationHandler("error_page", 1); throw new Error }
-  topicjson = []
-  topicjson.push(["title", docJSON.title])
+
+  topicJSON = []
+  topicJSON.push(["title", docJSON.title])
   for (let ele in docJSON.lesson) {
-    // console.log(ele, docJSON.lesson[ele])
-    topicjson.push(["lessons", docJSON.lesson[ele]])
+    topicJSON.push(["lessons", docJSON.lesson[ele]])
   }
   for (let ele in docJSON.questions) {
-    topicjson.push(["questions", docJSON.questions[ele]])
+    topicJSON.push(["questions", docJSON.questions[ele]])
   }
-  // console.log(topicjson)
   topicHandler(3)
 }
-async function returnDoc(col, docname) {
-  var docJSON;
-  var docRef = doc(db, col, docname)
-  var docSnap = await getDoc(docRef);
-  if (docSnap.exists()) { var docJSON = docSnap.data(); }
-  else { throw new Error }
-  return docJSON;
-}
-async function lquizinit() {
-  lquizcode = location1.split("livequiz")[1]
-  var docRef = doc(db, 'livequiz', lquizcode)
-  var docSnap = await getDoc(docRef);
-  if (docSnap.exists()) { var docJSON = docSnap.data(); }
-  else { throw new Error }
-
-
-}
-async function prtqbank(type) {
-  var ioun = "";
-  if (type == 1) { ioun = "qbank" }
-  else if (type == 2) { ioun = "topic" }
-  else if (type == 3) { ioun = "tests" }
-  else { ioun = "qbank" }
-  // console.log(ioun)
-  var itt8 = "printable/" + ioun + "/"
-  var qbankno = window.location.hash.split(itt8)[1]
+async function printQBank(type) {
+  var fireID = "";
+  if (type == 1) { fireID = "qbank" }
+  else if (type == 2) { fireID = "topic" }
+  else if (type == 3) { fireID = "tests" }
+  else { fireID = "qbank" }
+  var qbankno = window.location.hash.split("printable/" + fireID + "/")[1]
   var qbanktitle = dE("qb_title")
-  var docRef = doc(db, ioun, qbankno)
+  var docRef = doc(db, fireID, qbankno)
   var docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
     var docJSON = docSnap.data(); qnos = docJSON.questions;
     qbanktitle.innerText = docJSON.title;
   }
   else { locationHandler("error_page", 1); throw new Error }
-  var qnos, qtitle, qtype, qimg;
 
+
+  var qnos, qtitle, qtype, qimg;
   dE("eqb_add").innerHTML = ""
   for (let ele of qnos) {
     var docRef = doc(db, "question", ele)
@@ -351,6 +305,8 @@ async function prtqbank(type) {
       qtitle = docJSON.title;
       qtype = docJSON.type;
       qimg = docJSON.img;
+
+      
       var inhtml = '<li class = "qb_q" id = "' + ele + '"><div class = "qb_ttl">' + qtitle + '<div class = "qb_q_ty">(' + qtype + ')</div></div></li>'
       dE("eqb_add").insertAdjacentHTML('beforeend', inhtml);
       if (qimg != "") {
@@ -370,6 +326,7 @@ async function prtqbank(type) {
         qrt = '<ol class = "qb_mcq" type = "a"><li>True</li><li>False</li></ol>'
       }
       if (qtype == "explain" || qtype == "numerical") { qrt = "" }
+
       if (qtype == "matrix") {
         var qop1 = docJSON.op1;
         var qop2 = docJSON.op2;
@@ -379,6 +336,7 @@ async function prtqbank(type) {
         }
         qrt = '<table>' + asi + '</table>'
       }
+      
       dE(ele).insertAdjacentHTML('beforeend', qrt)
       renderMathInElement(dE('eqb_add'));
     }
@@ -400,6 +358,14 @@ async function addqtoweb() {
   var qop1 = [];
   var qop2 = [];
   var qno, lsno;
+  if (qtype == "mcq" || qtype == "mcq_multiple"){
+    qans = []
+    for (i = 0; i < document.getElementsByClassName("aq_mcq_ans").length;i++){
+      var a = document.getElementsByClassName("aq_mcq_ans")[i].value;
+      qans[0] = a 
+      console.log(a,qans)
+    }
+  }
   for (var i = 0; i < document.getElementsByClassName("aq_mcq").length; i++) {
     qop.push(document.getElementsByClassName("aq_mcq")[i].value)
   }
@@ -590,7 +556,7 @@ async function addqtoweb() {
     };
   }
 }
-function rendererMK(eleid, toid) {
+function renderMarkedMath(eleid, toid) {
   var v = marked.parse(dE(eleid).value)
   dE(toid).innerHTML = v
   renderMathInElement(dE(toid));
@@ -712,19 +678,19 @@ async function questionRenderer(qid, type) {
 async function topicHandler(type) {
   var pol;
   if (type == 1) { pol = -1 } else { pol = 1 }
-  if ((topicjsonno < (topicjson.length - 1)) && type == 2) {
-    topicjsonno = topicjsonno + pol
-  } else if (type == 1 && (topicjsonno > 1)) {
-    topicjsonno = topicjsonno + pol
+  if ((topicJSONno < (topicJSON.length - 1)) && type == 2) {
+    topicJSONno = topicJSONno + pol
+  } else if (type == 1 && (topicJSONno > 1)) {
+    topicJSONno = topicJSONno + pol
   }
-  if (type == 3) { topicjsonno = 1 }
-  var a = topicjson[0]
+  if (type == 3) { topicJSONno = 1 }
+  var a = topicJSON[0]
   // console.log(a)
   if (a[0] == "title") {
     dE("tp_title").innerText = a[1]
     // console.log(a[1])
   }
-  var cddd = topicjson[topicjsonno]
+  var cddd = topicJSON[topicJSONno]
   // console.log(cddd)
   if (cddd[0] == "lessons") { lessonRenderer(cddd[1]) }
   else if (cddd[0] == "questions") { questionRenderer(cddd[1]) }
@@ -758,7 +724,7 @@ function removeMCQ() {
 function initFirebaseAuth() {
   // Listen to auth state changes.
   onAuthStateChanged(getAuth(), authStateObserver);
-  locationHandler("dashboard", 1)
+  // locationHandler("dashboard", 1)
 }
 function shufflebank() {
   var ol = dE("eqb_add")
@@ -785,7 +751,6 @@ async function authStateObserver(user) {
       var docJSON = docSnap.data()
       userinfo = docJSON
       userinfo.uuid = user.uid
-      // console.log(userinfo)
       uname.textContent = docJSON.email
       name.textContent = docJSON.name
       phone.textContent = docJSON.mblno
@@ -797,9 +762,7 @@ async function authStateObserver(user) {
       userrole = docJSON.roles['user']
       editorrole = docJSON.roles['editor']
       adminrole = docJSON.roles['admin']
-      // console.log(adminrole)
     } else {
-      // console.log("No such document!");
     }
     docRef = doc(db, "batch", batchno)
     var docSnap = await getDoc(docRef);
@@ -807,27 +770,19 @@ async function authStateObserver(user) {
       var docJSON = docSnap.data();
       batch.textContent = docJSON.name;
       calenid = docJSON.timetable
-      // console.log(docJSON)
       for (var i = 0; i < docJSON.topics.topicname.length; i++) {
         topiclist.push([docJSON.topics.topicname[i], docJSON.topics.topicno[i]])
       }
       for (var i = 0; i < docJSON.qbank.qbanktitle.length; i++) {
         qlist.push([docJSON.qbank.qbanktitle[i], docJSON.qbank.qbankid[i]])
       }
-      // console.log(topiclist)
     }
-    // docRef = doc(db, "course", courseno)
-    // var docSnap = await getDoc(docRef);
-    // if (docSnap.exists()) {
-    //   var docJSON = docSnap.data();
-    //   course.textContent = docJSON.title;
-    // }
 
     var iframeurl = "https://calendar.google.com/calendar/embed?src=" + calenid + "%40group.calendar.google.com&amp;ctz=Asia%2FKolkata"
     tmtifr.src = iframeurl
     spoints.style.display = "block"
     dE("dsh_btn").style.display = "block"
-    
+    locationHandler( window.location.hash.split("#/")[1], 1)
   } else {
     uname.textContent = ""
     name.textContent = ""
@@ -839,6 +794,7 @@ async function authStateObserver(user) {
     spoints.style.display = "none"
     dE("dsh_btn").style.display = "none"
     dE("tp_pnt").style.display = "none"
+    document.location.reload()
   }
 }
 function upl1() { uploadImages("aq_upl", "aq_uplurl") }
@@ -852,7 +808,7 @@ function uploadImages(ele) {
   });
 }
 function rndAQ() {
-  rendererMK("aq_qtext", "aq_renderer")
+  renderMarkedMath("aq_qtext", "aq_renderer")
 }
 
 function signUpRestrict() {
@@ -901,6 +857,13 @@ function changeLocationHash(ele,v){
   window.location.hash = "#/"+ele
   if (ele == "dashboard"){locationHandler("dashboard",1)}
 }
+async function lquizinit() {
+  lquizcode = location1.split("livequiz")[1]
+  var docRef = doc(db, 'livequiz', lquizcode)
+  var docSnap = await getDoc(docRef);
+  if (docSnap.exists()) { var docJSON = docSnap.data(); }
+  else { throw new Error }
+}
 function chItem() { changeItem(1) }
 function simHand() { changeLocationHash("simlist", 1) }
 function cybHand() {changeLocationHash("cyberhunt",1)}
@@ -933,8 +896,8 @@ var location1 = window.location.hash.split("#/")[1]
 var sgngoogle = dE("sgn_in_ggl");
 var tabbar = dE("tabbar");
 var userinfo;
-var topicjson = [];
-var topicjsonno = 0;
+var topicJSON = [];
+var topicJSONno = 0;
 var loginpage = dE("login");
 var aboutuspage = dE("aboutus");
 var plphoto = dE("pl_photo");

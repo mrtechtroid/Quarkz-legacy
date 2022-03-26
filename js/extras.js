@@ -58,10 +58,10 @@ function stopVideo() {
 }
 
 function volumechange() {
-  if (player.isMuted() = True) {
-    dE("volumebar").value = 0
+  if (player.isMuted() == true) {
+    document.getElementById("tb_vl_br").value = 0
   } else {
-    volumebar = dE("volumebar").value
+    volumebar = document.getElementById("tb_vl_br").value
     player.setVolume(volumebar)
   }
   if (player.getVolume() < 100 && player.getVolume() > 50) {

@@ -19,10 +19,16 @@
     <link rel="icon" href="favicon.png" type="image/icon type">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-
+    <style>
+        .full_page {display: none};
+    </style>
 </head>
 
 <body>
+    <!-- <div id = "overlay" style = "position: fixed; display: block; width: 100%;height: 100%;top: 0;left: 0;right: 0;bottom: 0;background-color: rgb(0, 0, 0);z-index: 2;cursor: pointer;" > 
+        <div style = "font-family: Consolas;color:white;top: 50%;left: 50%;position: absolute;transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);"><span id="logo" style="font-family: Arial;font-size: 4vh;font-weight: bold; margin-left: 2vw;"><img
+            src="Quarkz.png" style="height:20vh;filter: invert(100%);"></span></div>
+    </div> -->
     <div id="watermark" style="display: flex; flex-direction: row;align-items: center;width:98vw;position: relative;">
         <span id="logo" style="font-family: Arial;font-size: 4vh;font-weight: bold; margin-left: 2vw;"><img
                 src="Quarkz.png" style="height:6vh;"></span>
@@ -47,6 +53,7 @@
                 <button class="tst_btn rpl" id="reg_in">Register</button>
             </div>
             <span>The App Is Currently <span class="sp_txt">Invite Only</span>. Will Be Coming Soon!</span>
+            <span id = "lgn_err" class="err_txt" style="display: none;">ERROR:Wrong Username Or Password</span>
         </div>
     </div>
 
@@ -60,6 +67,7 @@
         <span>Quarkz Is Currently Under Beta Version And Many Features Will Come In The Future</span>
         <span>Contact Mail: <span class="sp_txt">mrtechtroid@outlook.com</span></span>
         <button id = "lgl_btn" class = "tst_btn rpl">Legal</button>
+        <button id = "rbu_btn" class = "tst_btn rpl" onclick="window.location = 'bugs.html'">Report Bugs</button>
     </div>
     <div id = "legal" class="full_page flex_type" style="justify-content: center;text-align: center;">
         <span style="font-size: 5vh;">Disclaimer And TOC</span>
@@ -303,7 +311,7 @@
             <div class="dshbox rpl" id="frm_btn" onclick = "window.location = 'forum.html'">Forum</div>
             <div class="dshbox rpl" id="qba_btn">Question Bank</div>
             <div class="dshbox rpl" id="sim_btn">Simulations</div>
-            <div class="dshbox rpl" id="cyb_btn" style="display:none">Cyberhunts</div>
+            <div class="dshbox rpl" id="cyb_btn">Cyberhunts</div>
             <div id="adminonly" style="display:none;">
                 <div class="dshbox rpl" id="adi_btn">Add</div>
                 <div class="dshbox rpl" id="pqb_btn">Print</div>
