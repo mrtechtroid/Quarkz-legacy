@@ -27,13 +27,18 @@ function initFirebaseAuth() {
 }
 async function sndMsg() {
     var qtxt = dE("fm_message").value
-    await addDoc(collection(db, "forum"), {
-      name: userinfo.name,
-      message: qtxt,
-      userid: userinfo.uuid,
-      sgndon: serverTimestamp()
-    })
-    dE("fm_message").value = ""
+    if (qtxt != "" && qtext != null){
+      await addDoc(collection(db, "forum"), {
+        name: userinfo.name,
+        message: qtxt,
+        userid: userinfo.uuid,
+        sgndon: serverTimestamp()
+      })
+      dE("fm_message").value = ""
+    }else {
+      alert("Message Cannot Be Empty")
+    }
+    
   }
   function displayMessage(id, time, name, text) {
     var d = "<div id = 'dM" + id + "'><span class = 'dmName'>" + name + ": </span><span class = 'dmText'>" + text + "</span><span class = 'dmtime'>" + time + "</span></div>"
@@ -48,7 +53,7 @@ async function sndMsg() {
         if (change.type === 'removed') {
           deleteMessage(change.doc.id);
         } else if (change.type == 'added') {
-            if (a=12){
+            if (a>=11){
                 e = "beforeend"
             }
           var message = change.doc.data();

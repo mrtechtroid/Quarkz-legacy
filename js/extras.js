@@ -2,12 +2,22 @@ function changeColor(ele){
     c = ele.firstChild
     if(ele.target !== this) {
         console.log(ele,c)
-    for (var i = 0; i < document.getElementsByClassName("aq_mcq").length; i++) {
+    if (document.getElementById("aq_type").value == "mcq"){
+      for (var i = 0; i < document.getElementsByClassName("aq_mcq").length; i++) {
         document.getElementsByClassName("aq_mcq")[i].classList.remove("aq_mcq_ans")
         document.getElementsByClassName("aq_mcq_p")[i].style.borderColor = "yellow"
+      }
+      c.classList.add("aq_mcq_ans")
+      ele.style.borderColor = "lime"
+    }else {
+      if (c.classList.contains("aq_mcq_ans")){
+        c.classList.remove("aq_mcq_ans")
+        ele.style.borderColor = "yellow"
+      }else {
+        c.classList.add("aq_mcq_ans")
+        ele.style.borderColor = "lime"
+      }
     }
-    c.classList.add("aq_mcq_ans")
-    ele.style.borderColor = "lime"
     };
     
 }
@@ -65,21 +75,66 @@ function volumechange() {
     player.setVolume(volumebar)
   }
   if (player.getVolume() < 100 && player.getVolume() > 50) {
-    document.getElementById("mute").classList.replace = "fa fa-volume-up"
+    document.getElementById("mute").innerText = "volume_up"
   }
   if (player.getVolume() < 50 && player.getVolume() > 0) {
-    document.getElementById("mute").classList.replace = "fa fa-volume-down"
+    document.getElementById("mute").innerText = "volume_down"
   }
   if (player.getVolume() == 0) {
-    document.getElementById("mute").classList.replace = "fa fa-microphone-slash"
+    document.getElementById("mute").innerText= "volume_off"
   }
 }
 
 function volumetype() {
   if (player.isMuted() == true) {
     player.unMute()
+    document.getElementById("mute").innerText = "volume_up"
   } else {
     player.mute()
+    document.getElementById("mute").innerText= "volume_off"
   }
 
+}
+function fullscreen(){
+  if (
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.mozFullScreenElement ||
+    document.msFullscreenElement
+  ) {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
+    document.getElementById("player").style.height = "300px"
+  } else {
+    element = document.getElementById("tp_full_vid")
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.mozRequestFullScreen) {
+      element.mozRequestFullScreen();
+    } else if (element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+    } else if (element.msRequestFullscreen) {
+      element.msRequestFullscreen();
+    }
+    document.getElementById("player").style.height = "90vh"
+  }
+}
+function mcqchose(ele){
+    if(ele.target !== this) {
+        console.log(ele)
+    for (var i = 0; i < document.getElementsByClassName("tp_mcq_p").length; i++) {
+        document.getElementsByClassName("tp_mcq_p")[i].classList.remove("aq_mcq_ans")
+        document.getElementsByClassName("tp_mcq_p")[i].style.borderColor = "yellow"
+    }
+    ele.classList.add("aq_mcq_ans")
+    ele.style.borderColor = "lime"
+    ele.style.backgroundColor = "grey"
+    };
 }

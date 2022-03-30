@@ -3,11 +3,12 @@ body {
     flex-direction: column;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 3vh;
+    background-color: #eeec6c;
 }
 .full_page {
     width:97vw;
     height:90vh;
-    background-color: black;
+    background-color: rgb(2, 2, 2);
     overflow:hidden;
     border-radius: 30px 30px 30px 30px;
     margin:5px;
@@ -271,10 +272,10 @@ body {
 #volumebar::-moz-range-thumb{
     background: red;
 }
-.btncmd:hover{
+.material-icons:hover{
     color:red
 }
-.btncmd{
+.material-icons{
     font-size: 20px;
 }
 .dmName {
@@ -330,3 +331,17 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+#tp_lesson:-webkit-full-screen,
+#tp_lesson:-moz-full-screen,
+#tp_lesson:-ms-fullscreen,
+#tp_lesson:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    }
+    #player {height:300px;}
+#player:-webkit-full-screen,
+#player:-moz-full-screen,
+#player:-ms-fullscreen,
+#player:fullscreen {
+    height: 90vh;
+    }

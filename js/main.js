@@ -98,11 +98,11 @@ function signUp() {
 function locationHandler(newlocation, n1) {
   var iorole = adminrole == true || editorrole == true
   if (iorole) { dE("adminonly").style.display = "flex" } else { dE("adminonly").style.display = "none";dE("tp_pnt").style.display = "block" }
-  if (location1 == undefined) { newlocation = "login" }
   dE(handlebox).classList.remove("_open")
   if (n1 == 1) { window.location.hash = "#/" + newlocation }
   handlebox = newlocation
   location1 = window.location.hash.split("#/")[1]
+
   switch (location1) {
     case "profile": handlebox = "profile"; break;
     case "about": handlebox = "aboutus"; break;
@@ -354,6 +354,7 @@ async function addqtoweb() {
   var qyurl = dE("aq_yurl").value
   var qsubj = dE("aq_subject").value
   var qtopic = dE("aq_topic").value
+  var qqid = dE("aq_qbankid").value
   var qop = [];
   var qop1 = [];
   var qop2 = [];
@@ -362,7 +363,7 @@ async function addqtoweb() {
     qans = []
     for (i = 0; i < document.getElementsByClassName("aq_mcq_ans").length;i++){
       var a = document.getElementsByClassName("aq_mcq_ans")[i].value;
-      qans[0] = a 
+      qans[i] = a 
       console.log(a,qans)
     }
   }
@@ -415,6 +416,11 @@ async function addqtoweb() {
             fiou = doc.id
           });
           await updateDoc(doc(db, 'topic', fiou), {
+            questions: arrayUnion(qno)
+          })
+        }
+        if (qqid != "" && qqid != null){
+          await updateDoc(doc(db, 'qbank', qqid), {
             questions: arrayUnion(qno)
           })
         }
@@ -649,7 +655,7 @@ async function questionRenderer(qid, type) {
     qif(tpmcqcon); iu(tpmatrix); iu(tpanswer)
     var qop = docJSON.op; var asi = "";
     for (let ele1 of qop) {
-      asi += '<div class="tp_mcq_p rpl">' + ele1 + '</div>'
+      asi += '<div class="tp_mcq_p rpl" onclick = "mcqchose(this)">' + ele1 + '</div>'
     }
     dE("tp_mcq_con").insertAdjacentHTML('beforeend', asi)
   } else if (docJSON.type == "matrix") {
@@ -697,7 +703,7 @@ async function topicHandler(type) {
   stpVid();
 }
 function addMCQ() {
-  var MCQ = `<input class = "aq_mcq">`
+  var MCQ = `<div class="aq_mcq_p" onclick="changeColor(this)"><input class="aq_mcq"></div>`
   dE("aq_mcq_con").insertAdjacentHTML('beforeend', MCQ)
 }
 function clearAQ() {
@@ -719,10 +725,10 @@ function clearAQ() {
   }
 }
 function removeMCQ() {
-  document.getElementsByClassName("aq_mcq")[document.getElementsByClassName("aq_mcq").length - 1].remove()
+  document.getElementsByClassName("aq_mcq_p")[document.getElementsByClassName("aq_mcq").length - 1].remove()
 }
 function initFirebaseAuth() {
-  // Listen to auth state changes.
+  // Listen to auth states.
   onAuthStateChanged(getAuth(), authStateObserver);
   // locationHandler("dashboard", 1)
 }
@@ -782,6 +788,11 @@ async function authStateObserver(user) {
     tmtifr.src = iframeurl
     spoints.style.display = "block"
     dE("dsh_btn").style.display = "block"
+    if (autosignin == 0){
+      // locationHandler("dashboard", 1);
+      window.location.hash = "#/dashboard"
+      autosignin = 1;
+    }
     locationHandler( window.location.hash.split("#/")[1], 1)
   } else {
     uname.textContent = ""
@@ -864,6 +875,8 @@ async function lquizinit() {
   if (docSnap.exists()) { var docJSON = docSnap.data(); }
   else { throw new Error }
 }
+
+
 function chItem() { changeItem(1) }
 function simHand() { changeLocationHash("simlist", 1) }
 function cybHand() {changeLocationHash("cyberhunt",1)}
@@ -905,6 +918,7 @@ var editorrole, adminrole, userrole;
 var topiclist = []
 var qlist = []
 var simlist = []
+var autosignin = 0
 var simbtn = dE("sim_btn").addEventListener("click", simHand)
 var sgnbtn = dE("sgn_in").addEventListener("click", signIn);
 var regbtn = dE("reg_in").addEventListener("click", regHand);;
