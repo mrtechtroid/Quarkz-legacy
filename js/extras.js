@@ -138,3 +138,6 @@ function mcqchose(ele){
     ele.style.backgroundColor = "grey"
     };
 }
+if (screen.width < "300px"){
+  document.getElementById("overlay").style.display = "block"
+}

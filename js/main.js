@@ -96,6 +96,7 @@ function signUp() {
 
 }
 function locationHandler(newlocation, n1) {
+
   var iorole = adminrole == true || editorrole == true
   if (iorole) { dE("adminonly").style.display = "flex" } else { dE("adminonly").style.display = "none";dE("tp_pnt").style.display = "block" }
   dE(handlebox).classList.remove("_open")
@@ -114,9 +115,10 @@ function locationHandler(newlocation, n1) {
     case "livequiz": handlebox = "livequiz"; break;
     case "register": handlebox = "register"; break;
     case "strreport": handlebox = "strreport"; break;
-    case "testinfo": handlebox = "tests_1"; break;
+    case "testinfo": handlebox = "testinfo";renderTestList("active"); break;
     case "legal": handlebox = "legal"; break;
     case "forum": handlebox = "forum"; break;
+    case "ui": handlebox = "ui"; break;
     case "qblist": handlebox = "qbanklist"; topicList(2); break;
     case "tpclist": handlebox = "topiclist"; topicList(1); break;
     case "simlist": handlebox = "simlist"; getSimList(); break;
@@ -124,7 +126,7 @@ function locationHandler(newlocation, n1) {
   }
 
   // console.log(iorole)
-  if (location1.includes("cyberhunt")){handlebox = "cyberhunt";getyberhunt()}
+  if (location1.includes("cyberhunt")){handlebox = "cyberhunt";getCyberhunt()}
   if (location1.includes("sims")) { handlebox = "simulations"; getSimulation() }
   if (location1.includes("qbanks")) { handlebox = "topic"; getTopic(2); }
   if (location1.includes("printable/qbank") && iorole == true) { handlebox = "printable"; printQBank(1); }
@@ -621,17 +623,33 @@ async function changeItem(t) {
 async function lessonRenderer(lessonid) {
   dE("tp_question").style.display = "none"
   dE("tp_lesson").style.display = "block"
-  var docRef = doc(db, "lesson", lessonid)
-  var docSnap = await getDoc(docRef);
-  if (docSnap.exists()) { var docJSON = docSnap.data(); }
-  else { locationHandler("error_page", 1); throw new Error }
-  // console.log(docJSON)
-  loadVid(docJSON.y_url)
-  dE("tp_lsno").innerText = docJSON.title
-  dE("tp_expl").innerText = docJSON.expl
-  dE("tp_lsimg").src = docJSON.img
+  function findlesson(lessonid){
+    var a = lessonlist.length
+    for (var i=0;i<a;i++){
+        if (lessonlist[i].lessonid == lessonid){
+          return i
+        }
+    }
+  }
+  var lessID = findlesson(lessonid)
+  if ( lessID == undefined || lessID == null ){
+    var docJSON
+    var docRef = doc(db, "lesson", lessonid)
+    var docSnap = await getDoc(docRef);
+    if (docSnap.exists()) { docJSON = docSnap.data(); }
+    else { locationHandler("error_page", 1); throw new Error }
+    var lessonElement = {lessonid:lessonid,title:docJSON.title,expl:docJSON.expl,img:docJSON.img,y_url:docJSON.y_url}
+    lessonlist.push(lessonElement)
+    lessID = findlesson(lessonid)
+    console.log(docJSON)
+  }
+  loadVid(lessonlist[lessID].y_url)
+  dE("tp_lsno").innerText = lessonlist[lessID].title
+  dE("tp_expl").innerText = lessonlist[lessID].expl
+  dE("tp_lsimg").src = lessonlist[lessID].img
 }
 async function questionRenderer(qid, type) {
+  var docJSON
   function iu(ele) { ele.style.display = "none" }
   function io(ele) { ele.style.display = "block" }
   function qif(ele) { ele.style.display = "flex" }
@@ -641,13 +659,27 @@ async function questionRenderer(qid, type) {
   dE("tp_lsno").innerText = "Question"
   dE("tp_question").style.display = "flex"
   dE("tp_lesson").style.display = "none"
-  var docRef = doc(db, "question", qid)
-  var docSnap = await getDoc(docRef);
-  if (docSnap.exists()) {
-    var docJSON = docSnap.data();
-    // console.log(docJSON) 
+  function findquestion(questionid){
+    var a = questionlist.length
+    for (var i=0;i<a;i++){
+        if (questionlist[i].questionid == questionid){
+          return i
+        }
+    }
   }
-  else { locationHandler("error_page", 1); throw new Error }
+  var questionID = findquestion(qid)
+  if ( questionID == undefined || questionID == null ){
+    var docRef = doc(db, "question", qid)
+    var docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      docJSON = docSnap.data();
+      var questionElement = {questionid:qid,title:docJSON.title,type:docJSON.type,subject:docJSON.subject,op1:docJSON.op1,op2:docJSON.op2,op:docJSON.op,expl:docJSON.expl,img:docJSON.img,ans:docJSON.ans}
+      questionlist.push(questionElement)
+      questionID = findquestion(qid)
+    }
+    else { locationHandler("error_page", 1); throw new Error }
+  }
+  docJSON = questionlist[questionID]
   tpmcqcon.innerHTML = ""
   dE("tp_qtext").innerText = docJSON.title
   dE("tp_img").src = docJSON.img
@@ -768,7 +800,11 @@ async function authStateObserver(user) {
       userrole = docJSON.roles['user']
       editorrole = docJSON.roles['editor']
       adminrole = docJSON.roles['admin']
-    } else {
+    }
+    if (docJSON.deleted == true){
+      dE("overlay").style.display = "block"
+      signOutUser()
+      alert("This User Account Has Been Deleted")
     }
     docRef = doc(db, "batch", batchno)
     var docSnap = await getDoc(docRef);
@@ -783,12 +819,12 @@ async function authStateObserver(user) {
         qlist.push([docJSON.qbank.qbanktitle[i], docJSON.qbank.qbankid[i]])
       }
     }
-
+    getTestList(batchno,user.uid)
     var iframeurl = "https://calendar.google.com/calendar/embed?src=" + calenid + "%40group.calendar.google.com&amp;ctz=Asia%2FKolkata"
     tmtifr.src = iframeurl
     spoints.style.display = "block"
     dE("dsh_btn").style.display = "block"
-    if (autosignin == 0){
+    if (window.location.hash == "" || window.location.hash == null || window.location.hash == undefined ){
       // locationHandler("dashboard", 1);
       window.location.hash = "#/dashboard"
       autosignin = 1;
@@ -801,10 +837,10 @@ async function authStateObserver(user) {
     email.textContent = ""
     stclass.textContent = ""
     spoints.textContent = ""
-    locationHandler("login", 1)
     spoints.style.display = "none"
     dE("dsh_btn").style.display = "none"
     dE("tp_pnt").style.display = "none"
+    locationHandler("login", 1)
     document.location.reload()
   }
 }
@@ -821,7 +857,6 @@ function uploadImages(ele) {
 function rndAQ() {
   renderMarkedMath("aq_qtext", "aq_renderer")
 }
-
 function signUpRestrict() {
   alert("The App Is Invite Only Registrations Are NOT Available Right Now")
 }
@@ -875,8 +910,74 @@ async function lquizinit() {
   if (docSnap.exists()) { var docJSON = docSnap.data(); }
   else { throw new Error }
 }
+async function getTestList(batchid,userid){
+  if (testList != []){
+    var docRef = doc(db, "batch", batchid,"info","tests");
+    var docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      var docJSON = docSnap.data()
+      console.log(docJSON)
+      testList = docJSON.tests;
+    }
+  }
+  if (finishedTestList != [])
+  {
+    
+    const q = query(collection(db,"tests"),where("finished", "array-contains", userid),limit(5));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      var docJSON = doc.data()
+      finishedTestList.push(docJSON)
+    });
+  }
+  console.log(testList)
+  var localtime = parseInt(Date.now()/1000)
+  for (var d = 0;d<testList.length;d++){
+    if (localtime > testList[d].strton.seconds && localtime < testList[d].endon.seconds){
+      activeTestList.push(testList[d])
+    } else if (localtime < testList[d].strton.seconds){
+      upcomingTestList.push(testList[d])
+    }
+  }
+  // console.log(testList,activeTestList,upcomingTestList,finishedTestList)
+}
+// stakoverflow - https://stackoverflow.com/a/52387803
+function sd(seconds) {
+  seconds = Number(seconds);
+  var d = Math.floor(seconds / (3600*24));
+  var h = Math.floor(seconds % (3600*24) / 3600);
+  var m = Math.floor(seconds % 3600 / 60);
+  var s = Math.floor(seconds % 60);
+  
+  var dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days, ") : "";
+  var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
+  var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
+  var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+  return dDisplay + hDisplay + mDisplay + sDisplay
+}
+function testClicker(){
+  window.location.hash = "#/tests/" + this.id.split("T")[1]
+}
+function renderTestList(type){
+  var renList;
+  if (type == "active"){
+    renList = activeTestList
+  }else if (type == "upcoming"){renList = upcomingTestList}
+  else if (type == "finished"){renList = finishedTestList}
+  else {console.log("ERROR")}
+  dE("testlinks").innerHTML = ""
+  for (var ele of renList){
+    var strson = new Date(ele.strton.seconds*1000)
+    var endson = new Date(ele.endon.seconds*1000)
+    var output = '<div class="tlinks" id = "'+ele.testid+'"><span class = "t_title">'+ele.title+'</span><span class = "t_stron">Starts At:'+strson+'</span><span class ="t_endon">Ends At:'+endson+'</div>'
+    dE("testlinks").insertAdjacentHTML('beforeend',output)
+    dE(ele.testid).addEventListener('click',testClicker)
+  }
+}
+function getAnswers(){
 
-
+}
 function chItem() { changeItem(1) }
 function simHand() { changeLocationHash("simlist", 1) }
 function cybHand() {changeLocationHash("cyberhunt",1)}
@@ -896,6 +997,9 @@ function lglHand() { changeLocationHash("legal", 1) }
 function qbaHand() { changeLocationHash("qblist", 1) }
 function prvHand() { topicHandler(1) }
 function nxtHand() { topicHandler(2) }
+function actHand() { renderTestList("active")}
+function upcHand() { renderTestList("upcoming")}
+function finHand() { renderTestList("finished")}
 function plyVid() { window.player.playVideo() }
 function stpVid() { window.player.stopVideo() }
 function pauVid() { window.player.pauseVideo() }
@@ -919,6 +1023,13 @@ var topiclist = []
 var qlist = []
 var simlist = []
 var autosignin = 0
+var lessonlist = []
+var questionlist = []
+var answerlist = []
+var testList = []
+var activeTestList = []
+var upcomingTestList = []
+var finishedTestList = []
 var simbtn = dE("sim_btn").addEventListener("click", simHand)
 var sgnbtn = dE("sgn_in").addEventListener("click", signIn);
 var regbtn = dE("reg_in").addEventListener("click", regHand);;
@@ -952,6 +1063,9 @@ var lglbtn = dE("lgl_btn").addEventListener("click", lglHand)
 var qbabtn = dE("qba_btn").addEventListener("click", qbaHand)
 var tppnt = dE("tp_pnt").addEventListener("click",printStuff)
 var cybbtn = dE("cyb_btn").addEventListener("click",cybHand)
+var tiact = dE("ti_act").addEventListener("click",actHand)
+var tiupc = dE("ti_upc").addEventListener("click",upcHand)
+var tifin = dE("ti_fin").addEventListener("click",finHand)
 // sgngoogle.addEventListener("click",signInWithGoogle);
 var chgby = 1;
 window.onhashchange = locationHandler

@@ -3,12 +3,12 @@ body {
     flex-direction: column;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 3vh;
-    background-color: #eeec6c;
+    background-color: #fafaed;
 }
 .full_page {
     width:97vw;
     height:90vh;
-    background-color: rgb(2, 2, 2);
+    background-color: #222831;
     overflow:hidden;
     border-radius: 30px 30px 30px 30px;
     margin:5px;
@@ -69,6 +69,21 @@ body {
     width:50vw;
     border-radius: 100px;
     margin:6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+}
+.t_title{
+  font-size:large;
+  font-weight: bold;
+}
+.t_stron{
+  font-size: small;
+  color:grey;
+}
+.t_endon{
+  font-size: small;
+  color:grey;
 }
 .aq_mcq_p,.tp_mcq_p, .lq_mcq{
   height:max-content;
@@ -77,7 +92,7 @@ body {
   width:50vw;
   border-radius: 100px;
   margin:6px;
-  background-color: black;
+  background-color: #393E46;
   color:white;
 
 }

@@ -29,10 +29,10 @@
 </head>
 
 <body>
-    <!-- <div id = "overlay" style = "position: fixed; display: block; width: 100%;height: 100%;top: 0;left: 0;right: 0;bottom: 0;background-color: rgb(0, 0, 0);z-index: 2;cursor: pointer;" > 
+    <div id = "overlay" style = "display:none;position: fixed; width: 100%;height: 100%;top: 0;left: 0;right: 0;bottom: 0;background-color: rgb(0, 0, 0);z-index: 2;cursor: pointer;" > 
         <div style = "font-family: Consolas;color:white;top: 50%;left: 50%;position: absolute;transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);"><span id="logo" style="font-family: Arial;font-size: 4vh;font-weight: bold; margin-left: 2vw;"><img
-            src="Quarkz_white.png" style=""><center>Updating to Version <span  class="sp_txt">2.0.0</span></center></span></div>
-    </div> -->
+            src="Quarkz_white.png" style=""><center>Updating to Version <span  class="sp_txt">1.0.0</span></center></span></div>
+    </div>
 
     <div id="watermark" style="display: flex; flex-direction: row;align-items: center;width:98vw;position: relative;">
         <span id="logo" style="font-family: Arial;font-size: 4vh;font-weight: bold; margin-left: 2vw;"><img
@@ -299,11 +299,40 @@
         <span style="font-size: 3vh;">You don't have access to this page.</span>
         <span style="font-size: 2vh;">To Go To Dashboard Click On ☰ at the top</span>
     </div>
-    <div id="dashboard" class="full_page flex_type">
+    <div id="dashboard" class="full_page flex_type" style="display: flex;">
         <span style="font-size:5vh;">Dashboard</span>
+        <!-- <div class="" style="display: grid;">
+            <div id = "recent_tests" style="width: 30vw;height:30vh;display: flex;flex-direction: column;align-items: center;border-radius:30px;background-color: rgb(78, 72, 61);grid-column-start: 1;grid-column-end: 1;grid-row-start: 1;grid-row-end: 2;">
+                <span style="font-size: larger;">Recent Tests</span>
+                <div class = "re_tests" style = "background-color: rgb(89, 128, 128);height:10vh;display: flex;align-items: center;justify-content: center;flex-direction: column;border-radius: 30px;width: 20vw;margin:1vh;">
+                    <span>Periodic Properties</span>
+                    <span><span class = "re_marks" style = "color: lime;">120</span> Out Of <span class = "re_total" style="color:pink">200</span></span>
+                </div>
+                <div class = "re_tests" style = "background-color: rgb(89, 128, 128);height:10vh;display: flex;align-items: center;justify-content: center;flex-direction: column;border-radius: 30px;width: 20vw;margin:1vh;">
+                    <span>Periodic Properties</span>
+                    <span><span class = "re_marks" style = "color: lime;">120</span> Out Of <span class = "re_total" style="color:pink">200</span></span>
+                </div>
+            </div>
+            <div id = "profile_cont" style = "height:30vh;width:30vw;flex-direction: row;flex-wrap: wrap;align-items: center;justify-content: center;background-color: rgb(89, 128, 128);">
+                <span>Profile Photo</span>
+                <span>Name</span>
+                <span>Attributues</span>
+                <span>Class</span>
+                <span>About Me</span>
+                
+            </div>
+            <div id = "ui_buttons">
+    
+            </div>
+            <div id = "events">
+    
+            </div>
+        </div> -->
+        
+        
         <div class="flex_type" style="flex-direction: row;flex-wrap: wrap;align-items: center;justify-content: center;">
-            <div class="dshbox rpl" id="tstinf_btn" style="display:none">Test Infos</div>
-            <div class="dshbox rpl" id="tstrep_btn" style="display:none">Test Reports</div>
+            <div class="dshbox rpl" id="tstinf_btn">Test Infos</div>
+            <div class="dshbox rpl" id="tstrep_btn">Test Reports</div>
             <div class="dshbox rpl" id="tmt_btn">Time Table</div>
             <div class="dshbox rpl" id="abt_btn">About Us</div>
             <div class="dshbox rpl" id="prf_btn">Your Profile</div>
@@ -424,14 +453,14 @@
             </tr>
         </table>
     </div>
-    <div id="tests_1" class="full_page flex_type">
+    <div id="testinfo" class="full_page flex_type">
         <span style="font-size: 5vh;">Tests</span>
         <hr color="white" width="100%">
-        <div><button class="tst_btn rpl">Active Tests</button><button class="tst_btn rpl">Missed Tests</button><button
-                class="tst_btn rpl">Upcoming Tests</button></div>
+        <div><button class="tst_btn rpl"id = "ti_act">Active Tests</button><button class="tst_btn rpl" id = "ti_fin">Finished Tests</button><button
+                class="tst_btn rpl" id = "ti_upc">Upcoming Tests</button></div>
         <div id="testlinks">
-            <div class="tlinks">Complex Numbers</div>
-            <div class="tlinks">Straight Lines</div>
+            <!-- <div class="tlinks">Complex Numbers</div>
+            <div class="tlinks">Straight Lines</div> -->
         </div>
     </div>
     <div id="livequiz" class="full_page flex_type">
