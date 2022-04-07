@@ -2,7 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-analytics.js";
 import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
-import { getFirestore, orderBy, limit, collection, addDoc, onSnapshot, arrayUnion, arrayRemove, setDoc, updateDoc, getDocs, doc, serverTimestamp, getDoc, query, where } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+import { getFirestore, orderBy, limit,writeBatch, collection, addDoc, onSnapshot, arrayUnion, arrayRemove, setDoc, updateDoc, getDocs, doc, serverTimestamp, getDoc, query, where } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, } from 'https://www.gstatic.com/firebasejs/9.6.0/firebase-storage.js';
 
 
@@ -20,13 +20,52 @@ const firebaseConfig = {
   appId: "1:1050835442263:web:e7d05ca9373f2f6083a112",
   measurementId: "G-1Y3S45VWFH"
 };
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore();
 const auth = getAuth();
 const storage = getStorage();
+// Helper Functions
+// StackOverFlow - https://stackoverflow.com/a/52387803
+function sd(seconds) {
+  seconds = Number(seconds);
+  var d = Math.floor(seconds / (3600*24));
+  var h = Math.floor(seconds % (3600*24) / 3600);
+  var m = Math.floor(seconds % 3600 / 60);
+  var s = Math.floor(seconds % 60);
+  
+  var dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days, ") : "";
+  var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
+  var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
+  var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+  return dDisplay + hDisplay + mDisplay + sDisplay
+}
+// StakOverflow: https://stackoverflow.com/a/1349426/15107474
+function makeid(length) {
+  var result           = '';
+  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for ( var i = 0; i < length; i++ ) {
+    result += characters.charAt(Math.floor(Math.random() * 
+charactersLength));
+ }
+ return result;
+}
+function getServerTime(url){
+  fetch(url)
+  .then((response) => {
+      var date;
+    for (var pair of response.headers.entries()) { // accessing the entries
+      if (pair[0] === 'date') {
+          date = new Date(pair[1]).getTime()
+          console.log(date)
+      }
+    }
+    return date;
+  });
+}
+function gST(){return getServerTime("https:/quarkz.netlify.app/time")}
 async function signIn() {
   var email = dE("lg_uname").value;
   var password = dE("lg_pass").value;
@@ -98,7 +137,7 @@ function signUp() {
 function locationHandler(newlocation, n1) {
 
   var iorole = adminrole == true || editorrole == true
-  if (iorole) { dE("adminonly").style.display = "flex" } else { dE("adminonly").style.display = "none";dE("tp_pnt").style.display = "block" }
+  if (iorole) { dE("adminonly").style.display = "flex";dE("tp_pnt").style.display = "block" } else { dE("adminonly").style.display = "none"; }
   dE(handlebox).classList.remove("_open")
   if (n1 == 1) { window.location.hash = "#/" + newlocation }
   handlebox = newlocation
@@ -122,13 +161,16 @@ function locationHandler(newlocation, n1) {
     case "qblist": handlebox = "qbanklist"; topicList(2); break;
     case "tpclist": handlebox = "topiclist"; topicList(1); break;
     case "simlist": handlebox = "simlist"; getSimList(); break;
+    case "testend": handlebox = "test_end";break;
     default: handlebox = "error_page"; break;
   }
 
   // console.log(iorole)
+  if (location1.includes("instructions")){handlebox = "test_instructions";}
   if (location1.includes("cyberhunt")){handlebox = "cyberhunt";getCyberhunt()}
   if (location1.includes("sims")) { handlebox = "simulations"; getSimulation() }
   if (location1.includes("qbanks")) { handlebox = "topic"; getTopic(2); }
+  if (location1.includes("attempt")) { handlebox = "testv1"; getTestInfo()}
   if (location1.includes("printable/qbank") && iorole == true) { handlebox = "printable"; printQBank(1); }
   if (location1.includes("printable/topic") && iorole == true) { handlebox = "printable"; printQBank(2); }
   if (location1.includes("printable/tests") && iorole == true) { handlebox = "printable"; printQBank(3); }
@@ -159,8 +201,8 @@ async function getSimulation() {
 async function getCyberhunt(){
 
 }
-async function userUpdate() { }
-
+async function userUpdate() { 
+}
 function topicList(type) {
   var divID,urlID,childID,eleList;
   if (type == 1){
@@ -189,72 +231,84 @@ async function getSimID(sim_name) {
 function simClicker() {
   getSimID(this.innerText)
 }
-async function getSimList() {
+async function getSimList(type) {
   dE("sim_cont").innerHTML = ""
-  if (simlist = []){
+  if (simlist.length == 0){
     var docRef = doc(db, 'sims', 'sims')
     var docSnap = await getDoc(docRef);
-    if (docSnap.exists()) { var docJSON = docSnap.data(); simlist = docJSON}
+    if (docSnap.exists()) { var docJSON = docSnap.data(); simlist = docJSON;console.log("TT")}
     else { locationHandler("error_page", 1); throw new Error }
   }
-  
-  try {
-    for (let ele of simlist.physics) {
-      if (ele != "") {
-        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:pink" id="sim' + btoa(ele) + '">' + ele + '</span>')
-        dE("sim" + btoa(ele)).addEventListener('click', simClicker)
+  if (type == "physics"){
+    try {
+      for (let ele of simlist.physics) {
+        if (ele != "") {
+          dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:pink" id="sim' + btoa(ele) + '">' + ele + '</span>')
+          dE("sim" + btoa(ele)).addEventListener('click', simClicker)
+        }
       }
-    }
-  } catch { }
-
-  try {
-    for (let ele of simlist.chemistry) {
-      if (ele != "") {
-        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:red" id="sim' + btoa(ele) + '">' + ele + '</span>')
-        dE("sim" + btoa(ele)).addEventListener('click', simClicker)
+    } catch { }
+  }
+  if (type == "chemistry"){
+    try {
+      for (let ele of simlist.chemistry) {
+        if (ele != "") {
+          dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:red" id="sim' + btoa(ele) + '">' + ele + '</span>')
+          dE("sim" + btoa(ele)).addEventListener('click', simClicker)
+        }
       }
-    }
-  } catch { }
-  try {
-    for (let ele of simlist.maths) {
-      if (ele != "") {
-        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:blue" id="sim' + btoa(ele) + '">' + ele + '</span>')
-        dE("sim" + btoa(ele)).addEventListener('click', simClicker)
+    } catch { }
+  }
+  if (type == "maths"){
+    try {
+      for (let ele of simlist.maths) {
+        if (ele != "") {
+          dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:blue" id="sim' + btoa(ele) + '">' + ele + '</span>')
+          dE("sim" + btoa(ele)).addEventListener('click', simClicker)
+        }
       }
-    }
-  } catch { }
-  try {
-    for (let ele of simlist.biology) {
-      if (ele != "") {
-        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:green" id="sim' + btoa(ele) + '">' + ele + '</span>')
-        dE("sim" + btoa(ele)).addEventListener('click', simClicker)
+    } catch { }
+  }
+  if (type == "biology"){
+    try {
+      for (let ele of simlist.biology) {
+        if (ele != "") {
+          dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:green" id="sim' + btoa(ele) + '">' + ele + '</span>')
+          dE("sim" + btoa(ele)).addEventListener('click', simClicker)
+        }
       }
-    }
-  } catch { }
-  try {
-    for (let ele of simlist.computer) {
-      if (ele != "") {
-        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:violet" id="sim' + btoa(ele) + '">' + ele + '</span>')
-        dE("sim" + btoa(ele)).addEventListener('click', simClicker)
+    } catch { }
+  }
+  if (type == "computer"){
+    try {
+      for (let ele of simlist.computer) {
+        if (ele != "") {
+          dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:violet" id="sim' + btoa(ele) + '">' + ele + '</span>')
+          dE("sim" + btoa(ele)).addEventListener('click', simClicker)
+        }
       }
-    }
-  } catch { }
-  try {
-    for (let ele of simlist.statistics) {
-      if (ele != "") {
-        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:orange" id="sim' + btoa(ele) + '">' + ele + '</span>')
-        dE("sim" + btoa(ele)).addEventListener('click', simClicker)
+    } catch { }
+  }
+  if (type == "statistics"){
+    try {
+      for (let ele of simlist.statistics) {
+        if (ele != "") {
+          dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:orange" id="sim' + btoa(ele) + '">' + ele + '</span>')
+          dE("sim" + btoa(ele)).addEventListener('click', simClicker)
+        }
       }
-    }
-  } catch { }
-  try {
-    for (let ele of simlist.unfiled) {
-      if (ele != "") {
-        dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:white" id="sim' + btoa(ele) + '">' + ele + '</span>')
-        dE("sim" + btoa(ele)).addEventListener('click', simClicker)
+    } catch { }
+  }
+  if (type == "unfiled"){
+    try {
+      for (let ele of simlist.unfiled) {
+        if (ele != "") {
+          dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:white" id="sim' + btoa(ele) + '">' + ele + '</span>')
+          dE("sim" + btoa(ele)).addEventListener('click', simClicker)
+        }
       }
-    }
-  } catch { }
+    } catch { }
+  }
 }
 async function getTopic(type) {
   var fireID = ""; var urlID = "";
@@ -299,6 +353,7 @@ async function printQBank(type) {
 
   var qnos, qtitle, qtype, qimg;
   dE("eqb_add").innerHTML = ""
+
   for (let ele of qnos) {
     var docRef = doc(db, "question", ele)
     var docSnap = await getDoc(docRef);
@@ -345,28 +400,18 @@ async function printQBank(type) {
   }
   dE("printable").insertAdjacentHTML('beforeend', '<br></br>')
 }
-async function addqtoweb() {
-  var qtxt = dE("aq_qtext").value
+async function addQuestionWeb(){
   var qans = dE("aq_answer").value
-  var qimg = dE("aq_imgurl").value
-  var qexp = dE("aq_expl").value
-  var qhint = dE("aq_hint").value
   var qtype = dE("aq_type").value
-  var qmode = dE("aq_mode").value
-  var qyurl = dE("aq_yurl").value
-  var qsubj = dE("aq_subject").value
-  var qtopic = dE("aq_topic").value
-  var qqid = dE("aq_qbankid").value
   var qop = [];
   var qop1 = [];
   var qop2 = [];
-  var qno, lsno;
+  var qid,fiou;
   if (qtype == "mcq" || qtype == "mcq_multiple"){
     qans = []
     for (i = 0; i < document.getElementsByClassName("aq_mcq_ans").length;i++){
       var a = document.getElementsByClassName("aq_mcq_ans")[i].value;
       qans[i] = a 
-      console.log(a,qans)
     }
   }
   for (var i = 0; i < document.getElementsByClassName("aq_mcq").length; i++) {
@@ -378,190 +423,134 @@ async function addqtoweb() {
   for (var i = 0; i < document.getElementsByClassName("aq_i2").length; i++) {
     qop2.push(document.getElementsByClassName("aq_i2")[i].value)
   }
-  // console.log(1)
-  if (qmode == "question") {
-    var docRef = doc(db, "question", "qno");
-    var docSnap = await getDoc(docRef);
-    var i = 0;
-    if (docSnap.exists()) {
-      var docJSON = docSnap.data()
-      qno = docJSON.avqu;
-      // console.log(qno)
-      async function eio() {
-        try { await setDoc(doc(db, 'question', 'qno'), { avqu: qno }) }
-        catch (error) {
-          console.error('Error writing new message to Firebase Database', error);
-        }
-      }
-      try {
-        await setDoc(doc(db, 'question', qno), {
-          title: qtxt,
-          answer: qans,
-          img: qimg,
-          type: qtype,
-          hint: qhint,
-          expl: qexp,
-          op: qop,
-          op1: qop1,
-          op2: qop2,
-          subject: qsubj,
-          sgndon: serverTimestamp()
-        });
-        i = 1;
-        // console.log(2)
-        var fiou;
-        if (qsubj !== "unfiled") {
-          const q = query(collection(db, "topic"), where("title", "==", qtopic));
-          const querySnapshot = await getDocs(q);
-          querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            fiou = doc.id
-          });
-          await updateDoc(doc(db, 'topic', fiou), {
-            questions: arrayUnion(qno)
-          })
-        }
-        if (qqid != "" && qqid != null){
-          await updateDoc(doc(db, 'qbank', qqid), {
-            questions: arrayUnion(qno)
-          })
-        }
-        qno = parseInt(qno)
-        qno = qno + 1;
-        qno = qno.toString();
-        var qww = qno.length
-        if (qno.length != 6) {
-          for (i = 0; i <= (5 - qww); i++) { qno = "0" + qno }
-        }
-        eio();
-        clearAQ();
-
-      } catch (error) {
+  try {
+    await addDoc(collection(db, 'question'), {
+      title: dE("aq_qtext").value,
+      answer: qans,
+      img: dE("aq_imgurl").value,
+      type: qtype,
+      hint: dE("aq_hint").value,
+      expl: dE("aq_expl").value,
+      op: qop,
+      op1: qop1,
+      op2: qop2,
+      subject: dE("aq_subject").value,
+      sgndon: serverTimestamp()
+    }).then(function(docRef){qid = docRef.id});
+    if (dE("aq_subject").value !== "unfiled") {
+      const q = query(collection(db, "topic"), where("title", "==", dE("aq_topic").value));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        fiou = doc.id
+      });
+      await updateDoc(doc(db, 'topic', fiou), {
+        questions: arrayUnion(qid)
+      })
+    }
+    if (dE("aq_qbankid").value != "" && dE("aq_qbankid").value != null){
+      await updateDoc(doc(db, 'qbank', dE("aq_qbankid").value), {
+        questions: arrayUnion(qid)
+      })
+    }
+    var qid = Date.now()+makeid(5)
+    if (dE("aq_testid").value != "" && dE("aq_testid").value != null){
+      await updateDoc(doc(db, 'tests', dE("aq_testid").value,"questions","questions"), {
+        questions: arrayUnion({qid: qid,img: dE("aq_imgurl").value,type: qtype,op: qop,op1: qop1,op2: qop2,subject: dE("aq_subject").value,title: dE("aq_qtext").value})
+    })
+    await updateDoc(doc(db, 'tests', dE("aq_testid").value,"questions","answers"), {
+        questions: arrayUnion({qid:qid, answer: qans,hint: dE("aq_hint").value,expl: dE("aq_expl").value})
+    })
+    }
+    clearAQ();
+  }catch (error) {
         console.error('Error writing new message to Firebase Database', error);
-      }
-    };
-  } else if (qmode == "lesson") {
-    var docRef = doc(db, "lesson", "lsno");
-    var docSnap = await getDoc(docRef);
-    var i = 0;
-    if (docSnap.exists()) {
-      var docJSON = docSnap.data()
-      lsno = docJSON.avqu;
-      // console.log(lsno)
-      async function eio() {
-        try { await setDoc(doc(db, 'lesson', 'lsno'), { avqu: lsno }) }
-        catch (error) {
-          console.error('Error writing new message to Firebase Database', error);
-        }
-      }
-      try {
-        await setDoc(doc(db, 'lesson', lsno), {
-          title: qtxt,
-          img: qimg,
-          y_url: qyurl,
-          hint: qhint,
-          expl: qexp,
-          subject: qsubj,
-          sgndon: serverTimestamp()
-        });
-        i = 1;
-        // console.log(2)
-        var fiou;
-        const q = query(collection(db, "topic"), where("title", "==", qtopic));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-          // doc.data() is never undefined for query doc snapshots
-          fiou = doc.id
-        });
-        await updateDoc(doc(db, 'topic', fiou), {
-          lesson: arrayUnion(lsno)
-        })
-        lsno = lsno.split("L")[1]
-        lsno = parseInt(lsno)
-        lsno = lsno + 1;
-        lsno = lsno.toString();
-        var qww = lsno.length
-        if (lsno.length != 6) {
-          for (i = 0; i <= (5 - qww); i++) { lsno = "0" + lsno; }
-        }
-        lsno = "L" + lsno
-        eio();
-        clearAQ();
-      } catch (error) {
-        console.error('Error writing new message to Firebase Database', error);
-      }
-    };
-  } else if (qmode == "sims") {
-    var docRef = doc(db, "sims", "simno");
-    var docSnap = await getDoc(docRef);
-    var i = 0;
-    var simno;
-    if (docSnap.exists()) {
-      var docJSON = docSnap.data()
-      simno = docJSON.no;
-      // console.log(lsno)
-      async function eio() {
-        try { await setDoc(doc(db, 'sims', 'simno'), { no: simno }) }
-        catch (error) {
-          console.error('Error writing new message to Firebase Database', error);
-        }
-      }
-      try {
-        await setDoc(doc(db, 'sims', simno), {
-          name: dE("aq_simname").value,
-          license: dE("aq_simlicense").value,
-          provider: dE("aq_simprov").value,
-          url: dE("aq_simurl").value
-        });
-        var subj = dE("aq_simsubj").value
-        if (subj == "physics") {
-          await updateDoc(doc(db, 'sims', 'sims'), {
-            physics: arrayUnion(dE("aq_simname").value)
-          })
-        }
-        if (subj == "chemistry") {
-          await updateDoc(doc(db, 'sims', 'sims'), {
-            chemistry: arrayUnion(dE("aq_simname").value)
-          })
-        }
-        if (subj == "maths") {
-          await updateDoc(doc(db, 'sims', 'sims'), {
-            maths: arrayUnion(dE("aq_simname").value)
-          })
-        }
-        if (subj == "computer") {
-          await updateDoc(doc(db, 'sims', 'sims'), {
-            computer: arrayUnion(dE("aq_simname").value)
-          })
-        }
-        if (subj == "biology") {
-          await updateDoc(doc(db, 'sims', 'sims'), {
-            biology: arrayUnion(dE("aq_simname").value)
-          })
-        }
-        if (subj == "statistics") {
-          await updateDoc(doc(db, 'sims', 'sims'), {
-            statistics: arrayUnion(dE("aq_simname").value)
-          })
-        }
-        if (subj == "unfiled") {
-          await updateDoc(doc(db, 'sims', 'sims'), {
-            unfiled: arrayUnion(dE("aq_simname").value)
-          })
-        }
-        i = 1;
-        simno = simno.split("S")[1]
-        simno = parseInt(simno)
-        simno = simno + 1;
-        simno = simno.toString();
-        var qww = simno.length
-        simno = "S" + simno
-        eio();
-        clearAQ();
-      } catch (error) {
-        console.error('Error writing new message to Firebase Database', error);
-      }
-    };
+    }
+}
+async function addLessonWeb(){
+  try {
+    await setDoc(doc(db, 'lesson', lsno), {
+      title: dE("aq_qtext").value,
+      img: dE("aq_imgurl").value,
+      y_url: dE("aq_yurl").value,
+      hint: dE("aq_hint").value,
+      expl: dE("aq_expl").value,
+      subject: dE("aq_subject").value,
+      sgndon: serverTimestamp()
+    });
+    var fiou;
+    const q = query(collection(db, "topic"), where("title", "==", qtopic));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {fiou = doc.id});
+    clearAQ();
+  } catch (error) {
+    console.error('Error writing new message to Firebase Database', error);
+  }
+}
+async function addSimulationWeb(){
+  try {
+    await setDoc(doc(db, 'sims', simno), {
+      name: dE("aq_simname").value,
+      license: dE("aq_simlicense").value,
+      provider: dE("aq_simprov").value,
+      url: dE("aq_simurl").value
+    });
+    var subj = dE("aq_simsubj").value
+    if (subj == "physics") {
+      await updateDoc(doc(db, 'sims', 'sims'), {
+        physics: arrayUnion(dE("aq_simname").value)
+      })
+    }
+    if (subj == "chemistry") {
+      await updateDoc(doc(db, 'sims', 'sims'), {
+        chemistry: arrayUnion(dE("aq_simname").value)
+      })
+    }
+    if (subj == "maths") {
+      await updateDoc(doc(db, 'sims', 'sims'), {
+        maths: arrayUnion(dE("aq_simname").value)
+      })
+    }
+    if (subj == "computer") {
+      await updateDoc(doc(db, 'sims', 'sims'), {
+        computer: arrayUnion(dE("aq_simname").value)
+      })
+    }
+    if (subj == "biology") {
+      await updateDoc(doc(db, 'sims', 'sims'), {
+        biology: arrayUnion(dE("aq_simname").value)
+      })
+    }
+    if (subj == "statistics") {
+      await updateDoc(doc(db, 'sims', 'sims'), {
+        statistics: arrayUnion(dE("aq_simname").value)
+      })
+    }
+    if (subj == "unfiled") {
+      await updateDoc(doc(db, 'sims', 'sims'), {
+        unfiled: arrayUnion(dE("aq_simname").value)
+      })
+    }
+    i = 1;
+    simno = simno.split("S")[1]
+    simno = parseInt(simno)
+    simno = simno + 1;
+    simno = simno.toString();
+    var qww = simno.length
+    simno = "S" + simno
+    eio();
+    clearAQ();
+  } catch (error) {
+    console.error('Error writing new message to Firebase Database', error);
+  }
+}
+async function addItemWeb(){
+  var qmode = dE("aq_mode").value
+  switch (qmode){
+    case "question": addQuestionWeb();break;
+    case "lesson": addLessonWeb();break;
+    case "simulation": addSimulationWeb();break;
+    case "topic": addTopicWeb();break;
+    case "tests": addTestsWeb();break;
   }
 }
 function renderMarkedMath(eleid, toid) {
@@ -764,7 +753,7 @@ function initFirebaseAuth() {
   onAuthStateChanged(getAuth(), authStateObserver);
   // locationHandler("dashboard", 1)
 }
-function shufflebank() {
+function shuffleQBank() {
   var ol = dE("eqb_add")
   for (var i = ol.children.length; i >= 0; i--) {
     ol.appendChild(ol.children[Math.random() * i | 0]);
@@ -806,7 +795,8 @@ async function authStateObserver(user) {
       signOutUser()
       alert("This User Account Has Been Deleted")
     }
-    docRef = doc(db, "batch", batchno)
+    try {
+    var docRef = doc(db, "batch", batchno)
     var docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       var docJSON = docSnap.data();
@@ -822,6 +812,8 @@ async function authStateObserver(user) {
     getTestList(batchno,user.uid)
     var iframeurl = "https://calendar.google.com/calendar/embed?src=" + calenid + "%40group.calendar.google.com&amp;ctz=Asia%2FKolkata"
     tmtifr.src = iframeurl
+
+    } catch {}
     spoints.style.display = "block"
     dE("dsh_btn").style.display = "block"
     if (window.location.hash == "" || window.location.hash == null || window.location.hash == undefined ){
@@ -844,15 +836,21 @@ async function authStateObserver(user) {
     document.location.reload()
   }
 }
-function upl1() { uploadImages("aq_upl", "aq_uplurl") }
-function uploadImages(ele) {
+function uploadImages() {
   var a = serverTimestamp()
-  var file = dE(ele)
-  const storageRef = ref(storage, a);
+  var file = dE("aq_file")
+  var filecontent;
+  var reader = new FileReader();
+  reader.onload = function(){
+    var text = reader.result;
+    filecontent = text.replace("","")
+    const storageRef = ref(storage, a);
   // 'file' comes from the Blob or File API
   uploadBytes(storageRef, file).then((snapshot) => {
     // console.log('Uploaded a blob or file!');
   });
+  };
+  reader.readAsText(file.files[0]);
 }
 function rndAQ() {
   renderMarkedMath("aq_qtext", "aq_renderer")
@@ -924,11 +922,21 @@ async function getTestList(batchid,userid){
   {
     
     const q = query(collection(db,"tests"),where("finished", "array-contains", userid),limit(5));
+    console.log(userid)
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
-      var docJSON = doc.data()
+      var min = doc.data()
+      var docJSON = {title:min.title,testid:doc.id,finished:true,strton:min.strton,endon:min.endon}
       finishedTestList.push(docJSON)
+      console.log(docJSON)
+      var a =0
+      for (let ele of testList){
+        if (ele.testid == docJSON.testid){
+          testList[a].finished= true
+        }else {testList[a].finished= false}
+        a +=1 
+      }
     });
   }
   console.log(testList)
@@ -942,22 +950,11 @@ async function getTestList(batchid,userid){
   }
   // console.log(testList,activeTestList,upcomingTestList,finishedTestList)
 }
-// stakoverflow - https://stackoverflow.com/a/52387803
-function sd(seconds) {
-  seconds = Number(seconds);
-  var d = Math.floor(seconds / (3600*24));
-  var h = Math.floor(seconds % (3600*24) / 3600);
-  var m = Math.floor(seconds % 3600 / 60);
-  var s = Math.floor(seconds % 60);
-  
-  var dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days, ") : "";
-  var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
-  var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
-  var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
-  return dDisplay + hDisplay + mDisplay + sDisplay
-}
 function testClicker(){
-  window.location.hash = "#/tests/" + this.id.split("T")[1]
+  window.location.hash = "#/instructions/" + this.id.split("T")[1]
+}
+function finishedtestClicker(){
+  window.location.hash = "#/finished/" + this.id.split("T")[1]
 }
 function renderTestList(type){
   var renList;
@@ -971,12 +968,274 @@ function renderTestList(type){
     var strson = new Date(ele.strton.seconds*1000)
     var endson = new Date(ele.endon.seconds*1000)
     var output = '<div class="tlinks" id = "'+ele.testid+'"><span class = "t_title">'+ele.title+'</span><span class = "t_stron">Starts At:'+strson+'</span><span class ="t_endon">Ends At:'+endson+'</div>'
-    dE("testlinks").insertAdjacentHTML('beforeend',output)
-    dE(ele.testid).addEventListener('click',testClicker)
+    if (type != "finished" && ele.finished == false){
+      dE("testlinks").insertAdjacentHTML('beforeend',output)
+      dE(ele.testid).addEventListener('click',testClicker)
+    } else {
+      if (type == "finished"){
+        dE("testlinks").insertAdjacentHTML('beforeend',output)
+        dE(ele.testid).addEventListener('click',finishedtestClicker)
+      }
+      
+    }
   }
 }
-function getAnswers(){
+async function getTestInfo(){ 
+  var testid = "T" + window.location.hash.split("#/attempt/")[1]
+  var docRef = doc(db, "tests", testid);
+  var docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    testInfo = docSnap.data()
+    for (var ele of testInfo.finished){
+      if (auth.currentUser.uid == ele){
+        locationHandler("testend",1)
+        dE("te_title").innerText = "You Have Already Attempted This Test"
+        return 0;
+      } 
+    }
+  }
+  // document.addEventListener("visibilitychange", async function(event){
+  //   await updateDoc(doc(db, "tests", testid,"responses",auth.currentUser.uid),{
+  //     warning:arrayUnion({type:"tab_change",time:Date.now()})
+  // })})
+  // window.addEventListener("resize", async function(event) {
+  //   await updateDoc(doc(db, "tests", testid,"responses",auth.currentUser.uid),{
+  //     warning:arrayUnion({type:"tab_resize",time:Date.now()})
+  //   })
+  // })
+  try {
+    docRef = doc(db, "tests", testid,"questions","questions");
+    docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      testQuestionList = docSnap.data()
+    }
+  }
+  catch {
+    dE("te_title").innerText = "The Test Hasnt Started Yet"
+    locationHandler("testend",1)
+    return 0;
+  }
 
+  console.log(testInfo,testQuestionList)
+  docRef = doc(db, "tests", testid,"responses",auth.currentUser.uid);
+  docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    var yuta = docSnap.data().answers
+    console.log(yuta)
+    for (var prop in yuta){
+      testResponseList.push({ qid: prop, ans:yuta[prop].ans, type:yuta[prop].type,time:yuta[prop].time });
+    }
+  }else {
+    await setDoc(doc(db, "tests", testid,"responses",auth.currentUser.uid), {
+      answers:[],
+      strton:serverTimestamp(),
+      warning:[]})
+  }
+  console.log(testInfo,testQuestionList,testResponseList)
+
+   testTimerfunction = setInterval(function(){
+    var seconds = testInfo.timeallotted - 1;
+    testInfo.timeallotted -=1
+    dE("tt_timeleft").innerText = Math.floor(seconds % (3600*24) / 3600) + ":" +Math.floor(seconds % 3600 / 60) + ":" + Math.floor(seconds % 60);
+    if (seconds == 0){
+      submitTest()
+    }
+  }, 1000);
+  window.onbeforeunload = function(e){
+    e.preventDefault;
+    submitTest()
+  }
+  window.onhashchange = function(e){
+    locationHandler()
+    submitTest()
+  }
+  dE("dsh_btn").style.display = "none"
+  dE("tp_pnt").style.display = "none"
+  var tbox = dE("testv1")
+  if (tbox.requestFullscreen) {
+      tbox.requestFullscreen();
+  } else if (tbox.mozRequestFullScreen) { /* Firefox */
+      tbox.mozRequestFullScreen();
+  } else if (tbox.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+      tbox.webkitRequestFullscreen();
+  } else if (tbox.msRequestFullscreen) { /* IE/Edge */
+      tbox.msRequestFullscreen();
+  }
+  inittestHandler()
+}
+function tqH(){
+  console.log(this.id,this.innerText)
+  testqHandler(this.id,this.innerText)
+}
+function testqHandler(id,no){
+  var MCQ = `<div id = "tt_mcq"><span><input type="radio" value="a" class = "q_ans" name = "q_op">A</span><span><input type="radio" value="b" class = "q_ans" name = "q_op">B</span><span><input type="radio" value="c" class = "q_ans" name = "q_op">C</span><span><input type="radio" value="d" class = "q_ans" name = "q_op">D</span></div>`
+  var TF = `<div id = "tt_mcq"><span><input type="radio" value="a" class = "q_ans" name = "q_op">True</span><span><input type="radio" value="b" class = "q_ans" name = "q_op">False</span></div> `
+  var MCQMULT = `<div id = "tt_mcq_multiple"><span><input type="checkbox" value="a" class = "q_ans" name = "q_op">A</span><span><input type="checkbox" value="b" class = "q_ans" name = "q_op">B</span><span><input type="checkbox" value="c" class = "q_ans" name = "q_op">C</span><span><input type="checkbox" value="d" class = "q_ans" name = "q_op">D</span></div>`
+  var NUM = `<div id = "tt_num"><input type = "number" class="q_ans"></div>`
+  var FILL = `<div id="tt_fill"><input type = "text" class = "q_ans"></div>`
+  var MATRIX = `<div id = "tt_matrix"><div>A<span><input type="checkbox" value="a" id="q_ans_a" name = "q_op">1</span><span><input type="checkbox" value="b" id="q_ans_a" name = "q_op">2</span><span><input type="checkbox" value="c" id="q_ans_a" name = "q_op">3</span><span><input type="checkbox" value="d" id="q_ans_a" name = "q_op">4</span></div><div>B<span><input type="checkbox" value="a" id="q_ans_a" name = "q_op">1</span><span><input type="checkbox" value="b" id="q_ans_a" name = "q_op">2</span><span><input type="checkbox" value="c" id="q_ans_a" name = "q_op">3</span><span><input type="checkbox" value="d" id="q_ans_a" name = "q_op">4</span></div><div>C<span><input type="checkbox" value="a" id="q_ans_a" name = "q_op">1</span><span><input type="checkbox" value="b" id="q_ans_a" name = "q_op">2</span><span><input type="checkbox" value="c" id="q_ans_a" name = "q_op">3</span><span><input type="checkbox" value="d" id="q_ans_a" name = "q_op">4</span></div><div>D<span><input type="checkbox" value="a" id="q_ans_a" name = "q_op">1</span><span><input type="checkbox" value="b" id="q_ans_a" name = "q_op">2</span><span><input type="checkbox" value="c" id="q_ans_a" name = "q_op">3</span><span><input type="checkbox" value="d" id="q_ans_a" name = "q_op">4</span></div></div>`
+
+  dE("tt_qno").innerText = no;
+  activequestionid = id
+  for (let ele of testQuestionList.questions){
+    if (id == ele.qid){
+      dE("tt_qtitle").innerHTML = ""
+      var inhtml = '<li class = "qb_q" id = "Q' + ele.qid + '"><div class = "qb_ttl">' + ele.title + '<div id = "qb_q_ty" class = "qb_q_ty" >(' + ele.type + ')</div></div></li>'
+      dE("tt_qtitle").insertAdjacentHTML('beforeend', inhtml);
+      if (ele.img != "") {
+        var iwo = '<div class = "qb_img"><img src = "' + ele.img + '"></div>'
+        dE("tt_qtitle").insertAdjacentHTML('beforeend', iwo)
+      }
+      var asi = "";
+      if (ele.type == "mcq" || ele.type == "mcq_multiple") {
+        var qop = ele.op;
+        for (let ele1 of qop) {
+          asi += "<li>" + ele1 + '</li>'
+        }
+        var qrt = '<ol class = "qb_mcq" type = "a">' + asi + '</ol>'
+      }
+      if (ele.type == "taf") {
+        qrt = '<ol class = "qb_mcq" type = "a"><li>True</li><li>False</li></ol>'
+      }
+      if (ele.type == "explain" || ele.type == "numerical") { qrt = "" }
+      if (ele.type == "matrix") {
+        var qop1 = ele.op1;
+        var qop2 = ele.op2;
+        var qopn1 = qop1.length
+        for (var i = 0; i < qopn1; i++) {
+          asi += "<tr><td>" + qop1[i] + '</td><td>' + qop2[i] + '</td>'
+        }
+        qrt = '<table>' + asi + '</table>'
+      }
+      dE("tt_qtitle").insertAdjacentHTML('beforeend', qrt)
+      renderMathInElement(dE('tt_qtitle'));
+      var ANS;
+    switch(ele.type){
+      case "mcq": ANS = MCQ;break;
+      case "mcq_multiple": ANS = MCQMULT;break;
+      case "taf": ANS = TF;break;
+      // case "explain": ANS = EXPL
+      case "numerical": ANS = NUM;break;
+      case "matrix": ANS = MATRIX;break;
+      case "fill": ANS = FILL;break;
+    }
+    dE("tt_qtitle").insertAdjacentHTML('beforeend', ANS)
+    
+    
+    for (let ele23 of testResponseList){
+      if (ele23.qid == id){
+        for (var i =0; i< document.getElementsByClassName("q_ans").length;i++){
+          var ele32 = document.getElementsByClassName("q_ans")[i]
+          if (ele.type == "mcq" || ele.type == "mcq_multiple"){
+            for (let el433 of ele23.ans){
+              if (ele32.value == el433){
+                ele32.checked = true
+                break;
+              }
+            }
+          }else {
+            ele32.value = ele23.ans
+          }
+      } 
+    }}
+      break;
+
+    }
+  }
+}
+function inittestHandler(){
+  var a = 1;
+  for (let ele of testQuestionList.questions){
+    var box = '<span class = "tts_notvisit" id = "'+ele.qid+'">'+a+'</span>'
+    a = a+1
+    dE("tt_qnobx").insertAdjacentHTML("beforeend",box)
+    dE(ele.qid).addEventListener("click",tqH)
+  }
+  for (let ele of testResponseList){
+    dE(ele.qid).classList.replace("tts_notvisit",ele.type)
+  }
+  testqHandler(testQuestionList.questions[0].qid,1)
+}
+async function testOperator(type){
+  var aqid = "answers."+activequestionid
+  var testid = "T" + window.location.hash.split("#/attempt/")[1]
+  var triu = dE("qb_q_ty").innerText.split("(")[1]
+  if (type == "tts_notanswer"){
+    await updateDoc(doc(db, "tests", testid,"responses",auth.currentUser.uid), {
+      [`${aqid}`]: {ans:"",type:"tts_notanswer",time:serverTimestamp()}
+    })
+    var a = 0;
+    for (let ele23 of testResponseList){ 
+      if (ele23.qid == activequestionid){
+        for (var i =0; i< document.getElementsByClassName("q_ans").length;i++){
+          var ele32 = document.getElementsByClassName("q_ans")[i]
+          if (triu == "mcq" || triu == "mcq_multiple"){
+            for (var j = 0; j<ele23.ans.length;j++){
+              var ele44 = ele23.ans[j]
+              if (ele32.value == ele44){
+                ele32.checked = false
+              }
+            }
+          }else {
+            ele23.value = ""}}
+        testResponseList.splice(a,1)
+      }
+      a = a+1
+    }
+    
+  }else {
+    var ans = [];
+    
+    for (var i =0; i< document.getElementsByClassName("q_ans").length;i++){
+      var ele32 = document.getElementsByClassName("q_ans")[i]
+      if (triu == "mcq)" || triu == "mcq_multiple)"){
+        if (ele32.checked == true){
+          ans.push(ele32.value)
+        }
+      }else {
+        ans.push(ele32.value)
+      }}
+    if (type == "tts_review"){ans = ""}
+    await updateDoc(doc(db, "tests", testid,"responses",auth.currentUser.uid), {
+      [`${aqid}`]: {ans:ans,type:type,time:serverTimestamp()}
+    })
+    var eleexists = 0;
+    for (let ele of testResponseList){
+      if (ele.qid == activequestionid){
+        ele.ans = ans
+        ele.type = type
+        eleexists = 1;
+      }
+    }
+    if (eleexists == 0){
+      testResponseList.push({qid:activequestionid,ans:ans,type:type})
+    }
+    renderTestList()
+  }
+  dE(activequestionid).classList.remove("tts_notanswer","tts_notvisit","tts_answered","tts_review","tts_ansreview")
+  dE(activequestionid).classList.add(type)
+}
+async function submitTest(){
+  var testid = "T" + window.location.hash.split("#/attempt/")[1]
+  window.onbeforeunload = function(){}
+  window.onhashchange = locationHandler
+  await updateDoc(doc(db, "tests", testid,"responses",auth.currentUser.uid), {
+    endon:serverTimestamp()
+  })
+  await updateDoc(doc(db, "tests", testid), {
+     finished:arrayUnion(auth.currentUser.uid),
+  })
+  locationHandler("testend",1)
+  var endat = new Date(testInfo.endon.seconds)
+  dE("te_end").innerText = endat;
+  testList = []
+  activeTestList = []
+  upcomingTestList = []
+  finishedTestList = []
+  testInfo = []
+  testQuestionList = []
+  testResponseList = [];
+  activequestionid = ""
 }
 function chItem() { changeItem(1) }
 function simHand() { changeLocationHash("simlist", 1) }
@@ -1004,9 +1263,20 @@ function plyVid() { window.player.playVideo() }
 function stpVid() { window.player.stopVideo() }
 function pauVid() { window.player.pauseVideo() }
 function loadVid(videoId) { player.loadVideoById(videoId); }
+function tsave(){testOperator("tts_answered")}
+function tclear(){testOperator("tts_notanswer")}
+function treview(){testOperator("tts_review")}
+function tansrev(){testOperator("tts_ansreview")}
+function psims(){getSimList("physics")}
+function csims(){getSimList("chemistry")}
+function msims(){getSimList("maths")}
+function bsims(){getSimList("biology")}
+function cosims(){getSimList("computer")}
+function ssims(){getSimList("statistics")}
+function usims(){getSimList("unfiled")}
 var Quarkz = {
   "copyright": "Mr Techtroid 2021",
-  "vno": "v0.1.0"
+  "vno": "v0.1.2"
 }
 var handlebox = "login";
 var location1 = window.location.hash.split("#/")[1]
@@ -1030,27 +1300,31 @@ var testList = []
 var activeTestList = []
 var upcomingTestList = []
 var finishedTestList = []
+var testInfo = []
+var testQuestionList = []
+var testResponseList = [];
+var activequestionid = ""
+var testTimerfunction,testTimer;
 var simbtn = dE("sim_btn").addEventListener("click", simHand)
 var sgnbtn = dE("sgn_in").addEventListener("click", signIn);
 var regbtn = dE("reg_in").addEventListener("click", regHand);;
 var rgbtn = dE("rg_in").addEventListener("click", signUp);
 var sgnout = dE("lgt_btn").addEventListener("click", signOutUser);
-
 var tmtbtn = dE("tmt_btn").addEventListener("click", tmtHand);
 var prfbtn = dE("prf_btn").addEventListener("click", prfHand);
 var abtbtn = dE("abt_btn").addEventListener("click", abtHand);
-var shfbtn = dE("shf_btn").addEventListener("click", shufflebank);
+var shfbtn = dE("shf_btn").addEventListener("click", shuffleQBank);
 var aqao = dE("aq_ao").addEventListener("click", addMCQ);
 var aqro = dE("aq_ro").addEventListener("click", removeMCQ);
 var tmode = dE("aq_mode").addEventListener("change", changeItem)
 var tsub = dE("aq_subject").addEventListener("change", chItem)
 var ttype = dE("aq_type").addEventListener("change", changeItem)
-var aqsavebtn = dE("aq_save").addEventListener("click", addqtoweb);
+var aqsavebtn = dE("aq_save").addEventListener("click", addItemWeb);
 var aqqtxt = dE("aq_qtext").addEventListener("keyup", rndAQ);
 var dshbtn = dE("dsh_btn").addEventListener("click", dshHand);
 var adibtn = dE("adi_btn").addEventListener("click", adiHand)
 var pqbbtn = dE("pqb_btn").addEventListener("click", pqbHand)
-var uplfile = dE("upl_files").addEventListener("click", uploadImages)
+var aqsave = dE("aq_save").addEventListener("click", uploadImages)
 var tstinfbtn = dE("tstinf_btn").addEventListener("click", tstinfHand)
 var tpcbtn = dE("tpc_btn").addEventListener("click", tpcHand)
 var uscbtn = dE("usc_btn").addEventListener("click", uscHand)
@@ -1066,6 +1340,20 @@ var cybbtn = dE("cyb_btn").addEventListener("click",cybHand)
 var tiact = dE("ti_act").addEventListener("click",actHand)
 var tiupc = dE("ti_upc").addEventListener("click",upcHand)
 var tifin = dE("ti_fin").addEventListener("click",finHand)
+var tt_save = dE("tt_save").addEventListener("click",tsave)
+var tt_clear = dE("tt_clear").addEventListener("click",tclear)
+var tt_review = dE("tt_review").addEventListener("click",treview)
+var tt_ansreview = dE("tt_ansreview").addEventListener("click",tansrev)
+var p_sims = dE("psims").addEventListener("click",psims)
+var c_sims = dE("csims").addEventListener("click",csims)
+var m_sims = dE("msims").addEventListener("click",msims)
+var b_sims = dE("bsims").addEventListener("click",bsims)
+var co_sims = dE("cosims").addEventListener("click",cosims)
+var s_sims = dE("ssims").addEventListener("click",ssims)
+var u_sims = dE("usims").addEventListener("click",usims)
+var ttsub = dE("tt_sub").addEventListener("click",submitTest)
+
+
 // sgngoogle.addEventListener("click",signInWithGoogle);
 var chgby = 1;
 window.onhashchange = locationHandler

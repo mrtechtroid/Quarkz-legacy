@@ -86,7 +86,6 @@
         <span style="font-size: 5vh;">Schedule</span>
         <iframe id="tmt_frame" src="" style="border: 0" width="100%" height="90%" frameborder="0" scrolling="no" style="background-color: black;color:white"></iframe>
     </div>
-
     <div id="profile" class="full_page flex_type" style="justify-content: center;">
         <span style="font-size: 5vh;">Profile</span>
         <table class="pro_table" style="border:lime 3px solid;">
@@ -219,6 +218,7 @@
             <input type="url" id="aq_imgurl" class="_in_aq" placeholder="Image URL">
             <input type="url" id="aq_yurl" class="_in_aq" placeholder="Youtube ID">
             <input type="text" id="aq_qbankid" class="_in_aq" placeholder="Question Bank ID">
+            <input type="text" id="aq_testid" class="_in_aq" placeholder="Test ID">
             <select name="type" id="aq_subject" class="_in_aq" style="color:red">
                 <option value="physics">Physics</option>
                 <option value="chemistry">Chemistry</option>
@@ -463,6 +463,67 @@
             <div class="tlinks">Straight Lines</div> -->
         </div>
     </div>
+    <div id = "test_instructions" class = "full_page flex_type">
+        <span style="font-size: 5vh;">Test Instructions</span>
+        <hr color="white" width="100%">
+        <div style="width:80vw;overflow-y: scroll;border:yellow 3px solid;display: flex;flex-direction: column;">
+            <span style = "font-size:5vh;">Please Read The Instructions And Terms Carefully</span>
+            <ol>
+                <li>Total Duration of Examination is <span id = "test_time">180 minutes.</span></li>
+                <li>The Exam Must Be Completed In 1 Sitting. You Will Be Able To Open It Once. </li>
+                <li>Read Every Question Carefully And Select Your Answer</li>
+                <li>Try To Answer As Many Questions As Possible In The Exam</li>
+                <li>When the timer reaches zero, the examination will end by itself. You will not be required to end or submit your examination.</li>
+                <li>Make Sure To Have A Good Internet Connection</li>
+                <li>DO NOT TRY TO Minimise The Full Screen Mode Of The Exam. You Will Recieive 1 Warning For Doing So After Which Your Test Will End</li>
+                <li>I have read and understood all the instructions. </li>
+                <li>All computer hardware allotted to me are in proper working condition. </li>
+                <li>I declare that i am not in possession of / not wearing / not carrying any prohibited gadget like mobile phone,bluetooth devices etc. /any prohibited material with me into the Examination Hall.</li> 
+                <li>I agree that in case of not adhering to the instructions, I shall be liable to be debarred from this Test and/or to disciplinary action, which may include ban from future Test / Examinations</li>
+            </ol>
+            <span style = "font-size:5vh;">👍 All The Best! 👍</span>
+            <button class="tst_btn rpl" id = "tin_start" onclick = 'window.location.hash = "#/attempt/" + window.location.hash.split("#/instructions/")[1]'>Start</button>
+        </div>
+    </div>
+    <div id = "testv1" class="full_page flex_type" style="flex-direction: row;flex-wrap: wrap;height:max-content;min-height: 90vh;">
+        <div style = "display: flex;flex-direction: column;width: 60vw;height:80vh;margin:10px;min-width: 300px;">
+            <div id = "tt_extrabx" style = "display: flex;flex-direction:row;background-color: rgb(78, 72, 61);height: 40px;margin:10px;">
+                <span id = "tt_timeleft" style = "background-color: darkorange;">00:00:00</span>
+                <button id = "tt_sub" class= "tst_btn rpl">Submit</button>
+            </div>
+            <div id = "tt_question" style="height:70vh;border:lime 3px solid;overflow-y: scroll;">
+                <div style="font-size: larger;">Question <span id = "tt_qno">12</span></div>
+                <hr>
+                <div style="" id = "tt_qtitle">Who Is The President Of India?</div>
+                <hr>
+                
+            </div>
+            <div id = "tt_footer" style="display:flex;">
+                <button class="tst_btn rpl"id = "tt_save">Save And Next</button>
+                <button class="tst_btn rpl"id = "tt_clear">Clear</button>
+                <button class="tst_btn rpl"id = "tt_review">Mark For Review</button>
+                <button class="tst_btn rpl"id = "tt_ansreview">Save And Mark For Review</button>
+            </div>
+        </div>
+        <div>
+            <div id = "tt_infobx" style="width: 250px;height:120px;display: flex;flex-direction: column;align-items: center;border-radius:30px;background-color: rgb(78, 72, 61);padding:10px">
+                <span><span class = "tts_notvisit">12</span>Not Visited</span>
+                <span><span class = "tts_notanswer">21</span>Not Answered</span>
+                <span><span class = "tts_answered">45</span>Answered</span>
+                <span><span class = "tts_review">3</span>Review</span>
+                <span><span class = "tts_ansreview">37</span>Review And Answered</span>
+            </div>
+            <div id = "tt_qnobx" style = "display: inline-block;border-radius:30px;background-color: rgb(78, 72, 61);padding:10px;width: 250px;height: 40vh;margin:10px;overflow-y: scroll;">
+
+
+            </div>
+        </div>
+    </div>
+    <div id = "test_end" class = "full_page flex_type">
+        <span style="font-size: 5vh;" id = "te_title">The Test Has Ended</span>
+        <span style = "font-size:3vh;">Your Results Will Be Released After<span id = "te_endtime"></span></span>
+        <hr color="white" width="100%">
+    </div>
     <div id="livequiz" class="full_page flex_type">
         <span style="font-size:5vh;">Live Quiz</span>
         <div>
@@ -578,6 +639,15 @@
     <div id = "simlist" class = "full_page flex_type">
         <span style="font-size: 5vh;">Simulations List</span>
         <hr color="white" width="100%">
+        <div style = "display: flex;flex-direction: row;">
+            <button class = "tst_btn rpl" id = "psims">Physics</button>
+            <button class = "tst_btn rpl" id = "csims">Chemistry</button>
+            <button class = "tst_btn rpl" id = "msims">Maths</button>
+            <button class = "tst_btn rpl" id = "bsims">Biology</button>
+            <button class = "tst_btn rpl" id = "cosims">Computer</button>
+            <button class = "tst_btn rpl" id = "ssims">Statistics</button>
+            <button class = "tst_btn rpl" id = "usims">Unfiled</button>
+        </div>
         <div id = "sim_cont" style="overflow-y: scroll;height:50vh;" class="flex_type">
         </div>
     </div>

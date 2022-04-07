@@ -25,20 +25,45 @@ function initFirebaseAuth() {
     // Listen to auth state changes.
     onAuthStateChanged(getAuth(), authStateObserver);
 }
+async function getServerTime(url){
+  fetch(url)
+  .then((response) => {
+      var date;
+    for (var pair of response.headers.entries()) { // accessing the entries
+      if (pair[0] === 'date') {
+          date = new Date(pair[1]).getTime()
+          console.log(date)
+      }
+    }
+    return date;
+  });
+}
+async function gST(){return getServerTime("https://quarkz.netlify.app/time")}
 async function sndMsg() {
     var qtxt = dE("fm_message").value
-    if (qtxt != "" && qtext != null){
-      await addDoc(collection(db, "forum"), {
-        name: userinfo.name,
-        message: qtxt,
-        userid: userinfo.uuid,
-        sgndon: serverTimestamp()
-      })
-      dE("fm_message").value = ""
+    if (qtxt.includes("/pinned")){
+      qtxt = qtxt.split("/pinned")[1]
+      try {
+        await updateDoc(doc(db,"forum","pinned"),{message:qtxt})
+      }catch{
+        alert("You Dont Have The Privilages For This Command")
+      }
+
+        await updateDoc(doc(db,"forum","ppinned"),{ppinned:arrayUnion({message:qtxt,user:userinfo.uuid,time:gST()})})
+      
     }else {
-      alert("Message Cannot Be Empty")
+      if (qtxt != "" && qtxt != null){
+        await addDoc(collection(db, "forum"), {
+          name: userinfo.name,
+          message: qtxt,
+          userid: userinfo.uuid,
+          sgndon: serverTimestamp()
+        })
+        dE("fm_message").value = ""
+      }else {
+        alert("Message Cannot Be Empty")
+      }
     }
-    
   }
   function displayMessage(id, time, name, text) {
     var d = "<div id = 'dM" + id + "'><span class = 'dmName'>" + name + ": </span><span class = 'dmText'>" + text + "</span><span class = 'dmtime'>" + time + "</span></div>"
@@ -64,7 +89,14 @@ async function sndMsg() {
       });
     });
   }
-
+async function getPinned(){
+  var docRef = doc(db, 'forum', 'pinned')
+    var docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      var docRef = docSnap.data()
+      dE("pinnedtxt").innerText = docRef.message;
+    }
+}
 function dE(ele) {
     return document.getElementById(ele)
   }
@@ -88,3 +120,4 @@ var a = 1;
 var e = "afterbegin"
 initFirebaseAuth()
 gtMsg();
+getPinned();
