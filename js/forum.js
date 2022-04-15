@@ -38,7 +38,6 @@ async function getServerTime(url){
     return date;
   });
 }
-async function gST(){return getServerTime("https://quarkz.netlify.app/time")}
 async function sndMsg() {
     var qtxt = dE("fm_message").value
     if (qtxt.includes("/pinned")){
@@ -48,9 +47,11 @@ async function sndMsg() {
       }catch{
         alert("You Dont Have The Privilages For This Command")
       }
-
-        await updateDoc(doc(db,"forum","ppinned"),{ppinned:arrayUnion({message:qtxt,user:userinfo.uuid,time:gST()})})
-      
+      async function upDoc(sTime){
+        await updateDoc(doc(db,"forum","ppinned"),{ppinned:arrayUnion({message:qtxt,user:userinfo.uuid,time:sTime})})
+      }
+        var sTime = await getServerTime("http://localhost:5500/time.html").then(upDoc(sTime))
+        
     }else {
       if (qtxt != "" && qtxt != null){
         await addDoc(collection(db, "forum"), {
@@ -65,12 +66,12 @@ async function sndMsg() {
       }
     }
   }
-  function displayMessage(id, time, name, text) {
+function displayMessage(id, time, name, text) {
     var d = "<div id = 'dM" + id + "'><span class = 'dmName'>" + name + ": </span><span class = 'dmText'>" + text + "</span><span class = 'dmtime'>" + time + "</span></div>"
     dE("forum_live").insertAdjacentHTML(e, d)
   }
-  function deleteMessage(id) { dE("dM" + id).remove() }
-  async function gtMsg() {
+function deleteMessage(id) { dE("dM" + id).remove() }
+async function gtMsg() {
     dE("forum_live").innerHTML = ""
     const recentMessagesQuery = query(collection(getFirestore(), 'forum'), orderBy('sgndon', 'desc'), limit(10));
     onSnapshot(recentMessagesQuery, function(snapshot) {

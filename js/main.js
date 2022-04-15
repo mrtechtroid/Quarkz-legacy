@@ -65,6 +65,17 @@ function getServerTime(url){
     return date;
   });
 }
+function fullEle(ele){
+  if (ele.requestFullscreen) {
+    ele.requestFullscreen();
+  } else if (ele.mozRequestFullScreen) { /* Firefox */
+    ele.mozRequestFullScreen();
+  } else if (ele.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+    ele.webkitRequestFullscreen();
+  } else if (ele.msRequestFullscreen) { /* IE/Edge */
+    ele.msRequestFullscreen();
+  }
+}
 function gST(){return getServerTime("https:/quarkz.netlify.app/time")}
 async function signIn() {
   var email = dE("lg_uname").value;
@@ -158,8 +169,8 @@ function locationHandler(newlocation, n1) {
     case "legal": handlebox = "legal"; break;
     case "forum": handlebox = "forum"; break;
     case "ui": handlebox = "ui"; break;
-    case "qblist": handlebox = "qbanklist"; topicList(2); break;
-    case "tpclist": handlebox = "topiclist"; topicList(1); break;
+    case "qblist": handlebox = "qbanklist"; gettopicList(2); break;
+    case "tpclist": handlebox = "topiclist"; gettopicList(1); break;
     case "simlist": handlebox = "simlist"; getSimList(); break;
     case "testend": handlebox = "test_end";break;
     default: handlebox = "error_page"; break;
@@ -198,12 +209,7 @@ async function getSimulation() {
   }
   else { locationHandler("error_page", 1); throw new Error }
 }
-async function getCyberhunt(){
-
-}
-async function userUpdate() { 
-}
-function topicList(type) {
+function gettopicList(type) {
   var divID,urlID,childID,eleList;
   if (type == 1){
     divID = "tli_cont"; urlID = "topic/"; eleList = topiclist;childID = "tl";
@@ -802,9 +808,11 @@ async function authStateObserver(user) {
       var docJSON = docSnap.data();
       batch.textContent = docJSON.name;
       calenid = docJSON.timetable
-      for (var i = 0; i < docJSON.topics.topicname.length; i++) {
-        topiclist.push([docJSON.topics.topicname[i], docJSON.topics.topicno[i]])
+      console.log(docJSON.tpcs.length)
+      for (var i = 0; i < docJSON.tpcs.length; i++) {
+        topiclist.push([docJSON.tpcs[i].topicname, docJSON.topics[i].topicno])
       }
+      console.log(topicList)
       for (var i = 0; i < docJSON.qbank.qbanktitle.length; i++) {
         qlist.push([docJSON.qbank.qbanktitle[i], docJSON.qbank.qbankid[i]])
       }
@@ -1052,15 +1060,7 @@ async function getTestInfo(){
   dE("dsh_btn").style.display = "none"
   dE("tp_pnt").style.display = "none"
   var tbox = dE("testv1")
-  if (tbox.requestFullscreen) {
-      tbox.requestFullscreen();
-  } else if (tbox.mozRequestFullScreen) { /* Firefox */
-      tbox.mozRequestFullScreen();
-  } else if (tbox.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-      tbox.webkitRequestFullscreen();
-  } else if (tbox.msRequestFullscreen) { /* IE/Edge */
-      tbox.msRequestFullscreen();
-  }
+  fullEle(tbox)
   inittestHandler()
 }
 function tqH(){
@@ -1237,6 +1237,11 @@ async function submitTest(){
   testResponseList = [];
   activequestionid = ""
 }
+async function getCyberhunt(){
+
+}
+async function userUpdate() { 
+}
 function chItem() { changeItem(1) }
 function simHand() { changeLocationHash("simlist", 1) }
 function cybHand() {changeLocationHash("cyberhunt",1)}
@@ -1260,7 +1265,7 @@ function actHand() { renderTestList("active")}
 function upcHand() { renderTestList("upcoming")}
 function finHand() { renderTestList("finished")}
 function plyVid() { window.player.playVideo() }
-function stpVid() { window.player.stopVideo() }
+function stpVid() { try {window.player.stopVideo()} catch{} }
 function pauVid() { window.player.pauseVideo() }
 function loadVid(videoId) { player.loadVideoById(videoId); }
 function tsave(){testOperator("tts_answered")}
