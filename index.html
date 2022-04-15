@@ -20,20 +20,19 @@
     <!-- Purification Of Marked JS-->
     <link rel="icon" href="favicon.png" type="image/icon type">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
     <style>
         .full_page {display: none};
     </style>
+    
 </head>
 
-<body>
+<body ondragstart="return false;" onselectstart="return false;"  oncontextmenu="return false;"  onblur="clearData();">
     <div id = "overlay" style = "display:none;position: fixed; width: 100%;height: 100%;top: 0;left: 0;right: 0;bottom: 0;background-color: rgb(0, 0, 0);z-index: 2;cursor: pointer;" > 
         <div style = "font-family: Consolas;color:white;top: 50%;left: 50%;position: absolute;transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);"><span id="logo" style="font-family: Arial;font-size: 4vh;font-weight: bold; margin-left: 2vw;"><img
             src="Quarkz_white.png" style=""><center>Updating to Version <span  class="sp_txt">1.0.0</span></center></span></div>
     </div>
-
     <div id="watermark" style="display: flex; flex-direction: row;align-items: center;width:98vw;position: relative;">
         <span id="logo" style="font-family: Arial;font-size: 4vh;font-weight: bold; margin-left: 2vw;"><img
                 src="Quarkz.png" style="height:6vh;"></span>
@@ -41,7 +40,6 @@
         <span id="spoints" style="position: absolute;right:6vw;" class="no-print"></span>
         <span style="background-color: turquoise;border-radius: 100px;position: absolute;right:1vw;padding:1vh;" id="dsh_btn" class="no-print rpl">☰</span>
     </div>
-
     <div id="login" class="full_page flex_type" style="justify-content: center;">
         <div id="lgn_bx" class=""
             style="display: flex;justify-content: center;align-items: center;flex-direction: column;background-color: rgb(31, 30, 30);border-radius: 10vw;padding:4vw;">
@@ -59,7 +57,6 @@
             <span id = "lgn_err" class="err_txt" style="display: none;">ERROR:Wrong Username Or Password</span>
         </div>
     </div>
-
     <div id="aboutus" class="full_page flex_type" style="justify-content: center;text-align: center;">
         <span style="font-size: 5vh;">About Us</span>
         <img src="https://avatars1.githubusercontent.com/u/64828294?s=460&amp;v=4" alt="MTT Profile Photo"
@@ -301,54 +298,55 @@
     </div>
     <div id="dashboard" class="full_page flex_type" style="display: flex;">
         <span style="font-size:5vh;">Dashboard</span>
-        <!-- <div class="" style="display: grid;">
-            <div id = "recent_tests" style="width: 30vw;height:30vh;display: flex;flex-direction: column;align-items: center;border-radius:30px;background-color: rgb(78, 72, 61);grid-column-start: 1;grid-column-end: 1;grid-row-start: 1;grid-row-end: 2;">
-                <span style="font-size: larger;">Recent Tests</span>
-                <div class = "re_tests" style = "background-color: rgb(89, 128, 128);height:10vh;display: flex;align-items: center;justify-content: center;flex-direction: column;border-radius: 30px;width: 20vw;margin:1vh;">
-                    <span>Periodic Properties</span>
-                    <span><span class = "re_marks" style = "color: lime;">120</span> Out Of <span class = "re_total" style="color:pink">200</span></span>
+        <div class="" style="display: flex;flex-direction: row;">
+            <div style = "display: flex;flex-direction: column;justify-content: space-evenly;">
+                <div id = "recent_tests" style="width: 30vw;height:30vh;display: flex;flex-direction: column;align-items: center;border-radius:30px;background-color: rgb(78, 72, 61);grid-column-start: 1;grid-column-end: 1;grid-row-start: 1;grid-row-end: 2;">
+                    <span style="font-size: larger;">Recent Tests</span>
+                    <!-- <div class = "re_tests" style = "background-color: rgb(89, 128, 128);height:10vh;display: flex;align-items: center;justify-content: center;flex-direction: column;border-radius: 30px;width: 20vw;margin:1vh;">
+                        <span>Periodic Properties</span>
+                        <span><span class = "re_marks" style = "color: lime;">120</span> Out Of <span class = "re_total" style="color:pink">200</span></span>
+                    </div>
+                    <div class = "re_tests" style = "background-color: rgb(89, 128, 128);height:10vh;display: flex;align-items: center;justify-content: center;flex-direction: column;border-radius: 30px;width: 20vw;margin:1vh;">
+                        <span>Periodic Properties</span>
+                        <span><span class = "re_marks" style = "color: lime;">120</span> Out Of <span class = "re_total" style="color:pink">200</span></span>
+                    </div> -->
                 </div>
-                <div class = "re_tests" style = "background-color: rgb(89, 128, 128);height:10vh;display: flex;align-items: center;justify-content: center;flex-direction: column;border-radius: 30px;width: 20vw;margin:1vh;">
-                    <span>Periodic Properties</span>
-                    <span><span class = "re_marks" style = "color: lime;">120</span> Out Of <span class = "re_total" style="color:pink">200</span></span>
-                </div>
-            </div>
-            <div id = "profile_cont" style = "height:30vh;width:30vw;flex-direction: row;flex-wrap: wrap;align-items: center;justify-content: center;background-color: rgb(89, 128, 128);">
-                <span>Profile Photo</span>
-                <span>Name</span>
-                <span>Attributues</span>
-                <span>Class</span>
-                <span>About Me</span>
-                
-            </div>
-            <div id = "ui_buttons">
+                <div id = "profile_cont" style = "display:flex;height:30vh;width:30vw;flex-direction: column;flex-wrap: wrap;justify-content: center;background-color: rgb(89, 128, 128);padding-left: 2vw;margin-top:2vh;border-radius:30px;">
     
+                    <!-- <span style = "color:rgb(251, 255, 0)">Profile Photo</span> -->
+                    <span style = "color:rgb(251, 255, 0)">Name:</span>
+                    <span style = "color:rgb(251, 255, 0)">ID:</span>
+                    <span style = "color:rgb(251, 255, 0)">Attributues:</span>
+                    <span style = "color:rgb(251, 255, 0)">Class:</span>
+                    <span style = "color:rgb(251, 255, 0)">About Me:</span>
+                </div>
             </div>
             <div id = "events">
-    
+                
             </div>
-        </div> -->
-        
-        
-        <div class="flex_type" style="flex-direction: row;flex-wrap: wrap;align-items: center;justify-content: center;">
-            <div class="dshbox rpl" id="tstinf_btn">Test Infos</div>
-            <div class="dshbox rpl" id="tstrep_btn">Test Reports</div>
-            <div class="dshbox rpl" id="tmt_btn">Time Table</div>
-            <div class="dshbox rpl" id="abt_btn">About Us</div>
-            <div class="dshbox rpl" id="prf_btn">Your Profile</div>
-            <div class="dshbox rpl" id="tpc_btn">Topics</div>
-            <div class="dshbox rpl" id="lvq_btn" style="display:none">Live Quiz</div>
-            <div class="dshbox rpl" id="frm_btn" onclick = "window.location = 'forum.html'">Forum</div>
-            <div class="dshbox rpl" id="qba_btn">Question Bank</div>
-            <div class="dshbox rpl" id="sim_btn">Simulations</div>
-            <div class="dshbox rpl" id="cyb_btn">Cyberhunts</div>
-            <div id="adminonly" style="display:none;">
-                <div class="dshbox rpl" id="adi_btn">Add</div>
-                <div class="dshbox rpl" id="pqb_btn">Print</div>
-                <div class="dshbox rpl" id="usc_btn">Users</div>
+            <div class="flex_type" style="flex-direction: column;align-items: center;overflow-y: scroll;width: 30vw;height:60vh;">
+                <div class="dshbox_v2 rpl" id="tstinf_btn">Test Infos</div>
+                <div class="dshbox_v2 rpl" id="tstrep_btn">Test Reports</div>
+                <div class="dshbox_v2 rpl" id="tmt_btn">Time Table</div>
+                <div class="dshbox_v2 rpl" id="abt_btn">About Us</div>
+                <div class="dshbox_v2 rpl" id="prf_btn">Your Profile</div>
+                <div class="dshbox_v2 rpl" id="tpc_btn">Topics</div>
+                <div class="dshbox_v2 rpl" id="lvq_btn" style="display:none">Live Quiz</div>
+                <div class="dshbox_v2 rpl" id="frm_btn" onclick = "window.location = 'forum.html'">Forum</div>
+                <div class="dshbox_v2 rpl" id="qba_btn">Question Bank</div>
+                <div class="dshbox_v2 rpl" id="sim_btn">Simulations</div>
+                <div class="dshbox_v2 rpl" id="cyb_btn">Cyberhunts</div>
+                <div id="adminonly" style="display:none;flex-direction:column;">
+                    <div class="dshbox_v2 rpl" id="adi_btn">Add</div>
+                    <div class="dshbox_v2 rpl" id="pqb_btn">Print</div>
+                    <div class="dshbox_v2 rpl" id="usc_btn">Users</div>
+                </div>
+                <div class="dshbox_v2 rpl" id="lgt_btn" style = "color:red">Logout</div>
             </div>
-            <div class="dshbox rpl" id="lgt_btn" style = "color:red">Logout</div>
         </div>
+        
+        
+        
     </div>
     <div id="singletestreport" class="full_page flex_type">
         <span style="font-size: 5vh;">Random Test 1</span>
@@ -579,7 +577,7 @@
                         <span id="mute" class="material-icons" id="tb_um_btn" 
                         title="Mute/Unmute" onclick = "fullscreen()">fit_screen</span>
                     <span class="btncmd" id="tb_wy_btn" onclick="window.open(player.getVideoUrl())"
-                        title="Watch On Youtube"><img src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVdJREFUSEvt1rsuRFEUgOFvNBq3BonErZFo6Kj1EhoheAilQkcnwlOgxFt4Ai0icWsENbIm58Q4ZpjbmYnESVZ39vr3Xnvtvf+CNn2FNnH9g9PKd2AMk0mMImIEPehDV/LzK57wjGtcJXGBiEu8Zbc0W+pIvo1FdDdp/19whq1kEsW0peBxnKO/ScBsmkfMpPBS8DGWc4KmaY+wml3xPQZyBj9gMAt+zxmapi9WubTU1YJPkuard551g2PgHPYxXQe9IXDw4qyvY7fG3mgYnC42LpNNbKCzigo0DZyyJrCDpV/guYD3MN8qcMtL3ZbmiuN0gKkqmqnsw/SnLpA6FvllyLeuvksv8EYz/zD+FkPZuzqerJUcoZH6EGutFoF4EmfLiUBMJDwr1GehyepzmqhP+Fjxq6S3WdkLyQsfG0ZvBdkL4btJRC+krybZy3mLP9P/C33LSv0B2YpAH2FlNUoAAAAASUVORK5CYII="></span>
+                        title="Watch On Youtube"><img style = "filter: invert(1)" src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVdJREFUSEvt1rsuRFEUgOFvNBq3BonErZFo6Kj1EhoheAilQkcnwlOgxFt4Ai0icWsENbIm58Q4ZpjbmYnESVZ39vr3Xnvtvf+CNn2FNnH9g9PKd2AMk0mMImIEPehDV/LzK57wjGtcJXGBiEu8Zbc0W+pIvo1FdDdp/19whq1kEsW0peBxnKO/ScBsmkfMpPBS8DGWc4KmaY+wml3xPQZyBj9gMAt+zxmapi9WubTU1YJPkuard551g2PgHPYxXQe9IXDw4qyvY7fG3mgYnC42LpNNbKCzigo0DZyyJrCDpV/guYD3MN8qcMtL3ZbmiuN0gKkqmqnsw/SnLpA6FvllyLeuvksv8EYz/zD+FkPZuzqerJUcoZH6EGutFoF4EmfLiUBMJDwr1GehyepzmqhP+Fjxq6S3WdkLyQsfG0ZvBdkL4btJRC+krybZy3mLP9P/C33LSv0B2YpAH2FlNUoAAAAASUVORK5CYII="></span>
                     <input type="range" min="0" max="100" value="50" id="tb_vl_br" style="background-color: grey;"
                         onchange="volumechange()" oninput="volumechange()">
                 </div>
@@ -656,7 +654,7 @@
         <hr color="white" width="100%">
         <span style="font-size: 5vh;" id = "sms_name">Sim Name</span>
         <div>
-            <iframe id="sim_frame" src="" frameborder="0"  style="width:80vw;height:70vh;background-color: black;color:white"></iframe>
+            <iframe id="sim_frame" src="" frameborder="0"  style="width:80vw;height:70vh;background-color: black;color:white;"></iframe>
         </div>
         <div>
             <span style="font-size: 2vh;">Provided By</span>
@@ -678,6 +676,12 @@
     <script src="js/main.js" type="module"></script>
     <script src="js/extras.js"></script>
     <!-- <script>setInterval(function (){console.clear()},1000)</script> -->
+    <noscript>Javascript Disabled! This Site Requires Javascript To Run</noscript>
+    <!-- <script>
+        function clearData(){
+            window.clipboardData.setData('text','') 
+        }
+    </script> -->
 </body>
 
 </html>
