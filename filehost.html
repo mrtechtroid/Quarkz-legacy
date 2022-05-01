@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="stylesheet.css"> -->
+    <title>MTT File Upload</title>
+    <meta name="title" content="MTT File Upload">
+    <meta name="description" content="Personal File Upload">
+    <meta name="keywords" content="open source, mr techtroid, mtt,mr tech,mrtechtroid,github,mttnotes,">
+    <meta name="robots" content="index, follow">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="language" content="English">
+    <meta name="robots" content="noindex,nofollow">
+    <meta name="revisit-after" content="0 days">
+    <meta name="author" content="Mr Techtroid">
+    <style>
+        #navbar {
+            height: 100px;
+
+            padding-left: 5%;
+            padding-right: 5%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+        }
+
+        #logo {
+            width: 100px;
+            height: 100px;
+
+        }
+
+        body {
+            background-color: black;
+            font-family: Roboto;
+            margin: 0px;
+            background-color: #000000;
+        }
+
+        label {
+            background-color: indigo;
+            color: white;
+            padding: 0.5rem;
+            font-family: sans-serif;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body style="color: white;">
+    <div id="navbar">
+        <img src="https://mrtechtroid.github.io/assets/MTT_prev_ui.png" id="logo" alt="MTT Logo">
+    </div>
+    <div style="margin: auto;height: 30px;width: 50vw;display: flex;flex-direction: column;">
+        <label for="file">Choose File To Upload</label>
+        <input type="file" id="file" style="width: 50vw;height: 30px;margin: auto;" hidden>
+        <input id="file_link" type="url" style="background-color: black;color:white;margin-top:10px" disabled>
+        <span>Note: File Names Will Be Modified to the following format: {IP ADDRESS}-{DATE}-{ORIGNAL FILE NAME}</span>
+    </div>
+
+    <noscript>Javascript Disabled! This Site Requires Javascript To Run</noscript>
+    <!-- <script src="main.js" type="module"></script> -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, } from 'https://www.gstatic.com/firebasejs/9.6.0/firebase-storage.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBxyMo6yQ20stBIOsHUgToNgm4PmCKxTX4",
+            authDomain: "mttcode.firebaseapp.com",
+            projectId: "mttcode",
+            storageBucket: "mttcode.appspot.com",
+            messagingSenderId: "630582975513",
+            appId: "1:630582975513:web:9aae0cf9917d7c34281e88",
+            measurementId: "G-M4M50WQ52Z"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore();
+        const storage = getStorage();
+
+        document.getElementById("file").addEventListener("change", async function () {
+            var details = await (await fetch('http://ip-api.com/json/')).json();
+            var file = document.getElementById("file").files[0];
+            const name = details.query + "-" + new Date().getTime() + "-" + file.name;
+            const metadata = {
+                contentType: file.type,
+                ip: details.query
+            };
+            const storageRef = ref(storage, 'files/' + name);
+            // 'file' comes from the Blob or File API
+            const uploadTask = uploadBytesResumable(storageRef, file);
+            uploadTask.on('state_changed',
+                (snapshot) => {
+                    // Observe state change events such as progress, pause, and resume
+                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log('Upload is ' + progress + '% done');
+                    switch (snapshot.state) {
+                        case 'paused':
+                            console.log('Upload is paused');
+                            break;
+                        case 'running':
+                            console.log('Upload is running');
+                            break;
+                    }
+                },
+                (error) => {
+                    // Handle unsuccessful uploads
+                },
+                () => {
+                    // Handle successful uploads on complete
+                    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                        console.log('File available at', downloadURL);
+                        let xhr = new XMLHttpRequest();
+                        xhr.open("POST", "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=" + firebaseConfig.apiKey);
+
+                        xhr.setRequestHeader("Accept", "application/json");
+                        xhr.setRequestHeader("Content-Type", "application/json");
+
+                        xhr.onload = () => console.log(xhr.responseText);
+                        xhr.onreadystatechange = async function () {
+                            if (xhr.readyState === 4) {
+                                console.log(xhr.response)
+                                document.getElementById("file_link").value = JSON.parse(xhr.response).shortLink
+                                const docRef = await addDoc(collection(db, "upload"), {
+                                    ipdetails: details,
+                                    ip: details.query,
+                                    url: downloadURL,
+                                    shorturl: JSON.parse(xhr.response).shortLink,
+                                    name: name,
+                                    size: file.size,
+
+                                });
+                            }
+                        }
+                        let data = `{
+                "dynamicLinkInfo": {
+                  "domainUriPrefix": "https://mttweb.page.link",
+                  "link": "${downloadURL}",
+                }
+              }`;
+                        xhr.send(data);
+
+                    });
+                }
+            );
+
+        })
+    </script>
+</body>
+
+</html>

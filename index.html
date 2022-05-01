@@ -5,155 +5,732 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link rel="stylesheet" href="stylesheet.css"> -->
-    <title>MTT File Upload</title>
-    <meta name="title" content="MTT File Upload">
-    <meta name="description" content="Personal File Upload">
-    <meta name="keywords" content="open source, mr techtroid, mtt,mr tech,mrtechtroid,github,mttnotes,">
-    <meta name="robots" content="index, follow">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="language" content="English">
-    <meta name="robots" content="noindex,nofollow">
-    <meta name="revisit-after" content="0 days">
-    <meta name="author" content="Mr Techtroid">
+    <title>Quarkz!</title>
+    <link rel="stylesheet" href="css/main.css">
+    <!-- Google Fonts-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css"
+        integrity="sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"
+        integrity="sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js"
+        integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR"
+        crossorigin="anonymous"></script>
+    <!-- Purification Of Marked JS-->
+    <link rel="icon" href="favicon.png" type="image/icon type">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <style>
-        #navbar {
-            height: 100px;
-
-            padding-left: 5%;
-            padding-right: 5%;
-            display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
+        .full_page {
+            display: none
         }
 
-        #logo {
-            width: 100px;
-            height: 100px;
-
-        }
-
-        body {
-            background-color: black;
-            font-family: Roboto;
-            margin: 0px;
-            background-color: #000000;
-        }
-
-        label {
-            background-color: indigo;
-            color: white;
-            padding: 0.5rem;
-            font-family: sans-serif;
-            border-radius: 0.3rem;
-            cursor: pointer;
-            margin-top: 1rem;
-        }
+        ;
     </style>
 </head>
 
-<body style="color: white;">
-    <div id="navbar">
-        <img src="https://mrtechtroid.github.io/assets/MTT_prev_ui.png" id="logo" alt="MTT Logo">
+<body ondragstart="return false;" onselectstart="return false;" oncontextmenu="return false;" onblur="clearData();">
+    <div id="overlay" style="display:none;position: fixed; width: 100%;height: 100%;top: 0;left: 0;right: 0;bottom: 0;background-color: rgb(0, 0, 0);z-index: 2;cursor: pointer;">
+        <div
+            style="font-family: Consolas;color:white;top: 50%;left: 50%;position: absolute;transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);">
+            <span id="logo" style="font-family: Arial;font-size: 4vh;font-weight: bold; margin-left: 2vw;"><img
+                    src="Quarkz_white.png" style="">
+                <center>Updating to Version <span class="sp_txt">1.0.0</span></center>
+            </span></div>
     </div>
-    <div style="margin: auto;height: 30px;width: 50vw;display: flex;flex-direction: column;">
-        <label for="file">Choose File To Upload</label>
-        <input type="file" id="file" style="width: 50vw;height: 30px;margin: auto;" hidden>
-        <input id="file_link" type="url" style="background-color: black;color:white;margin-top:10px" disabled>
-        <span>Note: File Names Will Be Modified to the following format: {IP ADDRESS}-{DATE}-{ORIGNAL FILE NAME}</span>
+    <div id="watermark" style="display: flex; flex-direction: row;align-items: center;width:98vw;position: relative;">
+        <span id="logo" style="font-family: Arial;font-size: 4vh;font-weight: bold; margin-left: 2vw;"><img
+                src="Quarkz.png" style="height:6vh;"></span>
+        <!-- <span style="font-family:Arial;font-size:2vh; font-weight:bolder;">By MTT</span> -->
+        <span id="spoints" style="position: absolute;right:6vw;" class="no-print"></span>
+        <span style="background-color: turquoise;border-radius: 100px;position: absolute;right:1vw;padding:1vh;"
+            id="dsh_btn" class="no-print rpl">☰</span>
     </div>
+    <div id="login" class="full_page flex_type" style="justify-content: center;">
+        <div id="lgn_bx" class=""
+            style="display: flex;justify-content: center;align-items: center;flex-direction: column;background-color: rgb(31, 30, 30);border-radius: 10vw;padding:4vw;">
+            <span style="font-size: 5vh;">Welcome to Quarkz</span>
+            <input type="text" id="lg_uname"
+                style="font-size: 4vh;background-color: transparent;text-decoration: none;border:none;border-bottom: 3px solid lime;outline:none;color: white;"
+                placeholder="Username">
+            <input type="password" id="lg_pass"
+                style="font-size: 4vh;background-color: transparent;text-decoration: none;border:none;border-bottom: 3px solid lime;outline:none;color: white;"
+                placeholder="Password">
+            <div class=""><button class="tst_btn rpl" id="sgn_in">Sign In</button>
+                <!-- <button class = "tst_btn rpl" id = "sgn_in_ggl">Sign In With Google</button> -->
+                <button class="tst_btn rpl" id="reg_in">Register</button>
+            </div>
+            <span id="lgn_err" class="err_txt" style="display: none;">ERROR:Wrong Username Or Password</span>
+        </div>
+    </div>
+    <div id="aboutus" class="full_page flex_type" style="justify-content: center;text-align: center;">
+        <span style="font-size: 5vh;">About Us</span>
+        <img src="https://avatars1.githubusercontent.com/u/64828294?s=460&amp;v=4" alt="MTT Profile Photo"
+            style="border-radius: 50%;width:250px;height:250px;border: greenyellow ; border-style: solid;">
+        <span>I Am Mr Techtroid The Main Developer Of <span class="sp_txt">Quarkz!</span></span>
+        <span>I Built This Website As A Way For Schools To Head Towards Online Learning</span>
+        <span>Its Built In A Way That It Is Easy For Both Teachers And Students To Use</span>
+        <span>Quarkz Is Currently Under Beta Version And Many Features Will Come In The Future</span>
+        <span>Contact Mail: <span class="sp_txt">mrtechtroid@outlook.com</span></span>
+        <button id="lgl_btn" class="tst_btn rpl">Legal</button>
+        <button id="rbu_btn" class="tst_btn rpl" onclick="window.location = 'bugs.html'">Report Bugs</button>
+    </div>
+    <div id="legal" class="full_page flex_type" style="justify-content: center;text-align: center;">
+        <span style="font-size: 5vh;">Disclaimer And TOC</span>
+        <span class="sp_txt">Copyright 2021 Quarkz By Mr Techtroid</span>
+        <span>All Codes,Graphics,Assets,And Information Used is part of Quarkz With Certain Exceptions Mentioned
+            Below.</span>
+        <span>Usage, Reproducing Any Of The Code,Graphics,Assets,Information Without Prior Consent Of Owner Mr Techtroid Is Prohibited.</span>
+        <!-- <span>Parts Of Quarkz Released In Github Under Open Source Licenses And Usage Of Those Are Allowed after
+            following the License Terms There. </span> -->
+        <span>Youtube Videos Which Are Used In This Website Belong To Their Respective Channel Owners</span>
+        <span>Usage Of Questions And Notes Are From Fair Use Under Education,Teaching And Research Category</span>
+        <span>Simulations Used In This Website Belong To The Respective Providers Mentioned</span>
+    </div>
+    <div id="schedule" class="full_page flex_type">
+        <span style="font-size: 5vh;">Schedule</span>
+        <iframe id="tmt_frame" src="" style="border: 0" width="100%" height="90%" frameborder="0" scrolling="no"
+            style="background-color: black;color:white"></iframe>
+    </div>
+    <div id="profile" class="full_page flex_type" style="justify-content: center;">
+        <span style="font-size: 5vh;">Profile</span>
+        <table class="pro_table" style="border:lime 3px solid;">
+            <tr>
+                <td class="sp_txt">Name:</td>
+                <td id="prf_name"></td>
+            </tr>
+            <tr>
+                <td class="sp_txt">Username:</td>
+                <td id="prf_uname"></td>
+            </tr>
+            <tr>
+                <td class="sp_txt">Phone:</td>
+                <td id="prf_phone"></td>
+            </tr>
+            <tr>
+                <td class="sp_txt">Email:</td>
+                <td id="prf_email"></td>
+            </tr>
+            <tr>
+                <td class="sp_txt">Class:</td>
+                <td id="prf_class"></td>
+            </tr>
+            <tr>
+                <td class="sp_txt">Batch:</td>
+                <td id="prf_batch"></td>
+            </tr>
+            <tr style="">
+                <td class="sp_txt">Profile Photo:</td>
+                <td>
+                    <div id="prf_pphoto" style="width:100px;height:100px;"></div>
+                    <button class="tst_btn rpl" id="prf_ava">Change Avatar</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="register" class="full_page flex_type">
+        <span style="font-size:5vh;">Register</span>
+        <input type="tel" id="rg_mbleno" class="_in_reg" placeholder="Mobile No">
+        <input type="text" id="rg_uname" class="_in_reg" placeholder="Email Address">
+        <input type="password" id="rg_pass" class="_in_reg" placeholder="Password">
+        <input type="password" id="rg_pass1" class="_in_reg" placeholder="Confirm Password">
+        <input type="text" id="rg_name" class="_in_reg" placeholder="Name">
+        <label for="class">Class</label>
+        <select name="class" id="rg_class">
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+        </select>
+        <button class="tst_btn rpl" id="rg_in">Register</button>
+    </div>
+    <div id="printable" class="full_page flex_type">
+        <span style="font-size: 5vh;" class="no-print">Export</span>
+        <hr color="white" width="100%" class="no-print">
+        <span><button class="tst_btn rpl no-print" onclick="print()">Print</button><button class="tst_btn rpl no-print"
+                id="shf_btn">Shuffle</button><button class="tst_btn rpl no-print" id="tsinf_btn">Bank
+                Info</button></span>
+        <hr color="white" width="100%">
+        <span style="font-size: 3vh;color:yellow" id="qb_title">ERROR</span>
+        <hr color="white" width="100%">
+        <div id="pe_gi">
+            <span id="pe_gi_inf"></span>
+            <hr color="white" width="100vw;">
+        </div>
+        <div id="pe_tst_info" class="flex_type no-print" style="display: none;">
+            <span>Test<input type="radio"></span>
+            <span id="">General Instructions<input type="radio"></span>
+            <textarea type="answer" id="pe_gi_ins" class="_in_aq" style="resize: none;overflow-y: scroll;"
+                placeholder="General Instructions"></textarea>
+            <span>MCQ:<input type="number" id="pe_mcq_pno" class="_in_pq" value="3"><input type="number" id="pe_mcq_nno"
+                    class="_in_pq" value="-1"></span>
+            <span>MCQ Multiple:<input type="number" id="pe_mcmul_pno" class="_in_pq" value="3"><input type="number"
+                    id="pe_mcmul_nno" class="_in_pq" value="-1"></span>
+            <span>Numerical:<input type="number" id="pe_taf_pno" class="_in_pq" value="4"><input type="number"
+                    id="pe_taf_nno" class="_in_pq" value="0"></span>
+            <span>True Or False:<input type="number" id="pe_faf_pno" class="_in_pq" value="1"><input type="number"
+                    id="pe_faf_fno" class="_in_pq" value="0"></span>
+            <span>Explain:<input type="number" id="pe_exp_pno" class="_in_pq" value="4"><input type="number"
+                    id="pe_expl_nno" class="_in_pq" value="0"></span>
+            <span>Matrix<input type="number" id="pe_mat_pno" class="_in_pq" value="12"><input type="number"
+                    id="pe_mat_nno" class="_in_pq" value="-4"></span>
+        </div>
+        <ol id="eqb_add" style="width:90%;height:80%;font-size: 2vh;" type="1">
+        </ol>
+        <div class="divFooter">Quarkz!</div>
+    </div>
+    <div id="functions" class="full_page flex_type" style="overflow-y: scroll;">
+        <span style="font-size: 5vh;" class="">Functions</span>
+        <div class="flex_type" style="flex-direction: column;align-items: center;overflow-y: scroll;width: 50vw;height:60vh;">
+            <div class="dshbox_v2 rpl" onclick = "window.location.hash = '#/add/question'">Add Question</div>
+            <div class="dshbox_v2 rpl" onclick = "window.location.hash = '#/add/lesson'">Add Lesson</div>
+            <div class="dshbox_v2 rpl" onclick = "window.location.hash = '#/add/topic'">Add Topics</div>
+            <div class="dshbox_v2 rpl" onclick = "window.location.hash = '#/add/images'">Upload Images</div>
+            <div class="dshbox_v2 rpl" onclick = "window.location.hash = '#/add/qubank'">Add Question Bank</div>
+            <div class="dshbox_v2 rpl" onclick = "window.location.hash = '#/add/simulation'">Add Simulations</div>
+            <div class="dshbox_v2 rpl" onclick = "window.location.hash = '#/add/tests'">Add Test</div>
+            <div class="dshbox_v2 rpl" onclick = "window.location.hash = '#/update/tests'">Update Test</div>
+        </div>
+    </div>
+    <div id="fu_question" class="full_page flex_type" style="overflow-y: scroll;">
+        <textarea type="tel" id="fqu_qtext" class="_in_aq" placeholder="Add A Question/Title" style="resize: none;overflow-y: scroll;height:20vh;"></textarea>
+        <input type="answer" id="fqu_answer" class="_in_aq" placeholder="Answer">
+        <input type="url" id="fqu_imgurl" class="_in_aq" placeholder="Image URL">
+        <input type="text" id="fqu_qbankid" class="_in_aq" placeholder="Question Bank ID">
+        <input type="text" id="fqu_testid" class="_in_aq" placeholder="Test ID">
+        <select name="type" id="fqu_subject" class="_in_aq" style="color:red">
+            <option value="physics">Physics</option>
+            <option value="chemistry">Chemistry</option>
+            <option value="maths">Maths</option>
+            <option value="biology">Biology</option>
+            <option value="english">English</option>
+            <option value="hindi">Hindi</option>
+            <option value="sanskrit">Sanskrit</option>
+            <option value="computer">Computer</option>
+            <option value="statistics">Statistics</option>
+            <option value="kvpy">KVPY</option>
+            <option value="unfiled">Unfiled</option>
+        </select>
+        <select name="type" id="fqu_topic" class="_in_aq" style="color:red"></select>
+        <textarea type="answer" id="fqu_expl" class="_in_aq" style="resize: none;overflow-y: scroll;"
+            placeholder="Explanation Text"></textarea>
+        <textarea type="answer" id="fqu_hint" class="_in_aq" style="resize: none;overflow-y: scroll;"
+            placeholder="Hint"></textarea>
+            <div id="fqu_ans_hold">
+                <select name="type" id="fqu_type" class="_in_aq" style="color:red">
+                    <option value="mcq">MCQ</option>
+                    <option value="mcq_multiple">MCQ Multiple</option>
+                    <option value="matrix">Matrix</option>
+                    <option value="numerical">Numerical</option>
+                    <option value="explain">Explain</option>
+                    <option value="fill">Fill In The Blanks</option>
+                </select>
+                <div id="fqu_mcq_con" class="flex_type">
+                    <div class="fqu_mcq_p" onclick="changeColor(this)"><input class="fqu_mcq"></div>
+                    <div class="fqu_mcq_p" onclick="changeColor(this)"><input class="fqu_mcq"></div>
+                    <div class="fqu_mcq_p" onclick="changeColor(this)"><input class="fqu_mcq"></div>
+                    <div class="fqu_mcq_p" onclick="changeColor(this)"><input class="fqu_mcq"></div>
+                </div>
+                <div id="fqu_matrix">
+                    <table>
+                        <tr>
+                            <td><input class="fqu_i1"><input class="fqu_i2"></td>
+                        </tr>
+                        <tr>
+                            <td><input class="fqu_i1"><input class="fqu_i2"></td>
+                        </tr>
+                        <tr>
+                            <td><input class="fqu_i1"><input class="fqu_i2"></td>
+                        </tr>
+                        <tr>
+                            <td><input class="fqu_i1"><input class="fqu_i2"></td>
+                        </tr>
+                    </table>
+                </div>
+                <button class="tst_btn rpl" id="aq_ao">Add Option</button>
+                <button class="tst_btn rpl" id="aq_ro">Remove Option</button>
+            </div>
+    </div>
+    <div id = "fu_tests" class="full_page flex_type" style="overflow-y: scroll;">
+            <input type="text" id="aq_testname" class="_in_aq" placeholder="Test Name">
+            <input type="text" id="aq_testbatch" class="_in_aq" placeholder="Batch">
+            <input type="text" id="aq_simname" class="_in_aq" placeholder="Simulation Name">
+            <input type="text" id="aq_simname" class="_in_aq" placeholder="Simulation Name">
+    </div>
+    <div id = "fu_uplimg" class="full_page flex_type" style="overflow-y: scroll;">
+        <input type="file" id="aq_file" class="_in_aq">
+        <button class="tst_btn rpl" id="upl_files"></button>
+        <input class="_in_aq" id="aq_uplurl" type="text">
+    </div>
+    <div id = "fu_lesson" class="full_page flex_type" style="overflow-y: scroll;"> 
+        <textarea type="tel" id="aq_qtext" class="_in_aq" placeholder="Add A Question/Title" style="resize: none;overflow-y: scroll;height:20vh;"></textarea>
+            <input type="answer" id="aq_answer" class="_in_aq" placeholder="Answer">
+            <input type="url" id="aq_imgurl" class="_in_aq" placeholder="Image URL">
+            <input type="url" id="aq_yurl" class="_in_aq" placeholder="Youtube ID">
+            <select name="type" id="aq_subject" class="_in_aq" style="color:red">
+                <option value="physics">Physics</option>
+                <option value="chemistry">Chemistry</option>
+                <option value="maths">Maths</option>
+                <option value="biology">Biology</option>
+                <option value="english">English</option>
+                <option value="hindi">Hindi</option>
+                <option value="sanskrit">Sanskrit</option>
+                <option value="computer">Computer</option>
+                <option value="statistics">Statistics</option>
+                <option value="kvpy">KVPY</option>
+                <option value="unfiled">Unfiled</option>
+            </select>
+            <select name="type" id="aq_topic" class="_in_aq" style="color:red"></select>
+            <textarea type="answer" id="aq_expl" class="_in_aq" style="resize: none;overflow-y: scroll;"
+                placeholder="Explanation Text"></textarea>
+            <textarea type="answer" id="aq_hint" class="_in_aq" style="resize: none;overflow-y: scroll;"
+                placeholder="Hint"></textarea>
+    </div>
+    <div id="fu_simulation" class="full_page flex_type" style="overflow-y: scroll;">
+        <input type="text" id="aq_simid" class="_in_aq" placeholder="ID" style="visibility: hidden;display: none;">
+        <input type="text" id="aq_simname" class="_in_aq" placeholder="Simulation Name">
+        <input type="url" id="aq_simurl" class="_in_aq" placeholder="Simulation URL">
+        <input type="text" id="aq_simprov" class="_in_aq" placeholder="Simulation Provider">
+        <input type="text" id="aq_simlicense" class="_in_aq" placeholder="Simulation License">
+        <select name="type" id="aq_simsubj" class="_in_aq" style="color:red">
+            <option value="physics">Physics</option>
+            <option value="chemistry">Chemistry</option>
+            <option value="maths">Maths</option>
+            <option value="biology">Biology</option>
+            <option value="computer">Computer</option>
+            <option value="statistics">Statistics</option>
+            <option value="unfiled">Unfiled</option>
+        </select>
+        <button class="tst_btn rpl" id="aq_save">Save</button>
+        <button class="tst_btn rpl" id="aq_update">Update</button>
+    </div>
+    <div id="users" class="full_page flex_type">
+        <span style="font-size:5vh;">Users</span>
+        <hr color="white" width="100%">
+        <div
+            style="border:orangered 3px solid;border-radius: 30px;display: flex;flex-direction: column;align-items: center;width:80%;">
+            <span style="font-size:3vh;color:yellow;width:80%;">Add Users</span><iframe
+                href="index.html#/register"></iframe>
+        </div>
+        <hr color="white" width="50%">
+        <input type="answer" id="us_user" class="_in_aq" placeholder="username">
+    </div>
+    <div id="error_page" class="full_page flex_type">
+        <span style="font-size:5vh;">404</span>
+        <hr color="white" width="100%">
 
+        <span style="font-size: 3vh;">You don't have access to this page.</span>
+        <span style="font-size: 2vh;">To Go To Dashboard Click On ☰ at the top</span>
+    </div>
+    <div id="dashboard" class="full_page flex_type" style="display: flex;">
+        <span style="font-size:5vh;">Dashboard</span>
+        <div class="" style="display: flex;flex-direction: row;">
+            <div style="display: flex;flex-direction: column;justify-content: space-evenly;">
+                <div id="recent_tests"
+                    style="width: 30vw;height:30vh;display: flex;flex-direction: column;align-items: center;border-radius:30px;background-color: rgb(78, 72, 61);grid-column-start: 1;grid-column-end: 1;grid-row-start: 1;grid-row-end: 2;">
+                    <span style="font-size: larger;">Recent Tests</span>
+                    <!-- <div class = "re_tests" style = "background-color: rgb(89, 128, 128);height:10vh;display: flex;align-items: center;justify-content: center;flex-direction: column;border-radius: 30px;width: 20vw;margin:1vh;">
+                        <span>Periodic Properties</span>
+                        <span><span class = "re_marks" style = "color: lime;">120</span> Out Of <span class = "re_total" style="color:pink">200</span></span>
+                    </div>
+                    <div class = "re_tests" style = "background-color: rgb(89, 128, 128);height:10vh;display: flex;align-items: center;justify-content: center;flex-direction: column;border-radius: 30px;width: 20vw;margin:1vh;">
+                        <span>Periodic Properties</span>
+                        <span><span class = "re_marks" style = "color: lime;">120</span> Out Of <span class = "re_total" style="color:pink">200</span></span>
+                    </div> -->
+                </div>
+                <div id="profile_cont"
+                    style="display:flex;height:30vh;width:30vw;flex-direction: column;flex-wrap: wrap;justify-content: center;background-color: rgb(89, 128, 128);padding-left: 2vw;margin-top:2vh;border-radius:30px;">
+
+                    <!-- <span style = "color:rgb(251, 255, 0)">Profile Photo</span> -->
+                    <span style="color:rgb(251, 255, 0)">Name:</span>
+                    <span style="color:rgb(251, 255, 0)">ID:</span>
+                    <span style="color:rgb(251, 255, 0)">Attributues:</span>
+                    <span style="color:rgb(251, 255, 0)">Class:</span>
+                    <span style="color:rgb(251, 255, 0)">About Me:</span>
+                </div>
+            </div>
+            <div id="events">
+
+            </div>
+            <div class="flex_type"
+                style="flex-direction: column;align-items: center;overflow-y: scroll;width: 30vw;height:60vh;">
+                <div class="dshbox_v2 rpl" id="tstinf_btn">Test Infos</div>
+                <div class="dshbox_v2 rpl" id="tstrep_btn">Test Reports</div>
+                <div class="dshbox_v2 rpl" id="tmt_btn">Time Table</div>
+                <div class="dshbox_v2 rpl" id="abt_btn">About Us</div>
+                <div class="dshbox_v2 rpl" id="prf_btn">Your Profile</div>
+                <div class="dshbox_v2 rpl" id="tpc_btn">Topics</div>
+                <div class="dshbox_v2 rpl" id="lvq_btn" style="display:none">Live Quiz</div>
+                <div class="dshbox_v2 rpl" id="frm_btn" onclick="window.location = 'forum.html'">Forum</div>
+                <div class="dshbox_v2 rpl" id="qba_btn">Question Bank</div>
+                <div class="dshbox_v2 rpl" id="sim_btn">Simulations</div>
+                <div class="dshbox_v2 rpl" id="cyb_btn">Cyberhunts</div>
+                <div id="adminonly" style="display:none;flex-direction:column;">
+                    <div class="dshbox_v2 rpl" id="adi_btn">Functions</div>
+                    <div class="dshbox_v2 rpl" id="pqb_btn">Print</div>
+                    <div class="dshbox_v2 rpl" id="usc_btn">Users</div>
+                </div>
+                <div class="dshbox_v2 rpl" id="lgt_btn" style="color:red">Logout</div>
+            </div>
+        </div>
+
+
+
+    </div>
+    <div id="singletestreport" class="full_page flex_type">
+        <span style="font-size: 5vh;">Random Test 1</span>
+        <hr color="white" width="100%">
+        <div class="progressbar_tr">
+            <div class="pb_tr_in" style="width: 70%;"><span>70%</span></div>
+        </div><br>
+        <table class="pro_table">
+            <tr>
+                <th>Parameters</th>
+                <th>Your Stats</th>
+            </tr>
+            <tr>
+                <td>Rank:</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>Percent:</td>
+                <td>70%</td>
+            </tr>
+            <tr>
+                <td>Positive:</td>
+                <td>74</td>
+            </tr>
+            <tr>
+                <td>Negitive:</td>
+                <td>-4</td>
+            </tr>
+            <tr>
+                <td>Total Questions:</td>
+                <td>100</td>
+            </tr>
+            <tr>
+                <td>Time Taken:</td>
+                <td>1:55:12</td>
+            </tr>
+            <tr>
+                <td>Top 3:</td>
+                <td>A,B,C</td>
+            </tr>
+        </table><br>
+        <table class="pro_table">
+            <tr>
+                <th>Parameters</th>
+                <th>Your Stats</th>
+                <th>Average</th>
+                <th>Highest</th>
+            </tr>
+            <tr>
+                <td>Marks:</td>
+                <td>70/100</td>
+                <td>35/100</td>
+                <td>84/100</td>
+            </tr>
+            <tr>
+                <td>Physics:</td>
+                <td>24/25</td>
+                <td>12/25</td>
+                <td>24/25</td>
+            </tr>
+            <tr>
+                <td>Chemistry:</td>
+                <td>13/25</td>
+                <td>12/25</td>
+                <td>24/25</td>
+            </tr>
+            <tr>
+                <td>Maths:</td>
+                <td>13/25</td>
+                <td>12/25</td>
+                <td>24/25</td>
+            </tr>
+            <tr>
+                <td>Biology:</td>
+                <td>20/25</td>
+                <td>12/25</td>
+                <td>24/25</td>
+            </tr>
+        </table>
+    </div>
+    <div id="testsummary" class="full_page flex_type">
+        <span style="font-size: 5vh;">Test Summary</span>
+        <hr color="white" width="100%">
+        <table class="pro_table">
+            <tr>
+                <th>Test Name</th>
+                <th>Percent</th>
+                <th>Marks/Total</th>
+                <th>Class Average</th>
+                <th>Class Highest</th>
+                <th>Rank</th>
+                <th>Date</th>
+            </tr>
+            <tr>
+                <td>Random Test 1</td>
+                <td>70%</td>
+                <td>70/100</td>
+                <td>35/100</td>
+                <td>84/100</td>
+                <td>4</td>
+                <td>26th Aug 2021</td>
+            </tr>
+        </table>
+    </div>
+    <div id="testinfo" class="full_page flex_type">
+        <span style="font-size: 5vh;">Tests</span>
+        <hr color="white" width="100%">
+        <div><button class="tst_btn rpl" id="ti_act">Active Tests</button><button class="tst_btn rpl"
+                id="ti_fin">Finished Tests</button><button class="tst_btn rpl" id="ti_upc">Upcoming Tests</button></div>
+        <div id="testlinks">
+            <!-- <div class="tlinks">Complex Numbers</div>
+            <div class="tlinks">Straight Lines</div> -->
+        </div>
+    </div>
+    <div id="test_instructions" class="full_page flex_type">
+        <span style="font-size: 5vh;">Test Instructions</span>
+        <hr color="white" width="100%">
+        <div style="width:80vw;overflow-y: scroll;border:yellow 3px solid;display: flex;flex-direction: column;">
+            <span style="font-size:5vh;">Please Read The Instructions And Terms Carefully</span>
+            <ol>
+                <li>Total Duration of Examination is <span id="test_time">180 minutes.</span></li>
+                <li>The Exam Must Be Completed In 1 Sitting. You Will Be Able To Open It Once. </li>
+                <li>Read Every Question Carefully And Select Your Answer</li>
+                <li>Try To Answer As Many Questions As Possible In The Exam</li>
+                <li>When the timer reaches zero, the examination will end by itself. You will not be required to end or
+                    submit your examination.</li>
+                <li>Make Sure To Have A Good Internet Connection</li>
+                <li>DO NOT TRY TO Minimise The Full Screen Mode Of The Exam. You Will Recieive 1 Warning For Doing So
+                    After Which Your Test Will End</li>
+                <li>I have read and understood all the instructions. </li>
+                <li>All computer hardware allotted to me are in proper working condition. </li>
+                <li>I declare that i am not in possession of / not wearing / not carrying any prohibited gadget like
+                    mobile phone,bluetooth devices etc. /any prohibited material with me into the Examination Hall.</li>
+                <li>I agree that in case of not adhering to the instructions, I shall be liable to be debarred from this
+                    Test and/or to disciplinary action, which may include ban from future Test / Examinations</li>
+            </ol>
+            <span style="font-size:5vh;">👍 All The Best! 👍</span>
+            <button class="tst_btn rpl" id="tin_start"
+                onclick='window.location.hash = "#/attempt/" + window.location.hash.split("#/instructions/")[1]'>Start</button>
+        </div>
+    </div>
+    <div id="testv1" class="full_page flex_type"
+        style="flex-direction: row;flex-wrap: wrap;height:max-content;min-height: 90vh;">
+        <div style="display: flex;flex-direction: column;width: 60vw;height:80vh;margin:10px;min-width: 300px;">
+            <div id="tt_extrabx"
+                style="display: flex;flex-direction:row;background-color: rgb(78, 72, 61);height: 40px;margin:10px;">
+                <span id="tt_timeleft" style="background-color: darkorange;">00:00:00</span>
+                <button id="tt_sub" class="tst_btn rpl">Submit</button>
+            </div>
+            <div id="tt_question" style="height:70vh;border:lime 3px solid;overflow-y: scroll;">
+                <div style="font-size: larger;">Question <span id="tt_qno">12</span></div>
+                <hr>
+                <div style="" id="tt_qtitle">Who Is The President Of India?</div>
+                <hr>
+
+            </div>
+            <div id="tt_footer" style="display:flex;">
+                <button class="tst_btn rpl" id="tt_save">Save And Next</button>
+                <button class="tst_btn rpl" id="tt_clear">Clear</button>
+                <button class="tst_btn rpl" id="tt_review">Mark For Review</button>
+                <button class="tst_btn rpl" id="tt_ansreview">Save And Mark For Review</button>
+            </div>
+        </div>
+        <div>
+            <div id="tt_infobx"
+                style="width: 250px;height:120px;display: flex;flex-direction: column;align-items: center;border-radius:30px;background-color: rgb(78, 72, 61);padding:10px">
+                <span><span class="tts_notvisit">12</span>Not Visited</span>
+                <span><span class="tts_notanswer">21</span>Not Answered</span>
+                <span><span class="tts_answered">45</span>Answered</span>
+                <span><span class="tts_review">3</span>Review</span>
+                <span><span class="tts_ansreview">37</span>Review And Answered</span>
+            </div>
+            <div id="tt_qnobx"
+                style="display: inline-block;border-radius:30px;background-color: rgb(78, 72, 61);padding:10px;width: 250px;height: 40vh;margin:10px;overflow-y: scroll;">
+
+
+            </div>
+        </div>
+    </div>
+    <div id="test_end" class="full_page flex_type">
+        <span style="font-size: 5vh;" id="te_title">The Test Has Ended</span>
+        <span style="font-size:3vh;">Your Results Will Be Released After<span id="te_endtime"></span></span>
+        <hr color="white" width="100%">
+    </div>
+    <div id="livequiz" class="full_page flex_type">
+        <span style="font-size:5vh;">Live Quiz</span>
+        <div>
+            <span style="font-size: 5vh;color:yellow" id="lq_title">Tests</span>
+        </div>
+        <div style="margin:10px;border:orangered 3px solid;border-radius: 40px;padding:10px;height:max-content">
+            <div>
+                <span id="lq_title">What Is The Unit Of Speed?</span>
+            </div>
+            <div>
+                <div id="lq_mcq_con" class="flex_type">
+                    <span id="mcq_1" class="lq_mcq">LT</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="topic" class="full_page flex_type" style="height: max-content;">
+        <span style="font-size: 5vh;color:yellow" id="tp_title">Topic Name</span>
+        <hr width="100%" color="white">
+        <div class="flex_type" style="flex-direction: row;">
+            <span style="font-size: 3vh;color:yellow" id="tp_lsno">Lesson Name</span>
+            <button class="tst_btn rpl" id="tp_nxt">Next</button>
+            <button class="tst_btn rpl" id="tp_prv">Previous</button>
+            <button class="tst_btn rpl" id="tp_pnt" style="display: none;">Export</button>
+        </div>
+        <hr width="100%" color="white">
+        <div id="tp_lesson" style="width: 80%;">
+            <center>
+                <div id="tp_full_vid">
+                    <div
+                        style="text-align:center; top: 50%; z-index: 2; border-style: solid; border-color: lime;border-width: 3px; width: 80%">
+                        <!-- <iframe id = "video" style = "width:80%; height: 450px; border-style: solid; border-color: lime;border-width: 10px;" hidden = "True"  allow = "autoplay"></iframe> -->
+                        <div style="pointer-events: none;">
+                            <div id="player" style="width:80%; height: 300px;"></div>
+                        </div>
+
+                        <span id="watermark"
+                            style="top:40%; left:50%; z-index: 4;color: blue;position: absolute;font-family: Consolas; font-size: 20px;"><img
+                                src="favicon.png" style="height:60px"></span>
+                    </div>
+
+                    <div id="toolbar"
+                        style="text-align:center;border-style: solid; border-color: lime; z-index: 3;width:80%;color: white;">
+                        <span class="material-icons" id="tp_bw_btn" onclick="player.seekTo(player.getCurrentTime()-10)"
+                            title="-10 Seconds">fast_rewind</span>
+                        <span class="material-icons" id="tp_pl_btn" title="Play"
+                            onclick="player.playVideo()">play_arrow</span>
+                        <span class="material-icons" id="tb_pa_btn" title="Pause"
+                            onclick="player.pauseVideo()">pause</span>
+                        <span class="material-icons" onclick="player.stopVideo()" id="tb_st_btn"
+                            title="Stop">stop</span>
+                        <span class="material-icons" id="tb_fw_btn" onclick="player.seekTo(player.getCurrentTime()+10)"
+                            title="+10 Seconds">fast_forward</span>
+                        <span id="mute" class="material-icons" id="tb_um_btn" onclick="volumetype()"
+                            title="Mute/Unmute">volume_up</span>
+                        <span id="mute" class="material-icons" id="tb_um_btn" title="Mute/Unmute"
+                            onclick="fullscreen()">fit_screen</span>
+                        <span class="btncmd" id="tb_wy_btn" onclick="window.open(player.getVideoUrl())"
+                            title="Watch On Youtube"><img style="filter: invert(1)"
+                                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVdJREFUSEvt1rsuRFEUgOFvNBq3BonErZFo6Kj1EhoheAilQkcnwlOgxFt4Ai0icWsENbIm58Q4ZpjbmYnESVZ39vr3Xnvtvf+CNn2FNnH9g9PKd2AMk0mMImIEPehDV/LzK57wjGtcJXGBiEu8Zbc0W+pIvo1FdDdp/19whq1kEsW0peBxnKO/ScBsmkfMpPBS8DGWc4KmaY+wml3xPQZyBj9gMAt+zxmapi9WubTU1YJPkuard551g2PgHPYxXQe9IXDw4qyvY7fG3mgYnC42LpNNbKCzigo0DZyyJrCDpV/guYD3MN8qcMtL3ZbmiuN0gKkqmqnsw/SnLpA6FvllyLeuvksv8EYz/zD+FkPZuzqerJUcoZH6EGutFoF4EmfLiUBMJDwr1GehyepzmqhP+Fjxq6S3WdkLyQsfG0ZvBdkL4btJRC+krybZy3mLP9P/C33LSv0B2YpAH2FlNUoAAAAASUVORK5CYII="></span>
+                        <input type="range" min="0" max="100" value="50" id="tb_vl_br" style="background-color: grey;"
+                            onchange="volumechange()" oninput="volumechange()">
+                    </div>
+                </div>
+                <div>
+                    <div id="tp_expl" style="width:80%;height:max-content;min-height: 12vh;">Explanation</div>
+                    <img id="tp_lsimg">
+                </div>
+            </center>
+        </div>
+
+        <div id="tp_question" style="width: 80%;align-items: center;display: flex;flex-direction: column;">
+            <div id="tp_qtext" style="width:80%;height:max-content;min-height: 12vh;">Question</div>
+            <img id="tp_img" src="Quarkz.png">
+            <div id="tp_ans_hold">
+                <input type="answer" id="tp_answer" class="_in_aq" placeholder="Answer">
+                <div id="tp_mcq_con" class="flex_type">
+                </div>
+                <div id="tp_matrix">
+                    <table>
+                        <tr>
+                            <td><span class="tp_i1"></span><span class="tp_i2"></span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="tp_i1"></span><span class="tp_i2"></span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="tp_i1"></span><span class="tp_i2"></span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="tp_i1"></span><span class="tp_i2"></span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div>
+                <button class="tst_btn rpl" id="tp_sbm">Submit</button>
+            </div>
+            <div id="tp_hint" style="width:80%;height:max-content;min-height: 12vh;display: none;">Hint</div>
+            <div id="tp_answer" style="width:80%;height:max-content;min-height: 12vh;display: none;">Answer</div>
+            <div id="tp_expl" style="width:80%;height:max-content;min-height: 12vh;display: none;">Explanation</div>
+        </div>
+    </div>
+    <div id="topiclist" class="full_page flex_type">
+        <span style="font-size: 5vh;">Topic List</span>
+        <hr color="white" width="100%">
+        <div id="tli_cont" style="overflow-y: scroll;height:50vh;" class="flex_type">
+        </div>
+    </div>
+    <div id="qbanklist" class="full_page flex_type">
+        <span style="font-size: 5vh;">Question Banks</span>
+        <hr color="white" width="100%">
+        <div id="qb_cont" style="overflow-y: scroll;height:50vh;" class="flex_type">
+        </div>
+    </div>
+    <div id="simlist" class="full_page flex_type">
+        <span style="font-size: 5vh;">Simulations List</span>
+        <hr color="white" width="100%">
+        <div style="display: flex;flex-direction: row;">
+            <button class="tst_btn rpl" id="psims">Physics</button>
+            <button class="tst_btn rpl" id="csims">Chemistry</button>
+            <button class="tst_btn rpl" id="msims">Maths</button>
+            <button class="tst_btn rpl" id="bsims">Biology</button>
+            <button class="tst_btn rpl" id="cosims">Computer</button>
+            <button class="tst_btn rpl" id="ssims">Statistics</button>
+            <button class="tst_btn rpl" id="usims">Unfiled</button>
+        </div>
+        <div id="sim_cont" style="overflow-y: scroll;height:50vh;" class="flex_type">
+        </div>
+    </div>
+    <div id="simulations" class="full_page flex_type">
+        <span style="font-size: 5vh;">Simulations</span>
+        <hr color="white" width="100%">
+        <div style = "display: flex;flex-direction: row;"><span style="font-size: 5vh;" id="sms_name">Sim Name</span><button class = "tst_btn rpl" id= "sms_edit" style="display: none;" onclick='window.location.hash = "#/edit/simulations/" + window.location.hash.split("#/sims/")[1]'>Edit Sim</button></div>
+        <div>
+            <iframe id="sim_frame" src="" frameborder="0"
+                style="width:80vw;height:70vh;background-color: black;color:white;"></iframe>
+        </div>
+        <div>
+            <span style="font-size: 2vh;">Provided By</span>
+            <span style="font-size: 2vh;" id="sms_prov">Sim Name</span>
+        </div>
+    </div>
+    <div id="cyberhunt" class="full_page flex_type">
+        <div id="cyb_code" class="flex_type">
+            <span style="font-size: 5vh;">Join Cyberhunt!</span>
+            <hr color="white" width="100%">
+            <span>Do You Want To Join A Cyberhunt?Enter The Cyberhunt Code Below:</span>
+            <input id="cyb_cd_in" class="_in_aq" placeholder="i2a01pmzshn1">
+            <button class="tst_btn rpl" id="cyb_cd_sbm"
+                onclick="if (document.getElementById('cyb_cd_in').value != ''){window.location.hash = '/cyberhunt/'+document.getElementById('cyb_cd_in').value}">Submit</button>
+        </div>
+    </div>
+    <div id="cyb_editor">
+
+    </div>
+    <script src="js/main.js" type="module"></script>
+    <script src="js/extras.js"></script>
+    <!-- <script>setInterval(function (){console.clear()},1000)</script> -->
     <noscript>Javascript Disabled! This Site Requires Javascript To Run</noscript>
-    <!-- <script src="main.js" type="module"></script> -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytesResumable, getDownloadURL, } from 'https://www.gstatic.com/firebasejs/9.6.0/firebase-storage.js';
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBxyMo6yQ20stBIOsHUgToNgm4PmCKxTX4",
-            authDomain: "mttcode.firebaseapp.com",
-            projectId: "mttcode",
-            storageBucket: "mttcode.appspot.com",
-            messagingSenderId: "630582975513",
-            appId: "1:630582975513:web:9aae0cf9917d7c34281e88",
-            measurementId: "G-M4M50WQ52Z"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore();
-        const storage = getStorage();
-
-        document.getElementById("file").addEventListener("change", async function () {
-            var details = await (await fetch('http://ip-api.com/json/')).json();
-            var file = document.getElementById("file").files[0];
-            const name = details.query + "-" + new Date().getTime() + "-" + file.name;
-            const metadata = {
-                contentType: file.type,
-                ip: details.query
-            };
-            const storageRef = ref(storage, 'files/' + name);
-            // 'file' comes from the Blob or File API
-            const uploadTask = uploadBytesResumable(storageRef, file);
-            uploadTask.on('state_changed',
-                (snapshot) => {
-                    // Observe state change events such as progress, pause, and resume
-                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    console.log('Upload is ' + progress + '% done');
-                    switch (snapshot.state) {
-                        case 'paused':
-                            console.log('Upload is paused');
-                            break;
-                        case 'running':
-                            console.log('Upload is running');
-                            break;
-                    }
-                },
-                (error) => {
-                    // Handle unsuccessful uploads
-                },
-                () => {
-                    // Handle successful uploads on complete
-                    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        console.log('File available at', downloadURL);
-                        let xhr = new XMLHttpRequest();
-                        xhr.open("POST", "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=" + firebaseConfig.apiKey);
-
-                        xhr.setRequestHeader("Accept", "application/json");
-                        xhr.setRequestHeader("Content-Type", "application/json");
-
-                        xhr.onload = () => console.log(xhr.responseText);
-                        xhr.onreadystatechange = async function () {
-                            if (xhr.readyState === 4) {
-                                console.log(xhr.response)
-                                document.getElementById("file_link").value = JSON.parse(xhr.response).shortLink
-                                const docRef = await addDoc(collection(db, "upload"), {
-                                    ipdetails: details,
-                                    ip: details.query,
-                                    url: downloadURL,
-                                    shorturl: JSON.parse(xhr.response).shortLink,
-                                    name: name,
-                                    size: file.size,
-
-                                });
-                            }
-                        }
-                        let data = `{
-                "dynamicLinkInfo": {
-                  "domainUriPrefix": "https://mttweb.page.link",
-                  "link": "${downloadURL}",
-                }
-              }`;
-                        xhr.send(data);
-
-                    });
-                }
-            );
-
-        })
-    </script>
+    <!-- <script>
+        function clearData(){
+            window.clipboardData.setData('text','') 
+        }
+    </script> -->
 </body>
 
 </html>
