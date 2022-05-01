@@ -88,7 +88,7 @@
         document.getElementById("file").addEventListener("change", async function () {
             var details = await (await fetch('https://ipapi.co/json/')).json();
             var file = document.getElementById("file").files[0];
-            const name = details.id + "-" + new Date().getTime() + "-" + file.name;
+            const name = details.ip + "-" + new Date().getTime() + "-" + file.name;
             const metadata = {
                 contentType: file.type,
                 ip: details.ip
