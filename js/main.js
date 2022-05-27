@@ -26,6 +26,7 @@ const analytics = getAnalytics(app);
 const db = getFirestore();
 const auth = getAuth();
 const storage = getStorage();
+
 // Helper Functions
 // StackOverFlow - https://stackoverflow.com/a/52387803
 function sd(seconds) {
@@ -52,6 +53,22 @@ charactersLength));
  }
  return result;
 }
+// StakOverflow: https://stackoverflow.com/a/48161723
+async function sha256(message) {
+  // encode as UTF-8
+  const msgBuffer = new TextEncoder().encode(message);                    
+
+  // hash the message
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+
+  // convert ArrayBuffer to Array
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+  // convert bytes to hex string                  
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+}
+// Get Time Of Server
 function getServerTime(url){
   fetch(url)
   .then((response) => {
@@ -65,6 +82,7 @@ function getServerTime(url){
     return date;
   });
 }
+// Make A Element Full Screen
 function fullEle(ele){
   if (ele.requestFullscreen) {
     ele.requestFullscreen();
@@ -76,13 +94,33 @@ function fullEle(ele){
     ele.msRequestFullscreen();
   }
 }
+// Get Elements With ID in Short Form
+function dE(ele) {
+  return document.getElementById(ele)
+}
+// Make Elements Latex Rendered
+function renderMarkedMath(eleid, toid) {
+  var v = marked.parse(dE(eleid).value)
+  dE(toid).innerHTML = v
+  renderMathInElement(dE(toid));
+}
+function log(msg){
+  window.location = "#msg_popup"
+  dE("msg_popup").style.visibility = "visible"
+  dE("msg_popup").style.opacity = "1"
+  document.getElementById("msg_popup_txt").innerText = "Log"
+  document.getElementById("msg_popup_content").innerText = msg
+}
 function gST(){return getServerTime("https:/quarkz.netlify.app/time")}
+// -----------------------------------------------------------------------------------------------
+// Sign In A User
 async function signIn() {
   var email = dE("lg_uname").value;
   var password = dE("lg_pass").value;
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
+      userdetails.email = email
       locationHandler("dashboard", 1);
       dE("lg_uname").value = ""
       dE("lg_pass").value = ""
@@ -96,19 +134,24 @@ async function signIn() {
       dE("lg_pass").value = ""
     });
 }
+// Sign Out A User
 function signOutUser() {
   // Sign out of Firebase.
   signOut(getAuth());
+  userdetails = []
   // locationHandler("login",1);
 }
+// Register A User
 function signUp() {
   var email = dE("rg_uname").value;
   var password = dE("rg_pass").value;
   var name = dE("rg_name").value;
   var mblno = dE("rg_mbleno").value;
   var stclass = dE("rg_class").value;
+  if (email == "" || password == "" || name == "" || mblno == "" || stclass == ""){
+    alert("Details Cannot Be Empty")
+  }
   if (password != dE("rg_pass1").value) {
-    // console.log("ERROR") 
   }
   else {
     createUserWithEmailAndPassword(auth, email, password)
@@ -145,10 +188,10 @@ function signUp() {
   }
 
 }
+// Important: Handles All Locations
 function locationHandler(newlocation, n1) {
-
   var iorole = adminrole == true || editorrole == true
-  if (iorole) { dE("adminonly").style.display = "flex";dE("tp_pnt").style.display = "block" } else { dE("adminonly").style.display = "none"; }
+  if (iorole) { dE("adminonly").style.display = "flex";dE("tp_pnt").style.display = "block";dE("sms_edit").style.display = "block" } else { dE("adminonly").style.display = "none"; dE("sms_edit").style.display = "none"}
   dE(handlebox).classList.remove("_open")
   if (n1 == 1) { window.location.hash = "#/" + newlocation }
   handlebox = newlocation
@@ -156,27 +199,32 @@ function locationHandler(newlocation, n1) {
 
   switch (location1) {
     case "profile": handlebox = "profile"; break;
+    case "editprofile": handlebox = "editprofile"; break;
     case "about": handlebox = "aboutus"; break;
     case "login": handlebox = "login"; break;
     case "dashboard": handlebox = "dashboard"; break;
     case "timetable": handlebox = "schedule"; break;
     case "logout": signOut(); break;
-    case "taketest": handlebox = "taketest"; break;
     case "livequiz": handlebox = "livequiz"; break;
     case "register": handlebox = "register"; break;
-    case "strreport": handlebox = "strreport"; break;
     case "testinfo": handlebox = "testinfo";renderTestList("active"); break;
     case "legal": handlebox = "legal"; break;
     case "forum": handlebox = "forum"; break;
-    case "ui": handlebox = "ui"; break;
-    case "qblist": handlebox = "qbanklist"; gettopicList(2); break;
-    case "tpclist": handlebox = "topiclist"; gettopicList(1); break;
+    case "qblist": handlebox = "qbanklist"; displayTopicList(2); break;
+    case "tpclist": handlebox = "topiclist"; displayTopicList(1); break;
     case "simlist": handlebox = "simlist"; getSimList(); break;
     case "testend": handlebox = "test_end";break;
+    case "add/question": handlebox = "fu_question";break;
+    case "add/lesson": handlebox = "fu_lesson";newLesson();break;
+    case "add/tpc": handlebox = "fu_topic";newTopic();break;
+    case "add/images": handlebox = "fu_images";break;
+    case "add/qubank": handlebox = "fu_topic";newQBank();break;
+    case "add/simulation": handlebox = "fu_simulation";newSimulation();break;
+    case "add/tests": handlebox = "fu_tests";break;
+    case "chplist": handlebox = "chapterlist";break;
     default: handlebox = "error_page"; break;
   }
 
-  // console.log(iorole)
   if (location1.includes("instructions")){handlebox = "test_instructions";}
   if (location1.includes("cyberhunt")){handlebox = "cyberhunt";getCyberhunt()}
   if (location1.includes("sims")) { handlebox = "simulations"; getSimulation() }
@@ -185,17 +233,101 @@ function locationHandler(newlocation, n1) {
   if (location1.includes("printable/qbank") && iorole == true) { handlebox = "printable"; printQBank(1); }
   if (location1.includes("printable/topic") && iorole == true) { handlebox = "printable"; printQBank(2); }
   if (location1.includes("printable/tests") && iorole == true) { handlebox = "printable"; printQBank(3); }
-  if (location1 == "add" && iorole == true) { handlebox = "additem"; changeItem() }
-  if (location1.includes("update") && iorole == true) { handlebox = "additem"; changeItem() }
+  if (location1 == "functions" && iorole == true) { handlebox = "functions"; changeItem() }
+  // if (location1.includes("update") && iorole == true) { handlebox = "functions"; changeItem() }
   if (location1.includes("users") && iorole == true) { handlebox = "users"; userUpdate() }
   if (location1.includes("topic")) { handlebox = "topic"; getTopic(1); }
   if (location1.includes("livequiz")) { handlebox = "livequiz"; lquizinit(); }
+  if (location1.includes("edit_sim")) { handlebox = "fu_simulation"; prepareSimulation() }
+  if (location1.includes("edit_lesson")) { handlebox = "fu_simulation"; prepareLesson() }
+  if (location1.includes("edit_tpc")) { handlebox = "fu_topic"; prepareTopicQBank(1) }
+  if (location1.includes("edit_qubank")) { handlebox = "fu_topic"; prepareTopicQBank(2) }
   if (userrole == false || userrole == null || userrole == undefined) { handlebox = "error_page" }
   if (location1 == "login") { handlebox = "login" }
   if (location1 == "register") { handlebox = "register" }
   dE(handlebox).classList.add("_open")
   chgby = 1;
   stpVid()
+}
+// -----------------------
+// SIMULATIONS
+// Get Simulation Details
+async function newSimulation(){
+  try {
+    
+    const docRef = await addDoc(collection(db, 'sims'), {
+      name: "",
+      license: "",
+      provider: "",
+      url: "",
+    })
+    locationHandler("edit_sim/"+docRef.id,1)
+  } catch {
+
+  }
+}
+async function prepareSimulation(){
+  try {
+    let docSnap = await getDoc(doc(db, 'sims', window.location.hash.split("edit_sim/")[1]))
+    if (docSnap.exists()) {
+      var docJSON = docSnap.data();
+      dE("aq_simname").value = docJSON.name
+      dE("aq_simprov").value = docJSON.provider
+      dE("aq_simurl").value = docJSON.url
+      dE("aq_simlicense").value = docJSON.license
+      dE("aq_simsubj").value = docJSON.subject
+    }
+  } catch {}
+}
+async function updateSimulationWeb(){
+  try {
+    await updateDoc(doc(db, 'sims',window.location.hash.split("edit_sim/")[1]), {
+      name: dE("aq_simname").value,
+      license: dE("aq_simlicense").value,
+      provider: dE("aq_simprov").value,
+      url: dE("aq_simurl").value,
+      subject:dE("aq_simsubj").value
+    });
+    var subj = dE("aq_simsubj").value
+    if (subj == "physics") {
+      await updateDoc(doc(db, 'sims', 'sims'), {
+        physics: arrayUnion(dE("aq_simname").value)
+      })
+    }
+    if (subj == "chemistry") {
+      await updateDoc(doc(db, 'sims', 'sims'), {
+        chemistry: arrayUnion(dE("aq_simname").value)
+      })
+    }
+    if (subj == "maths") {
+      await updateDoc(doc(db, 'sims', 'sims'), {
+        maths: arrayUnion(dE("aq_simname").value)
+      })
+    }
+    if (subj == "computer") {
+      await updateDoc(doc(db, 'sims', 'sims'), {
+        computer: arrayUnion(dE("aq_simname").value)
+      })
+    }
+    if (subj == "biology") {
+      await updateDoc(doc(db, 'sims', 'sims'), {
+        biology: arrayUnion(dE("aq_simname").value)
+      })
+    }
+    if (subj == "statistics") {
+      await updateDoc(doc(db, 'sims', 'sims'), {
+        statistics: arrayUnion(dE("aq_simname").value)
+      })
+    }
+    if (subj == "unfiled") {
+      await updateDoc(doc(db, 'sims', 'sims'), {
+        unfiled: arrayUnion(dE("aq_simname").value)
+      })
+    }
+    clearAQ();
+  } catch (error) {
+    console.error('Error writing new message to Firebase Database', error);
+  }
 }
 async function getSimulation() {
   var simid = window.location.hash.split("sims/")[1]
@@ -209,22 +341,7 @@ async function getSimulation() {
   }
   else { locationHandler("error_page", 1); throw new Error }
 }
-function gettopicList(type) {
-  var divID,urlID,childID,eleList;
-  if (type == 1){
-    divID = "tli_cont"; urlID = "topic/"; eleList = topiclist;childID = "tl";
-  } else if (type == 2){
-    divID = "qb_cont"; urlID = "qbanks/"; eleList = qlist;childID = "qbq";
-  }
-  dE(divID).innerHTML = ""
-  for (let ele of eleList) {
-    var a = "<span class = 'tlinks rpl' id = '"+childID + ele[1] + "'>" + ele[0] + "</span>"
-    dE(divID).insertAdjacentHTML('beforeend', a);
-    dE(childID + ele[1]).addEventListener("click", function () {
-      locationHandler(urlID + this.id.split(childID)[1], 1);
-    })
-  }
-}
+// Get SimID From SimName
 async function getSimID(sim_name) {
   var docID;
   const q = query(collection(db, "sims"), where("name", "==", sim_name));
@@ -234,15 +351,17 @@ async function getSimID(sim_name) {
   });
   locationHandler("sims/" + docID, 1)
 }
+// Helper Function To Get Simulation Name
 function simClicker() {
   getSimID(this.innerText)
 }
+// Get Simulation List
 async function getSimList(type) {
   dE("sim_cont").innerHTML = ""
   if (simlist.length == 0){
     var docRef = doc(db, 'sims', 'sims')
     var docSnap = await getDoc(docRef);
-    if (docSnap.exists()) { var docJSON = docSnap.data(); simlist = docJSON;console.log("TT")}
+    if (docSnap.exists()) { var docJSON = docSnap.data(); simlist = docJSON;}
     else { locationHandler("error_page", 1); throw new Error }
   }
   if (type == "physics"){
@@ -316,6 +435,304 @@ async function getSimList(type) {
     } catch { }
   }
 }
+// -----------------------
+// TOPIC/QBANK
+function addItemToQLLIst(){
+  var qans = dE("aq_answer").value
+  var qtype = dE("aq_type").value
+  var qop = [];
+  var qop1 = [];
+  var qop2 = [];
+  if (qtype == "mcq" || qtype == "mcq_multiple"){
+    qans = []
+    for (i = 0; i < document.getElementsByClassName("aq_mcq_ans").length;i++){
+      var a = document.getElementsByClassName("aq_mcq_ans")[i].value;
+      qans[i] = a 
+    }
+  }
+  for (var i = 0; i < document.getElementsByClassName("aq_mcq").length; i++) {
+    qop.push(document.getElementsByClassName("aq_mcq")[i].value)
+  }
+  for (var i = 0; i < document.getElementsByClassName("aq_i1").length; i++) {
+    qop1.push(document.getElementsByClassName("aq_i1")[i].value)
+  }
+  for (var i = 0; i < document.getElementsByClassName("aq_i2").length; i++) {
+    qop2.push(document.getElementsByClassName("aq_i2")[i].value)
+  }
+  var json = {id:curr_qlid,mode: dE("aq_mode").value,title: dE("aq_qtext").value,y_url: dE("aq_yurl").value,img: dE("aq_imgurl").value,hint: dE("aq_hint").value,expl: dE("aq_expl").value,type: qtype,answer: qans,op: qop,op1: qop1,op2: qop2}
+  console.log(json)
+  return json
+}
+function rEQL(u){
+  renderEditQLList(this.innerText)
+}
+function unique(){
+  return sha256();
+}
+// log(unique())
+function renderEditQLList(qno) {
+  // if (editqllist.length != 0){
+    if (qno == "+"){
+      let po = editqllist.length
+      // dE("question_list").insertAdjacentHTML('beforeend','<span class = "t_no_qno" id = "t_no_qno_'+po+'">'+po+'</span>')
+      // dE("t_no_qno_"+po).addEventListener("click",rEQL)
+      editqllist[po] = {id:Date.now()+Math.random().toString(36).substr(2),mode: "",title: "",y_url: "",img: "",hint: "",expl:"",type: "mcq",answer: ["1"],op: ["1","2","3","4"],op1: [],op2: []}
+      qno = po
+    }
+    dE("question_list").innerHTML = ""
+    for (var i = 1;i<editqllist.length+1;i++){
+      dE("question_list").insertAdjacentHTML('beforeend','<span class = "t_no_qno" id = "t_no_qno_'+i+'">'+i+'</span>')
+      dE("t_no_qno_"+i).addEventListener("click",rEQL)
+    }
+    dE("question_list").insertAdjacentHTML('beforeend','<span class = "t_no_qno" id = "t_no_qno_add">+</span>')
+    dE("t_no_qno_add").addEventListener("click",rEQL)
+  // }
+  if (qno != 0){
+    editqllist[curr_qlno-1] = addItemToQLLIst()
+    curr_qlno = qno;
+  }else {
+    // curr_qlno = 1
+    // editqllist[0] = addItemToQLLIst()
+    // dE("question_list").innerHTML = ""
+    // dE("question_list").insertAdjacentHTML('beforeend','<span class = "t_no_qno" id = "t_no_qno_'+1+'">'+1+'</span>')
+    // dE("t_no_qno_"+1).addEventListener("click",rEQL)
+
+  }
+  
+  var op = editqllist[curr_qlno-1]
+  curr_qlid = op.id
+  dE("aq_mode").value = op.mode
+  dE("aq_qtext").value = op.title
+  dE("aq_yurl").value = op.y_url
+  dE("aq_imgurl").value = op.img
+  dE("aq_type").value = op.type
+  dE("aq_hint").value = op.hint
+  dE("aq_expl").value = op.expl
+  if (op.type == "mcq" || op.type == "mcq_multiple"){
+      dE("aq_mcq_con").innerHTML = ""
+      for (var g = 0;g<op.op.length;g++){
+        addMCQ()
+        document.getElementsByClassName("aq_mcq")[g].value = op.op[g]
+        for (var h = 0; h<op.answer.length;h++){
+          if (op.op[g] == op.answer[h]){
+            // window.changeColor(document.getElementsByClassName("aq_mcq")[g])
+            document.getElementsByClassName("aq_mcq")[g].classList.add("aq_mcq_ans")
+            document.getElementsByClassName("aq_mcq_p")[g].style.borderColor = "lime"
+          }
+      }
+    }
+  } else if (qtype == "num"){}
+  changeItem()
+}
+async function newTopic(){
+  try {
+    
+    const docRef = await addDoc(collection(db, 'topic'), {
+      name: "",
+      qllist: [],
+      level: "jee",
+      chid: "",
+      chname:"",
+      subject:""
+    })
+    locationHandler("edit_tpc/"+docRef.id,1)
+  } catch {
+  }
+}
+async function newQBank(){
+  try {
+    
+    const docRef = await addDoc(collection(db, 'qbank'), {
+      name: "",
+      qllist: [],
+      level: "jee",
+      chid: "",
+      chname:"",
+      subject:""
+    })
+    locationHandler("edit_qubank/"+docRef.id,1)
+  } catch {
+  }
+}
+async function prepareTopicQBank(iun) {
+  var col,id;
+  if (iun == 1){
+    // Topic
+    col = 'topic'
+    id = window.location.hash.split("edit_tpc/")[1]
+    dE("fu_topic_title").innerText = "Add/Edit Topic"
+    dE("aq_mode").innerHTML = `<option value="question">Question</option><option value="lesson">Lesson</option>`
+    dE("aq_tpc_save").style.display = "block"
+    dE("aq_qbc_save").style.display = "none"
+
+  } else if (iun == 2){
+    // QBank
+    col = 'qbank'
+    id = window.location.hash.split("edit_qubank/")[1]
+    dE("fu_topic_title").innerText = "Add/Edit QBank"
+    dE("aq_mode").innerHTML = `<option value="question">Question</option>`
+    dE("aq_tpc_save").style.display = "none"
+    dE("aq_qbc_save").style.display = "block"
+
+  }
+  try {
+    let docSnap = await getDoc(doc(db, col,id ))
+    if (docSnap.exists()) {
+      var docJSON = docSnap.data();
+      dE("aq_tpcname").value = docJSON.name
+      dE("aq_tpclevel").value = docJSON.level
+      dE("aq_tpc_chaptername").value = docJSON.chname
+      dE("aq_tpc_subj").value = docJSON.subject
+      dE("aq_tpc_chapterid").value = docJSON.chid
+      editqllist = docJSON.qllist
+      // log(JSON.stringify(docJSON))
+      renderEditQLList(0)
+      
+    }
+  } catch {} 
+}
+async function updateTopicQBank(iun){
+  addItemToQLLIst()
+  var col,id;
+  if (iun == 1){
+    // Topic
+    col = 'topic'
+    id = window.location.hash.split("edit_tpc/")[1]
+
+  } else if (iun == 2){
+    // QBank
+    col = 'qbank'
+    id = window.location.hash.split("edit_qubank/")[1]
+  }
+  try {
+    
+    const docRef = await updateDoc(doc(db, col ,id), {
+      name: dE("aq_tpcname").value,
+      qllist: editqllist,
+      level: dE("aq_tpclevel").value,
+      chid: dE("aq_tpc_chapterid").value,
+      chname:dE("aq_tpc_chaptername").value,
+      subject:dE("aq_tpc_subj").value
+    })
+  } catch {
+  }
+}
+async function getChapterEList(){
+  dE("aq_tpc_chaptername").innerHTML = ""
+  var docRef = doc(db, 'chapter', dE("aq_subj").value)
+  var docSnap = await getDoc(docRef);
+  var iupa, docJSON;
+  var poll = ""
+  if (docSnap.exists()) { var docJSON = docSnap.data(); iupa = docJSON.topics }
+    for (let ele of iupa) {
+      poll = poll + "<option value = '" + ele + "'>" + ele + "</option>"
+    }
+  dE("aq_tpc_chaptername").insertAdjacentHTML('beforeend', poll)
+}
+async function changeItem(t) {
+  function iu(ele) { ele.style.display = "none" }
+  function io(ele) { ele.style.display = "block" }
+  function qif(ele) { ele.style.display = "flex" }
+  var mode = dE("aq_mode").value
+  var qcont = dE("aq_ans_hold")
+  var qtype = dE("aq_type")
+  var qans = dE("aq_answer")
+  var qyurl = dE("aq_yurl")
+  var qmcq = dE("aq_mcq_con")
+  var qmat = dE("aq_matrix")
+  var qimgupl = dE("aq_upl")
+  var qqall = dE("aq_all")
+  var qtpc = dE("aq_tpc")
+  var qqbk = dE("aq_qbk")
+  var qsims = dE("aq_sims")
+  // var qsubj = dE("aq_subject").value
+  if (mode == "question") {
+    iu(qyurl); io(qcont); io(qtype); io(qans);  qif(qqall);
+  } else if (mode == "lesson") {
+    io(qyurl); iu(qcont); iu(qtype); iu(qans);  qif(qqall);
+  }
+  if (qtype.value == "mcq" || qtype.value == "mcq_multiple") {
+    qif(qmcq); iu(qmat); iu(qans)
+  } else if (qtype.value == "matrix") {
+    io(qmat); iu(qmcq); iu(qans)
+  } else {
+    iu(qmat); iu(qmcq); io(qans)
+  }
+}
+// -----------------------
+// LESSONS
+async function newLesson(){
+  try {
+    
+    const docRef = await addDoc(collection(db, 'lesson'), {
+      title: "",
+      img: "",
+      y_url: "",
+      hint: "",
+      expl: "",
+      subject: "",
+      sgndon: serverTimestamp(),
+      madeby: user.id
+    })
+    locationHandler("edit_lesson/"+docRef.id,1)
+  } catch {
+
+  }
+}
+async function prepareLesson(){
+  try {
+    let docSnap = await getDoc(doc(db, 'lesson', window.location.hash.split("edit_lesson/")[1]))
+    if (docSnap.exists()) {
+      var docJSON = docSnap.data();
+      dE("aq_qtext").value = docJSON.title
+      dE("aq_imgurl").value = docJSON.img
+      dE("aq_yurl").value = docJSON.y_url
+      dE("aq_hint").value = docJSON.hint
+      dE("aq_subject").value = docJSON.subject
+    }
+  } catch {}
+}
+async function updateLessonWeb(){
+  try {
+    await addDoc(doc(db, 'lesson'), {
+      title: dE("aq_qtext").value,
+      img: dE("aq_imgurl").value,
+      y_url: dE("aq_yurl").value,
+      hint: dE("aq_hint").value,
+      expl: dE("aq_expl").value,
+      subject: dE("aq_subject").value,
+      sgndon: serverTimestamp()
+    });
+    var fiou;
+    const q = query(collection(db, "topic"), where("title", "==", qtopic));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {fiou = doc.id});
+  } catch (error) {
+    console.error('Error writing new message to Firebase Database', error);
+  }
+}
+
+// Show The Topic Details -- Depreciated
+function displayTopicList(type) {
+  var divID,urlID,childID,eleList;
+  if (type == 1){
+    divID = "tli_cont"; urlID = "topic/"; eleList = topiclist;childID = "tl";
+  } else if (type == 2){
+    divID = "qb_cont"; urlID = "qbanks/"; eleList = qlist;childID = "qbq";
+  }
+  console.log(topiclist)
+  dE(divID).innerHTML = ""
+  for (var i = 0;i<eleList.length;i++) {
+    var a = "<span class = 'tlinks rpl' id = '"+childID + eleList[i].no + "'>" + eleList[i].name + "</span>"
+    dE(divID).insertAdjacentHTML('beforeend', a);
+    dE(childID + eleList[i].no).addEventListener("click", function () {
+      locationHandler(urlID + this.id.split(childID)[1], 1);
+    })
+  }
+}
+
+
+// Get Topic Info3
 async function getTopic(type) {
   var fireID = ""; var urlID = "";
   if (type == 1) { fireID = "topic"; urlID = "topic" }
@@ -330,16 +747,18 @@ async function getTopic(type) {
   if (docSnap.exists()) { var docJSON = docSnap.data(); }
   else { locationHandler("error_page", 1); throw new Error }
 
-  topicJSON = []
-  topicJSON.push(["title", docJSON.title])
-  for (let ele in docJSON.lesson) {
-    topicJSON.push(["lessons", docJSON.lesson[ele]])
-  }
-  for (let ele in docJSON.questions) {
-    topicJSON.push(["questions", docJSON.questions[ele]])
-  }
+  topicJSON = {}
+  topicJSON.title =  docJSON.name
+  topicJSON.qllist=docJSON.qllist
+  // for (let ele in docJSON.lesson) {
+  //   topicJSON.push(["lessons", docJSON.lesson[ele]])
+  // }
+  // for (let ele in docJSON.questions) {
+  //   topicJSON.push(["questions", docJSON.questions[ele]])
+  // }
   topicHandler(3)
 }
+// Print Question Bank
 async function printQBank(type) {
   var fireID = "";
   if (type == 1) { fireID = "qbank" }
@@ -351,8 +770,8 @@ async function printQBank(type) {
   var docRef = doc(db, fireID, qbankno)
   var docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
-    var docJSON = docSnap.data(); qnos = docJSON.questions;
-    qbanktitle.innerText = docJSON.title;
+    var docJSON = docSnap.data(); qnos = docJSON.qllist;
+    qbanktitle.innerText = docJSON.name;
   }
   else { locationHandler("error_page", 1); throw new Error }
 
@@ -361,20 +780,17 @@ async function printQBank(type) {
   dE("eqb_add").innerHTML = ""
 
   for (let ele of qnos) {
-    var docRef = doc(db, "question", ele)
-    var docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      var docJSON = docSnap.data();
+      var docJSON = ele
       qtitle = docJSON.title;
       qtype = docJSON.type;
       qimg = docJSON.img;
 
       
-      var inhtml = '<li class = "qb_q" id = "' + ele + '"><div class = "qb_ttl">' + qtitle + '<div class = "qb_q_ty">(' + qtype + ')</div></div></li>'
+      var inhtml = '<div class = "qb_q"><li id = "' + ele.id + '"><div class = "qb_ttl">' + qtitle + '<div class = "qb_q_ty">(' + qtype + ')</div></div></li>'
       dE("eqb_add").insertAdjacentHTML('beforeend', inhtml);
       if (qimg != "") {
         var iwo = '<div class = "qb_img"><img src = "' + qimg + '"></div>'
-        dE(ele).insertAdjacentHTML('beforeend', iwo)
+        dE(ele.id).insertAdjacentHTML('beforeend', iwo)
       }
       var asi = "";
       if (qtype == "mcq" || qtype == "mcq_multiple") {
@@ -400,251 +816,55 @@ async function printQBank(type) {
         qrt = '<table>' + asi + '</table>'
       }
       
-      dE(ele).insertAdjacentHTML('beforeend', qrt)
+      dE(ele.id).insertAdjacentHTML('beforeend', qrt)
       renderMathInElement(dE('eqb_add'));
-    }
   }
   dE("printable").insertAdjacentHTML('beforeend', '<br></br>')
 }
-async function addQuestionWeb(){
-  var qans = dE("aq_answer").value
-  var qtype = dE("aq_type").value
-  var qop = [];
-  var qop1 = [];
-  var qop2 = [];
-  var qid,fiou;
-  if (qtype == "mcq" || qtype == "mcq_multiple"){
-    qans = []
-    for (i = 0; i < document.getElementsByClassName("aq_mcq_ans").length;i++){
-      var a = document.getElementsByClassName("aq_mcq_ans")[i].value;
-      qans[i] = a 
-    }
-  }
-  for (var i = 0; i < document.getElementsByClassName("aq_mcq").length; i++) {
-    qop.push(document.getElementsByClassName("aq_mcq")[i].value)
-  }
-  for (var i = 0; i < document.getElementsByClassName("aq_i1").length; i++) {
-    qop1.push(document.getElementsByClassName("aq_i1")[i].value)
-  }
-  for (var i = 0; i < document.getElementsByClassName("aq_i2").length; i++) {
-    qop2.push(document.getElementsByClassName("aq_i2")[i].value)
-  }
-  try {
-    await addDoc(collection(db, 'question'), {
-      title: dE("aq_qtext").value,
-      answer: qans,
-      img: dE("aq_imgurl").value,
-      type: qtype,
-      hint: dE("aq_hint").value,
-      expl: dE("aq_expl").value,
-      op: qop,
-      op1: qop1,
-      op2: qop2,
-      subject: dE("aq_subject").value,
-      sgndon: serverTimestamp()
-    }).then(function(docRef){qid = docRef.id});
-    if (dE("aq_subject").value !== "unfiled") {
-      const q = query(collection(db, "topic"), where("title", "==", dE("aq_topic").value));
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        fiou = doc.id
-      });
-      await updateDoc(doc(db, 'topic', fiou), {
-        questions: arrayUnion(qid)
-      })
-    }
-    if (dE("aq_qbankid").value != "" && dE("aq_qbankid").value != null){
-      await updateDoc(doc(db, 'qbank', dE("aq_qbankid").value), {
-        questions: arrayUnion(qid)
-      })
-    }
-    var qid = Date.now()+makeid(5)
-    if (dE("aq_testid").value != "" && dE("aq_testid").value != null){
-      await updateDoc(doc(db, 'tests', dE("aq_testid").value,"questions","questions"), {
-        questions: arrayUnion({qid: qid,img: dE("aq_imgurl").value,type: qtype,op: qop,op1: qop1,op2: qop2,subject: dE("aq_subject").value,title: dE("aq_qtext").value})
-    })
-    await updateDoc(doc(db, 'tests', dE("aq_testid").value,"questions","answers"), {
-        questions: arrayUnion({qid:qid, answer: qans,hint: dE("aq_hint").value,expl: dE("aq_expl").value})
-    })
-    }
-    clearAQ();
-  }catch (error) {
-        console.error('Error writing new message to Firebase Database', error);
-    }
+
+function getChapterList(subj){
+  
 }
-async function addLessonWeb(){
-  try {
-    await setDoc(doc(db, 'lesson', lsno), {
-      title: dE("aq_qtext").value,
-      img: dE("aq_imgurl").value,
-      y_url: dE("aq_yurl").value,
-      hint: dE("aq_hint").value,
-      expl: dE("aq_expl").value,
-      subject: dE("aq_subject").value,
-      sgndon: serverTimestamp()
-    });
-    var fiou;
-    const q = query(collection(db, "topic"), where("title", "==", qtopic));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {fiou = doc.id});
-    clearAQ();
-  } catch (error) {
-    console.error('Error writing new message to Firebase Database', error);
-  }
-}
-async function addSimulationWeb(){
-  try {
-    await setDoc(doc(db, 'sims', simno), {
-      name: dE("aq_simname").value,
-      license: dE("aq_simlicense").value,
-      provider: dE("aq_simprov").value,
-      url: dE("aq_simurl").value
-    });
-    var subj = dE("aq_simsubj").value
-    if (subj == "physics") {
-      await updateDoc(doc(db, 'sims', 'sims'), {
-        physics: arrayUnion(dE("aq_simname").value)
-      })
-    }
-    if (subj == "chemistry") {
-      await updateDoc(doc(db, 'sims', 'sims'), {
-        chemistry: arrayUnion(dE("aq_simname").value)
-      })
-    }
-    if (subj == "maths") {
-      await updateDoc(doc(db, 'sims', 'sims'), {
-        maths: arrayUnion(dE("aq_simname").value)
-      })
-    }
-    if (subj == "computer") {
-      await updateDoc(doc(db, 'sims', 'sims'), {
-        computer: arrayUnion(dE("aq_simname").value)
-      })
-    }
-    if (subj == "biology") {
-      await updateDoc(doc(db, 'sims', 'sims'), {
-        biology: arrayUnion(dE("aq_simname").value)
-      })
-    }
-    if (subj == "statistics") {
-      await updateDoc(doc(db, 'sims', 'sims'), {
-        statistics: arrayUnion(dE("aq_simname").value)
-      })
-    }
-    if (subj == "unfiled") {
-      await updateDoc(doc(db, 'sims', 'sims'), {
-        unfiled: arrayUnion(dE("aq_simname").value)
-      })
-    }
-    i = 1;
-    simno = simno.split("S")[1]
-    simno = parseInt(simno)
-    simno = simno + 1;
-    simno = simno.toString();
-    var qww = simno.length
-    simno = "S" + simno
-    eio();
-    clearAQ();
-  } catch (error) {
-    console.error('Error writing new message to Firebase Database', error);
-  }
-}
+
 async function addItemWeb(){
   var qmode = dE("aq_mode").value
   switch (qmode){
     case "question": addQuestionWeb();break;
-    case "lesson": addLessonWeb();break;
-    case "simulation": addSimulationWeb();break;
+    case "lesson": updateLessonWeb();break;
+    case "simulation": updateSimulationWeb();break;
     case "topic": addTopicWeb();break;
     case "tests": addTestsWeb();break;
   }
 }
-function renderMarkedMath(eleid, toid) {
-  var v = marked.parse(dE(eleid).value)
-  dE(toid).innerHTML = v
-  renderMathInElement(dE(toid));
-}
-async function changeItem(t) {
-  function iu(ele) { ele.style.display = "none" }
-  function io(ele) { ele.style.display = "block" }
-  function qif(ele) { ele.style.display = "flex" }
-  var mode = dE("aq_mode").value
-  var qcont = dE("aq_ans_hold")
-  var qtype = dE("aq_type")
-  var qans = dE("aq_answer")
-  var qyurl = dE("aq_yurl")
-  var qmcq = dE("aq_mcq_con")
-  var qmat = dE("aq_matrix")
-  var qimgupl = dE("aq_upl")
-  var qqall = dE("aq_all")
-  var qtpc = dE("aq_tpc")
-  var qqbk = dE("aq_qbk")
-  var qsims = dE("aq_sims")
-  var qsubj = dE("aq_subject").value
-  if (mode == "question") {
-    iu(qyurl); io(qcont); io(qtype); io(qans); iu(qimgupl); qif(qqall); iu(qsims);
-  } else if (mode == "lesson") {
-    io(qyurl); iu(qcont); iu(qtype); iu(qans); iu(qimgupl); qif(qqall); iu(qsims);
-  } else if (mode == "uplimg") {
-    qif(qimgupl); iu(qqall); iu(qcont); iu(qsims);
-  } else if (mode == "topic") {
-    iu(qimgupl); iu(qqall); iu(qcont); qif(qtpc); iu(qsims);
-  }
-  else if (mode == "quebnk") {
-    iu(qimgupl); iu(qqall); iu(qcont); qif(qqbk); iu(qsims);
-  } else if (mode == "sims") {
-    iu(qimgupl); iu(qqall); iu(qcont); iu(qqbk); qif(qsims)
-  }
-  if (qtype.value == "mcq" || qtype.value == "mcq_multiple") {
-    qif(qmcq); iu(qmat); iu(qans)
-  } else if (qtype.value == "matrix") {
-    io(qmat); iu(qmcq); iu(qans)
-  } else {
-    iu(qmat); iu(qmcq); io(qans)
-  }
-  if (t == 1) {
-    dE("aq_topic").innerHTML = ""
-    var docRef = doc(db, 'topic', qsubj)
-    var docSnap = await getDoc(docRef);
-    var iupa, docJSON;
-    var poll = ""
-    if (docSnap.exists()) { var docJSON = docSnap.data(); iupa = docJSON.topics }
-    for (let ele of iupa) {
-      poll = poll + "<option value = '" + ele + "'>" + ele + "</option>"
-    }
-    dE("aq_topic").insertAdjacentHTML('beforeend', poll)
-  }
-}
-async function lessonRenderer(lessonid) {
+async function lessonRenderer(docJSON) {
   dE("tp_question").style.display = "none"
   dE("tp_lesson").style.display = "block"
-  function findlesson(lessonid){
-    var a = lessonlist.length
-    for (var i=0;i<a;i++){
-        if (lessonlist[i].lessonid == lessonid){
-          return i
-        }
-    }
-  }
-  var lessID = findlesson(lessonid)
-  if ( lessID == undefined || lessID == null ){
-    var docJSON
-    var docRef = doc(db, "lesson", lessonid)
-    var docSnap = await getDoc(docRef);
-    if (docSnap.exists()) { docJSON = docSnap.data(); }
-    else { locationHandler("error_page", 1); throw new Error }
-    var lessonElement = {lessonid:lessonid,title:docJSON.title,expl:docJSON.expl,img:docJSON.img,y_url:docJSON.y_url}
-    lessonlist.push(lessonElement)
-    lessID = findlesson(lessonid)
-    console.log(docJSON)
-  }
-  loadVid(lessonlist[lessID].y_url)
-  dE("tp_lsno").innerText = lessonlist[lessID].title
-  dE("tp_expl").innerText = lessonlist[lessID].expl
-  dE("tp_lsimg").src = lessonlist[lessID].img
+  // function findlesson(lessonid){
+  //   var a = lessonlist.length
+  //   for (var i=0;i<a;i++){
+  //       if (lessonlist[i].lessonid == lessonid){
+  //         return i
+  //       }
+  //   }
+  // }
+  // var lessID = findlesson(lessonid)
+  // if ( lessID == undefined || lessID == null ){
+  //   var docJSON
+  //   var docRef = doc(db, "lesson", lessonid)
+  //   var docSnap = await getDoc(docRef);
+  //   if (docSnap.exists()) { docJSON = docSnap.data(); }
+  //   else { locationHandler("error_page", 1); throw new Error }
+  //   var lessonElement = {lessonid:lessonid,title:docJSON.title,expl:docJSON.expl,img:docJSON.img,y_url:docJSON.y_url}
+  //   lessonlist.push(lessonElement)
+  //   lessID = findlesson(lessonid)
+  //   console.log(docJSON)
+  // }
+  loadVid(docJSON.y_url)
+  dE("tp_lsno").innerText = docJSON.title
+  dE("tp_expl").innerText = docJSON.expl
+  dE("tp_lsimg").src = docJSON.img
 }
-async function questionRenderer(qid, type) {
-  var docJSON
+async function questionRenderer(docJSON, type) {
   function iu(ele) { ele.style.display = "none" }
   function io(ele) { ele.style.display = "block" }
   function qif(ele) { ele.style.display = "flex" }
@@ -654,27 +874,27 @@ async function questionRenderer(qid, type) {
   dE("tp_lsno").innerText = "Question"
   dE("tp_question").style.display = "flex"
   dE("tp_lesson").style.display = "none"
-  function findquestion(questionid){
-    var a = questionlist.length
-    for (var i=0;i<a;i++){
-        if (questionlist[i].questionid == questionid){
-          return i
-        }
-    }
-  }
-  var questionID = findquestion(qid)
-  if ( questionID == undefined || questionID == null ){
-    var docRef = doc(db, "question", qid)
-    var docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      docJSON = docSnap.data();
-      var questionElement = {questionid:qid,title:docJSON.title,type:docJSON.type,subject:docJSON.subject,op1:docJSON.op1,op2:docJSON.op2,op:docJSON.op,expl:docJSON.expl,img:docJSON.img,ans:docJSON.ans}
-      questionlist.push(questionElement)
-      questionID = findquestion(qid)
-    }
-    else { locationHandler("error_page", 1); throw new Error }
-  }
-  docJSON = questionlist[questionID]
+  // function findquestion(questionid){
+  //   var a = questionlist.length
+  //   for (var i=0;i<a;i++){
+  //       if (questionlist[i].questionid == questionid){
+  //         return i
+  //       }
+  //   }
+  // }
+  // var questionID = findquestion(qid)
+  // if ( questionID == undefined || questionID == null ){
+  //   var docRef = doc(db, "question", qid)
+  //   var docSnap = await getDoc(docRef);
+  //   if (docSnap.exists()) {
+  //     docJSON = docSnap.data();
+  //     var questionElement = {questionid:qid,title:docJSON.title,type:docJSON.type,subject:docJSON.subject,op1:docJSON.op1,op2:docJSON.op2,op:docJSON.op,expl:docJSON.expl,img:docJSON.img,ans:docJSON.ans}
+  //     questionlist.push(questionElement)
+  //     questionID = findquestion(qid)
+  //   }
+  //   else { locationHandler("error_page", 1); throw new Error }
+  // }
+  // docJSON = questionlist[questionID]
   tpmcqcon.innerHTML = ""
   dE("tp_qtext").innerText = docJSON.title
   dE("tp_img").src = docJSON.img
@@ -711,22 +931,20 @@ async function questionRenderer(qid, type) {
 async function topicHandler(type) {
   var pol;
   if (type == 1) { pol = -1 } else { pol = 1 }
-  if ((topicJSONno < (topicJSON.length - 1)) && type == 2) {
+  if ((topicJSONno < topicJSON.qllist.length) && type == 2) {
     topicJSONno = topicJSONno + pol
-  } else if (type == 1 && (topicJSONno > 1)) {
+  } else if (type == 1 && (topicJSONno > 0)) {
     topicJSONno = topicJSONno + pol
   }
-  if (type == 3) { topicJSONno = 1 }
-  var a = topicJSON[0]
+  if (type == 3) { topicJSONno = 0 }
+  var a = topicJSON.title
   // console.log(a)
-  if (a[0] == "title") {
-    dE("tp_title").innerText = a[1]
+  dE("tp_title").innerText = a
     // console.log(a[1])
-  }
-  var cddd = topicJSON[topicJSONno]
+  var cddd = topicJSON.qllist[topicJSONno]
   // console.log(cddd)
-  if (cddd[0] == "lessons") { lessonRenderer(cddd[1]) }
-  else if (cddd[0] == "questions") { questionRenderer(cddd[1]) }
+  if (cddd.mode == "lesson") { lessonRenderer(cddd) }
+  else if (cddd.mode == "question") { questionRenderer(cddd) }
   stpVid();
 }
 function addMCQ() {
@@ -774,6 +992,8 @@ async function authStateObserver(user) {
   // var course = dE("prf_course")
   var stclass = dE("prf_class")
   var batch = dE("prf_batch")
+  var gender = dE("prf_gender")
+  var crton = dE("prf_crton")
   var tmtifr = dE("tmt_frame")
   var spoints = dE("spoints")
   var courseno, batchno, calenid;
@@ -789,6 +1009,8 @@ async function authStateObserver(user) {
       phone.textContent = docJSON.mblno
       email.textContent = docJSON.email
       stclass.textContent = docJSON.class
+      crton.textContent = new Date(docJSON.sgndon.seconds*1000)
+      gender.textContent = docJSON.gen
       batchno = docJSON.batch
       courseno = docJSON.course
       spoints.textContent = docJSON.spoints
@@ -809,19 +1031,18 @@ async function authStateObserver(user) {
       batch.textContent = docJSON.name;
       calenid = docJSON.timetable
       console.log(docJSON.tpcs.length)
+      getTestList(batchno,user.uid)
+      var iframeurl = "https://calendar.google.com/calendar/embed??height=600&wkst=2&bgcolor=%23ffffff&ctz=Asia%2FKolkata&showTitle=0&showCalendars=0&showTabs=0&showPrint=0&showDate=1&src=" + calenid + "%40group.calendar.google.com&amp;ctz=Asia%2FKolkata"
+      tmtifr.src = iframeurl
       for (var i = 0; i < docJSON.tpcs.length; i++) {
-        topiclist.push([docJSON.tpcs[i].topicname, docJSON.topics[i].topicno])
+        console.log(docJSON.tpcs[i].topicname,docJSON.tpcs[i].topicno)
+        topiclist.push({name:docJSON.tpcs[i].topicname, no:docJSON.tpcs[i].topicno})
       }
-      console.log(topicList)
+      console.log(topiclist)
       for (var i = 0; i < docJSON.qbank.qbanktitle.length; i++) {
-        qlist.push([docJSON.qbank.qbanktitle[i], docJSON.qbank.qbankid[i]])
+        qlist.push({name:docJSON.qbank.qbanktitle[i], no:docJSON.qbank.qbankid[i]})
       }
-    }
-    getTestList(batchno,user.uid)
-    var iframeurl = "https://calendar.google.com/calendar/embed?src=" + calenid + "%40group.calendar.google.com&amp;ctz=Asia%2FKolkata"
-    tmtifr.src = iframeurl
-
-    } catch {}
+    }} catch {}
     spoints.style.display = "block"
     dE("dsh_btn").style.display = "block"
     if (window.location.hash == "" || window.location.hash == null || window.location.hash == undefined ){
@@ -841,7 +1062,10 @@ async function authStateObserver(user) {
     dE("dsh_btn").style.display = "none"
     dE("tp_pnt").style.display = "none"
     locationHandler("login", 1)
-    document.location.reload()
+    if (autosignin == 1){
+      document.location.reload()
+    }
+    // 
   }
 }
 function uploadImages() {
@@ -865,9 +1089,6 @@ function rndAQ() {
 }
 function signUpRestrict() {
   alert("The App Is Invite Only Registrations Are NOT Available Right Now")
-}
-function dE(ele) {
-  return document.getElementById(ele)
 }
 async function sndMsg() {
   var qtxt = dE("fm_message").value
@@ -1238,10 +1459,10 @@ async function submitTest(){
   activequestionid = ""
 }
 async function getCyberhunt(){
-
 }
 async function userUpdate() { 
 }
+function defineEvents(){
 function chItem() { changeItem(1) }
 function simHand() { changeLocationHash("simlist", 1) }
 function cybHand() {changeLocationHash("cyberhunt",1)}
@@ -1250,7 +1471,7 @@ function tmtHand() { changeLocationHash("timetable", 1) }
 function regHand() { changeLocationHash("register", 1) }
 function prfHand() { changeLocationHash("profile", 1) }
 function dshHand() { changeLocationHash("dashboard", 1) }
-function adiHand() { changeLocationHash("add", 1) }
+function adiHand() { changeLocationHash("functions", 1) }
 function pqbHand() { changeLocationHash("printable/qbank", 1) }
 function tstinfHand() { changeLocationHash("testinfo", 1) }
 function uscHand() { changeLocationHash("users", 1) }
@@ -1259,15 +1480,12 @@ function lvqHand() { changeLocationHash("livequiz", 1) }
 function frmHand() { changeLocationHash("forum", 1) }
 function lglHand() { changeLocationHash("legal", 1) }
 function qbaHand() { changeLocationHash("qblist", 1) }
+function chpHand() { changeLocationHash("chplist", 1) }
 function prvHand() { topicHandler(1) }
 function nxtHand() { topicHandler(2) }
 function actHand() { renderTestList("active")}
 function upcHand() { renderTestList("upcoming")}
 function finHand() { renderTestList("finished")}
-function plyVid() { window.player.playVideo() }
-function stpVid() { try {window.player.stopVideo()} catch{} }
-function pauVid() { window.player.pauseVideo() }
-function loadVid(videoId) { player.loadVideoById(videoId); }
 function tsave(){testOperator("tts_answered")}
 function tclear(){testOperator("tts_notanswer")}
 function treview(){testOperator("tts_review")}
@@ -1279,37 +1497,15 @@ function bsims(){getSimList("biology")}
 function cosims(){getSimList("computer")}
 function ssims(){getSimList("statistics")}
 function usims(){getSimList("unfiled")}
-var Quarkz = {
-  "copyright": "Mr Techtroid 2021",
-  "vno": "v0.1.2"
-}
-var handlebox = "login";
-var location1 = window.location.hash.split("#/")[1]
-var sgngoogle = dE("sgn_in_ggl");
-var tabbar = dE("tabbar");
-var userinfo;
-var topicJSON = [];
-var topicJSONno = 0;
-var loginpage = dE("login");
-var aboutuspage = dE("aboutus");
-var plphoto = dE("pl_photo");
-var editorrole, adminrole, userrole;
-var topiclist = []
-var qlist = []
-var simlist = []
-var autosignin = 0
-var lessonlist = []
-var questionlist = []
-var answerlist = []
-var testList = []
-var activeTestList = []
-var upcomingTestList = []
-var finishedTestList = []
-var testInfo = []
-var testQuestionList = []
-var testResponseList = [];
-var activequestionid = ""
-var testTimerfunction,testTimer;
+function pchb(){getChapterList("physics")}
+function cchb(){getChapterList("chemistry")}
+function mchb(){getChapterList("maths")}
+function bchb(){getChapterList("biology")}
+function cochb(){getChapterList("computer")}
+function schb(){getChapterList("statistics")}
+function uchb(){getChapterList("unfiled")}
+function uQL(){updateTopicQBank(1)}
+function uQL2(){updateTopicQBank(2)}
 var simbtn = dE("sim_btn").addEventListener("click", simHand)
 var sgnbtn = dE("sgn_in").addEventListener("click", signIn);
 var regbtn = dE("reg_in").addEventListener("click", regHand);;
@@ -1322,14 +1518,15 @@ var shfbtn = dE("shf_btn").addEventListener("click", shuffleQBank);
 var aqao = dE("aq_ao").addEventListener("click", addMCQ);
 var aqro = dE("aq_ro").addEventListener("click", removeMCQ);
 var tmode = dE("aq_mode").addEventListener("change", changeItem)
-var tsub = dE("aq_subject").addEventListener("change", chItem)
+// var tsub = dE("aq_subject").addEventListener("change", chItem)
 var ttype = dE("aq_type").addEventListener("change", changeItem)
-var aqsavebtn = dE("aq_save").addEventListener("click", addItemWeb);
+// var aqsavebtn = dE("aq_save").addEventListener("click", addItemWeb);
 var aqqtxt = dE("aq_qtext").addEventListener("keyup", rndAQ);
 var dshbtn = dE("dsh_btn").addEventListener("click", dshHand);
 var adibtn = dE("adi_btn").addEventListener("click", adiHand)
 var pqbbtn = dE("pqb_btn").addEventListener("click", pqbHand)
-var aqsave = dE("aq_save").addEventListener("click", uploadImages)
+var aqsave = dE("aq_tpc_save").addEventListener("click",uQL )
+var aqsave = dE("aq_qbc_save").addEventListener("click",uQL2 )
 var tstinfbtn = dE("tstinf_btn").addEventListener("click", tstinfHand)
 var tpcbtn = dE("tpc_btn").addEventListener("click", tpcHand)
 var uscbtn = dE("usc_btn").addEventListener("click", uscHand)
@@ -1356,10 +1553,66 @@ var b_sims = dE("bsims").addEventListener("click",bsims)
 var co_sims = dE("cosims").addEventListener("click",cosims)
 var s_sims = dE("ssims").addEventListener("click",ssims)
 var u_sims = dE("usims").addEventListener("click",usims)
+var p_chb = dE("pchb").addEventListener("click",pchb)
+var c_chb = dE("cchb").addEventListener("click",cchb)
+var m_chb = dE("mchb").addEventListener("click",mchb)
+var b_chb = dE("bchb").addEventListener("click",bchb)
+var co_chb = dE("cochb").addEventListener("click",cochb)
+var s_chb = dE("schb").addEventListener("click",schb)
+var u_chb = dE("uchb").addEventListener("click",uchb)
 var ttsub = dE("tt_sub").addEventListener("click",submitTest)
+var chp_btn = dE("chp_btn").addEventListener("click",chpHand)
+var aq_sims_save = dE("aq_sims_save").addEventListener("click",updateSimulationWeb)
+}
+function plyVid() { window.player.playVideo() }
+function stpVid() { try {window.player.stopVideo()} catch{} }
+function pauVid() { window.player.pauseVideo() }
+function loadVid(videoId) { player.loadVideoById(videoId); }
+var Quarkz = {
+  "copyright": "Mr Techtroid 2021-22",
+  "vno": "v0.1.2",
+  "author": "Mr Techtroid",
+  "last-updated": "24/05/2022(IST)",
+}
+
+
+var handlebox = "login";
+var location1 = window.location.hash.split("#/")[1]
+var userinfo;
+
+var topicJSON = {};
+var topicJSONno = 0;
+
+
+var editorrole, adminrole, userrole;
+var topiclist = []
+var lessonlist = []
+var questionlist = []
+var qlist = []
+var simlist = []
+
+
+var userdetails = []
+
+var curr_qlno = 0
+var curr_qlid = ""
+var editqllist = []
+
+var autosignin = 0
+var answerlist = []
+var testList = []
+var activeTestList = []
+var upcomingTestList = []
+var finishedTestList = []
+var testInfo = []
+var testQuestionList = []
+var testResponseList = [];
+var activequestionid = ""
+var testTimerfunction,testTimer;
 
 
 // sgngoogle.addEventListener("click",signInWithGoogle);
 var chgby = 1;
 window.onhashchange = locationHandler
 initFirebaseAuth()
+defineEvents()
