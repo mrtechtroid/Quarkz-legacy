@@ -199,7 +199,7 @@ function locationHandler(newlocation, n1) {
 
   switch (location1) {
     case "profile": handlebox = "profile"; break;
-    case "editprofile": handlebox = "editprofile"; break;
+    case "editprofle": handlebox = "editprofile"; break;
     case "about": handlebox = "aboutus"; break;
     case "login": handlebox = "login"; break;
     case "dashboard": handlebox = "dashboard"; break;
@@ -786,7 +786,7 @@ async function printQBank(type) {
       qimg = docJSON.img;
 
       
-      var inhtml = '<div class = "qb_q"><li id = "' + ele.id + '"><div class = "qb_ttl">' + qtitle + '<div class = "qb_q_ty">(' + qtype + ')</div></div></li>'
+      var inhtml = '<div class = "qb_q"><span id = "' + ele.id + '">' + qtitle + '<div class = "qb_q_ty">(' + qtype + ')</span></div>'
       dE("eqb_add").insertAdjacentHTML('beforeend', inhtml);
       if (qimg != "") {
         var iwo = '<div class = "qb_img"><img src = "' + qimg + '"></div>'
@@ -796,9 +796,9 @@ async function printQBank(type) {
       if (qtype == "mcq" || qtype == "mcq_multiple") {
         var qop = docJSON.op;
         for (let ele1 of qop) {
-          asi += "<li>" + ele1 + '</li>'
+          asi += "<div class = 'qb_mcq_opt'>" + ele1 + '</div>'
         }
-        var qrt = '<ol class = "qb_mcq" type = "a">' + asi + '</ol>'
+        var qrt = '<div class = "qb_mcq" type = "a">' + asi + '</div>'
 
       }
       if (qtype == "taf") {
