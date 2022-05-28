@@ -20,6 +20,7 @@
         crossorigin="anonymous"></script>
     <!-- Purification Of Marked JS-->
     <link rel="icon" href="favicon.png" type="image/icon type">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -95,33 +96,6 @@
         <iframe id="tmt_frame" src="" style="border: 0" width="100%" height="90%" frameborder="0" scrolling="no"
             style="background-color: black;color:white"></iframe>
     </div>
-    <div id="editprofile" class="full_page flex_type">
-        <span style="font-size: 5vh;">Edit Profile</span>
-        <table class="pro_table" style="border:lime 3px solid;">
-            <tr>
-                <td class="sp_txt">Name:</td>
-                <td><input id="ed_prf_name"></input></td>
-            </tr>
-            <tr>
-                <td class="sp_txt">Username:</td>
-                <td><input id="ed_prf_uname"></input></td>
-            </tr>
-            <tr>
-                <td class="sp_txt">Class:</td>
-                <td><input id="ed_prf_class"></td></td>
-            </tr>
-            <tr>
-                <td class="sp_txt">Gender:</td>
-                <td><input id="ed_prf_gender"></input></td>
-            </tr>
-            <tr style="">
-                <td class="sp_txt">Profile Photo:</td>
-                <td>
-                    <div id="prf_pphoto" style="width:100px;height:100px;"></div>
-                    <button class="tst_btn rpl" id="prf_ava">Change Avatar</button>
-                </td>
-            </tr>
-    </div>
     <div id="profile" class="full_page flex_type" style="justify-content: center;">
         <span style="font-size: 5vh;">Profile</span>
         <table class="pro_table" style="border:lime 3px solid;">
@@ -166,6 +140,36 @@
             </tr>
         </table>
     </div>
+    <div id="editprofile" class="full_page flex_type">
+        <span style="font-size: 5vh;">Edit Profile</span>
+        <table class="pro_table" style="border:lime 3px solid;">
+            <tr>
+                <td class="sp_txt">Name:</td>
+                <td><input id="ed_prf_name"></input></td>
+            </tr>
+            <tr>
+                <td class="sp_txt">Username:</td>
+                <td><input id="ed_prf_uname"></input></td>
+            </tr>
+            <tr>
+                <td class="sp_txt">Class:</td>
+                <td><input id="ed_prf_class"></td></td>
+            </tr>
+            <tr>
+                <td class="sp_txt">Gender:</td>
+                <td><input id="ed_prf_gender"></input></td>
+            </tr>
+            <tr style="">
+                <td class="sp_txt">Profile Photo:</td>
+                <td>
+                    <div id="prf_pphoto" style="width:100px;height:100px;"></div>
+                    <button class="tst_btn rpl" id="prf_ava">Change Avatar</button>
+                </td>
+            </tr>
+            </table>
+        </div>
+    </div>
+    
     <div id="register" class="full_page flex_type">
         <span style="font-size:5vh;">Register</span>
         <input type="tel" id="rg_mbleno" class="_in_reg" placeholder="Mobile No">
@@ -192,11 +196,10 @@
                 id="shf_btn">Shuffle</button><button class="tst_btn rpl no-print" id="tsinf_btn">Bank
                 Info</button></span>
         <hr color="white" width="100%">
-        <span style="font-size: 3vh;color:yellow" id="qb_title">ERROR</span>
+        <span style="font-size: 3vh;" id="qb_title">ERROR</span>
         <hr color="white" width="100%">
         <div id="pe_gi">
             <span id="pe_gi_inf"></span>
-            <hr color="white" width="100vw;">
         </div>
         <div id="pe_tst_info" class="flex_type no-print" style="display: none;">
             <span>Test<input type="radio"></span>
@@ -216,111 +219,26 @@
             <span>Matrix<input type="number" id="pe_mat_pno" class="_in_pq" value="12"><input type="number"
                     id="pe_mat_nno" class="_in_pq" value="-4"></span>
         </div>
-        <ol id="eqb_add" style="width:90%;height:80%;font-size: 2vh;" type="1">
-        </ol>
+        <div id="eqb_add" style="width:90%;height:80%;font-size: 2vh;z-index: 1;" type="1">
+        </div>
         <div class="divFooter">Quarkz!</div>
     </div>
     <div id="functions" class="full_page flex_type" style="overflow-y: scroll;">
         <span style="font-size: 5vh;" class="">Functions</span>
         <div class="flex_type" style="flex-direction: column;align-items: center;overflow-y: scroll;width: 50vw;height:60vh;">
-            <div class="dshbox_v2 rpl" onclick = "window.location.hash = '#/add/question'">Add Question</div>
-            <div class="dshbox_v2 rpl" onclick = "window.location.hash = '#/add/lesson'">Add Lesson</div>
             <div class="dshbox_v2 rpl" onclick = "window.location.hash = '#/add/tpc'">Add Topics</div>
-            <div class="dshbox_v2 rpl" onclick = "window.location.hash = '#/add/images'">Upload Images</div>
             <div class="dshbox_v2 rpl" onclick = "window.location.hash = '#/add/qubank'">Add Question Bank</div>
             <div class="dshbox_v2 rpl" onclick = "window.location.hash = '#/add/simulation'">Add Simulations</div>
+            <div class="dshbox_v2 rpl" onclick = "window.location.hash = '#/add/images'">Upload Images</div>
             <div class="dshbox_v2 rpl" onclick = "window.location.hash = '#/add/tests'">Add Test</div>
             <div class="dshbox_v2 rpl" onclick = "window.location.hash = '#/update/tests'">Update Test</div>
         </div>
     </div>
-    <!-- <div id="fu_question" class="full_page flex_type" style="overflow-y: scroll;">
-        <textarea type="tel" id="fqu_qtext" class="_in_aq" placeholder="Add A Question/Title" style="resize: none;overflow-y: scroll;height:20vh;"></textarea>
-        <input type="answer" id="fqu_answer" class="_in_aq" placeholder="Answer">
-        <input type="url" id="fqu_imgurl" class="_in_aq" placeholder="Image URL">
-        <input type="text" id="fqu_qbankid" class="_in_aq" placeholder="Question Bank ID">
-        <input type="text" id="fqu_testid" class="_in_aq" placeholder="Test ID">
-        <select name="type" id="fqu_subject" class="_in_aq" style="color:red">
-            <option value="physics">Physics</option>
-            <option value="chemistry">Chemistry</option>
-            <option value="maths">Maths</option>
-            <option value="biology">Biology</option>
-            <option value="english">English</option>
-            <option value="hindi">Hindi</option>
-            <option value="sanskrit">Sanskrit</option>
-            <option value="computer">Computer</option>
-            <option value="statistics">Statistics</option>
-            <option value="kvpy">KVPY</option>
-            <option value="unfiled">Unfiled</option>
-        </select>
-        <select name="type" id="fqu_topic" class="_in_aq" style="color:red"></select>
-        <textarea type="answer" id="fqu_expl" class="_in_aq" style="resize: none;overflow-y: scroll;"
-            placeholder="Explanation Text"></textarea>
-        <textarea type="answer" id="fqu_hint" class="_in_aq" style="resize: none;overflow-y: scroll;"
-            placeholder="Hint"></textarea>
-            <div id="fqu_ans_hold">
-                <select name="type" id="fqu_type" class="_in_aq" style="color:red">
-                    <option value="mcq">MCQ</option>
-                    <option value="mcq_multiple">MCQ Multiple</option>
-                    <option value="matrix">Matrix</option>
-                    <option value="numerical">Numerical</option>
-                    <option value="explain">Explain</option>
-                    <option value="fill">Fill In The Blanks</option>
-                </select>
-                <div id="fqu_mcq_con" class="flex_type">
-                    <div class="fqu_mcq_p" onclick="changeColor(this)"><input class="fqu_mcq"></div>
-                    <div class="fqu_mcq_p" onclick="changeColor(this)"><input class="fqu_mcq"></div>
-                    <div class="fqu_mcq_p" onclick="changeColor(this)"><input class="fqu_mcq"></div>
-                    <div class="fqu_mcq_p" onclick="changeColor(this)"><input class="fqu_mcq"></div>
-                </div>
-                <div id="fqu_matrix">
-                    <table>
-                        <tr>
-                            <td><input class="fqu_i1"><input class="fqu_i2"></td>
-                        </tr>
-                        <tr>
-                            <td><input class="fqu_i1"><input class="fqu_i2"></td>
-                        </tr>
-                        <tr>
-                            <td><input class="fqu_i1"><input class="fqu_i2"></td>
-                        </tr>
-                        <tr>
-                            <td><input class="fqu_i1"><input class="fqu_i2"></td>
-                        </tr>
-                    </table>
-                </div>
-                <button class="tst_btn rpl" id="aq_ao">Add Option</button>
-                <button class="tst_btn rpl" id="aq_ro">Remove Option</button>
-            </div>
-    </div> -->
     <div id = "fu_uplimg" class="full_page flex_type" style="overflow-y: scroll;">
         <input type="file" id="aq_file" class="_in_aq">
         <button class="tst_btn rpl" id="upl_files"></button>
         <input class="_in_aq" id="aq_uplurl" type="text">
     </div>
-    <!-- <div id = "fu_lesson" class="full_page flex_type" style="overflow-y: scroll;"> 
-        <textarea type="tel" id="aq_qtext" class="_in_aq" placeholder="Add A Question/Title" style="resize: none;overflow-y: scroll;height:20vh;"></textarea>
-            <input type="answer" id="aq_answer" class="_in_aq" placeholder="Answer">
-            <input type="url" id="aq_imgurl" class="_in_aq" placeholder="Image URL">
-            <input type="url" id="aq_yurl" class="_in_aq" placeholder="Youtube ID">
-            <select name="type" id="aq_subject" class="_in_aq" style="color:red">
-                <option value="physics">Physics</option>
-                <option value="chemistry">Chemistry</option>
-                <option value="maths">Maths</option>
-                <option value="biology">Biology</option>
-                <option value="english">English</option>
-                <option value="hindi">Hindi</option>
-                <option value="sanskrit">Sanskrit</option>
-                <option value="computer">Computer</option>
-                <option value="statistics">Statistics</option>
-                <option value="kvpy">KVPY</option>
-                <option value="unfiled">Unfiled</option>
-            </select>
-            <select name="type" id="aq_topic" class="_in_aq" style="color:red"></select>
-            <textarea type="answer" id="aq_expl" class="_in_aq" style="resize: none;overflow-y: scroll;"
-                placeholder="Explanation Text"></textarea>
-            <textarea type="answer" id="aq_hint" class="_in_aq" style="resize: none;overflow-y: scroll;"
-                placeholder="Hint"></textarea>
-    </div> -->
     <div id="fu_simulation" class="full_page flex_type" style="overflow-y: scroll;">
         <span style="font-size: 5vh;" class="">Add/Edit Simulation</span>
         <input type="text" id="aq_simname" class="_in_aq" placeholder="Simulation Name">
@@ -443,19 +361,19 @@
                 <span class="material-symbols-outlined rpl">settings</span>
                 <span class="material-symbols-outlined rpl" id="abt_btn">info</span>
                 <span class="material-symbols-outlined rpl">notifications</span>
+                <span class="material-symbols-outlined rpl" id = "prf_btn">account_circle</span>
                 <span class="material-symbols-outlined rpl" id="lgt_btn">logout</span>
             </div>
             <hr style="width: 100%;">
-            <div id="profile_tab" style = "display: flex;flex-direction: column;align-items: center;height:210px;max-width: 250px;">
+            <div id="profile_tab" style = "display: flex;flex-direction: column;align-items: center;height:170px;max-width: 250px;">
                 <img src="Quarkz_white.png" style = "width: 100px;height:100px;border-radius: 30px 30px 30px 30px;object-fit: cover;border: black 1px solid;margin:5px;">
                 <span style="color:rgb(0, 255, 221)">Pramatha</span>
                 <span style="color:rgb(104, 104, 92);font-size: small;">@pramatharao</span>                
                 <span style="color:rgb(251, 255, 0)">Emmy Noither Batch</span>
-                <button id = "prf_btn" style = "background-color: coral;border-radius: 30px 30px 30px 30px;margin: 5px;padding: 5px;" class="rpl">Your Profile➜</button>
             </div>
             <hr style="width: 100%;">
             <div class="flex_type"
-                style="flex-direction: column;align-items: center;overflow-y: scroll;width: 30vw;height:200px;max-width: 250px;">
+                style="flex-direction: column;align-items: center;overflow-y: scroll;width: 30vw;height:250px;max-width: 250px;">
                 <div class="dshbox_v2 rpl " id="tmt_btn">Time Table</div>
                 <div class="dshbox_v2 rpl" id="chp_btn">Chapters</div>
                 <div class="dshbox_v2 rpl" id="tstinf_btn">Test Infos</div>
@@ -702,6 +620,56 @@
                 </div>
             </div>
         </div>
+    </div>
+    
+    <div id="qbnk_vid" class="full_page flex_type" style="height:90vh;position: relative;">
+        <button id = "qbnk_vid_btn" class = "tst_btn rpl">Start</button>
+        <button id = "qbnk_vid_btn_e" class = "tst_btn rpl" style="display: none;">Stop</button>
+        <span style="font-size: 5vh;color:yellow;font-family: Nunito;" id="tb_q_title">Topic Name</span>
+        <hr width="100%" color="white">
+        <div class="div-qbnk">Quarkz!</div>
+        <img src="Quarkz_trans.png" style="position:absolute;height:100px;width: 100px;top:0;left:0;z-index: 1;">
+        <div id="qbnk_vid_q" style = "display: flex;flex-direction: column;align-items: center;z-index: 2;">
+            <div class="div-qbnk1"><span>Pause The Video If You Need More Time.Each Question Will Be Shown For 10 Seconds.</span><span id = "qbnk_timer" style="font-size: 80px;color:rgb(0, 255, 255)">0</span></div>
+            <span style = "width: 60vw;"><span id="tb_q_qno" style="color: coral;"></span><div id="tb_q_qtext" style="width:100%;height:max-content;min-height: 12vh;">Question</div></span>
+            <img id="tb_q_img" src="Quarkz.png">
+            <div id="tb_q_ans_hold">
+                <input type="answer" id="tb_q_answer" class="_in_aq" placeholder="Answer">
+                <div id="tb_q_mcq_con" class="flex_type">
+                </div>
+                <div id="tb_q_matrix">
+                    <table>
+                        <tr>
+                            <td><span class="tb_q_i1"></span><span class="tb_q_i2"></span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="tb_q_i1"></span><span class="tb_q_i2"></span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="tb_q_i1"></span><span class="tb_q_i2"></span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="tb_q_i1"></span><span class="tb_q_i2"></span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div id="qbnk_vid_ans" style = "display: flex;flex-direction: column;align-items: center;">
+            <span style="font-size: 5vh;color:yellow;">Answer</span>
+            <div id="tb_q_hint" style="width:80%;height:max-content;min-height: 12vh;"></div>
+            <div id="tb_q_ans" style="height:max-content;min-height: 12vh;"></div>
+            <div id="tb_q_expl" style="width:80%;height:max-content;min-height: 12vh;"></div>
+        </div>
+        <div id="qbnk_vid_title" style = "display:flex;flex-direction: column;align-items: center;justify-content: center;height:60vh">
+            <span style = "font-size: 15vh;color:yellow;font-family: Nunito;" id = "qb_vid_ti"></span>
+        </div>
+        <div id="qbnk_vid_end" style = "display:flex;flex-direction: column;align-items: center;justify-content: center;">
+            <span style = "font-size: 5vh;color:yellow">Thanks For Watching</span>
+            <span style = "font-size: 3vh;color:yellow">Subscribe To Quarkz! For More Such Videos</span>
+
+        </div>
+        
     </div>
     <div id="topic" class="full_page flex_type" style="height: max-content;">
         <span style="font-size: 5vh;color:yellow" id="tp_title">Topic Name</span>

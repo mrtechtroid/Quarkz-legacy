@@ -85,7 +85,7 @@ body {
   font-size: small;
   color:grey;
 }
-.fqu_mcq_p,.tp_mcq_p, .lq_mcq{
+.fqu_mcq_p,.tp_mcq_p,.tb_q_mcq_p, .lq_mcq{
   height:max-content;
   border:yellow 1px solid;
   padding:10px;
@@ -275,7 +275,30 @@ body {
   'GRAD' 0,
   'opsz' 48
 }
+.div-qbnk {
+  position: fixed;
+  top: 80%;
+  left: 50%;
+/* bring your own prefixes */
+  transform: translate(-50%, -50%);
+  font-size: 100px;
+  color:#292f3a;
+  z-index: 0;
 
+}
+.div-qbnk1 {
+  position: fixed;
+  top: 30%;
+  right: 3%;
+/* bring your own prefixes */
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  color:#a1f506;
+  z-index: 0;
+  width: 120px;
+  display: flex;
+  flex-direction: column;
+}
 #printable,#topic {
   height:max-content !important;
 }
@@ -500,7 +523,7 @@ body {
   border: none;
   text-decoration: none;
 }
-.aq_i1, .aq_i2,.tp_i1,.tp_i2 {
+.aq_i1, .aq_i2,.tp_i1,.tp_i2,.tb_q_i1,.tb_q_i2 {
   background-color: black;
   border-color:magenta;
   color:white;

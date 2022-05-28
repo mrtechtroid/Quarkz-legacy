@@ -111,6 +111,48 @@ function log(msg){
   document.getElementById("msg_popup_txt").innerText = "Log"
   document.getElementById("msg_popup_content").innerText = msg
 }
+// https://www.educative.io/edpresso/how-to-create-a-screen-recorder-in-javascript
+let mediaRecorder;
+async function recordScreen() {
+  return await navigator.mediaDevices.getDisplayMedia({
+      audio: true, 
+      video: { mediaSource: "screen"}
+  });
+}
+function createRecorder (stream, mimeType) {
+  // the stream data is stored in this array
+  let recordedChunks = []; 
+
+  const mediaRecorder = new MediaRecorder(stream);
+
+  mediaRecorder.ondataavailable = function (e) {
+    if (e.data.size > 0) {
+      recordedChunks.push(e.data);
+    }  
+  };
+  mediaRecorder.onstop = function () {
+     saveFile(recordedChunks);
+     recordedChunks = [];
+  };
+  mediaRecorder.start(200); // For every 200ms the stream data will be stored in a separate chunk.
+  return mediaRecorder;
+}
+
+function saveFile(recordedChunks){
+
+   const blob = new Blob(recordedChunks, {
+      type: 'video/webm'
+    });
+    let filename = window.prompt('Enter file name'),
+        downloadLink = document.createElement('a');
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.download = `${filename}.webm`;
+
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    URL.revokeObjectURL(blob); // clear from memory
+    document.body.removeChild(downloadLink);
+}
 function gST(){return getServerTime("https:/quarkz.netlify.app/time")}
 // -----------------------------------------------------------------------------------------------
 // Sign In A User
@@ -229,6 +271,7 @@ function locationHandler(newlocation, n1) {
   if (location1.includes("cyberhunt")){handlebox = "cyberhunt";getCyberhunt()}
   if (location1.includes("sims")) { handlebox = "simulations"; getSimulation() }
   if (location1.includes("qbanks")) { handlebox = "topic"; getTopic(2); }
+  if (location1.includes("qbnk_vid")) { handlebox = "qbnk_vid";dE("qbnk_vid_btn").style.display = "block" }
   if (location1.includes("attempt")) { handlebox = "testv1"; getTestInfo()}
   if (location1.includes("printable/qbank") && iorole == true) { handlebox = "printable"; printQBank(1); }
   if (location1.includes("printable/topic") && iorole == true) { handlebox = "printable"; printQBank(2); }
@@ -248,6 +291,109 @@ function locationHandler(newlocation, n1) {
   dE(handlebox).classList.add("_open")
   chgby = 1;
   stpVid()
+}
+function vidSlideController(docJSON){
+  function iu(ele) { ele.style.display = "none" }
+  function io(ele) { ele.style.display = "block" }
+  function qif(ele) { ele.style.display = "flex" }
+  var tpmcqcon = dE("tb_q_mcq_con")
+  var tpmatrix = dE("tb_q_matrix")
+  var tpanswer = dE("tb_q_answer")
+  tpmcqcon.innerHTML = ""
+  dE("tb_q_qtext").innerText = docJSON.title
+  dE("tb_q_img").src = docJSON.img
+  if (docJSON.type == "mcq" || docJSON.type == "mcq_multiple") {
+    qif(tpmcqcon); iu(tpmatrix); iu(tpanswer)
+    var qop = docJSON.op; var asi = "";
+    for (let ele1 of qop) {
+      asi += '<div class="tb_q_mcq_p rpl">' + ele1 + '</div>'
+    }
+    dE("tb_q_mcq_con").insertAdjacentHTML('beforeend', asi)
+  } else if (docJSON.type == "matrix") {
+    iu(tpmcqcon); io(tpmatrix); iu(tpanswer);
+    var qop1 = docJSON.op1;
+    var qop2 = docJSON.op2;
+    var qopn1 = qop1.length
+    for (var i = 0; i < qopn1; i++) {
+      document.getElementsByClassName("tp_i1")[i].innerText = qop1[i]
+    }
+    for (var i = 0; i < qopn1; i++) {
+      document.getElementsByClassName("tp_i2")[i].innerText = qop2[i]
+    }
+  } else if (docJSON.type == "numerical" || docJSON.type == "fill") {
+    iu(tpmcqcon); iu(tpmatrix); io(tpanswer)
+  } else if (docJSON.type == "taf") {
+    qif(tpmcqcon); iu(tpmatrix); iu(tpanswer)
+    var asi = '<div class="tp_mcq_p rpl">True</div><div class="tp_mcq_p rpl">False</div>'
+    dE("tp_mcq_con").insertAdjacentHTML('beforeend', asi)
+  } else {
+    iu(tpmcqcon); iu(tpmatrix); iu(tpanswer);
+  }
+  renderMathInElement(dE('tp_ans_hold'));
+  renderMathInElement(dE('tp_qtext'));
+}
+async function prepareVideo(){
+  dE("qbnk_vid_btn").style.display = "none"
+  dE("qbnk_vid_btn_e").style.display = "none"
+  fullEle(dE("qbnk_vid"))
+  try {
+    let docSnap = await getDoc(doc(db, "qbank",window.location.hash.split("qbnk_vid/")[1] ))
+    if (docSnap.exists()) {
+      var docJSON = docSnap.data();
+      dE("tb_q_title").innerText = docJSON.name
+      dE("qb_vid_ti").innerText = docJSON.name
+      dE("qbnk_vid_q").style.display = "none"
+        dE("qbnk_vid_ans").style.display = "none"
+        dE("qbnk_vid_title").style.display = "flex"
+        dE("qbnk_vid_end").style.display = "none"
+        dE("watermark").style.display = "none"
+      let qllist = docJSON.qllist
+      let stream = await recordScreen();
+      let mimeType = 'video/webm';
+      mediaRecorder = createRecorder(stream, mimeType); 
+      var ji = 0;
+      var ti = 0
+      var jno = 0;
+      var timer;
+      var iou = setInterval(function(){
+        dE("qbnk_vid_q").style.display = "none"
+        dE("qbnk_vid_ans").style.display = "none"
+        dE("qbnk_vid_title").style.display = "none"
+        dE("qbnk_vid_end").style.display = "none"
+        if (ti == 0){
+          dE("qbnk_vid_title").style.display = "flex"
+          ti++
+        } else if (jno == qllist.length-1) {
+          dE("qbnk_vid_end").style.display = "flex"
+          mediaRecorder.stop()
+          dE("qbnk_vid_btn").style.display = "block"
+          clearInterval(iou);
+        } else if (ji == 0 || ji == 1){
+          vidSlideController(qllist[jno])
+          var f = jno +1
+          if (ji == 0){
+            dE("qbnk_timer").innerText = 10
+            timer = setInterval(function(){dE("qbnk_timer").innerText = dE("qbnk_timer").innerText - 1},1000)
+          }
+          dE("tb_q_qno").innerText = "Question " + f +":"
+          dE("qbnk_vid_q").style.display = "flex"
+          ji++
+        } else if (ji == 2){
+          dE("qbnk_vid_ans").style.display = "flex"
+          clearInterval(timer);
+          var asi = "";
+          for (var i = 0;i<qllist[jno].answer.length;i++) {
+            asi += '<div class="tb_q_mcq_p rpl" style = "background-color:green">' + qllist[jno].answer[i] + '</div>'
+          }
+          dE("tb_q_ans").innerHTML = asi
+          dE("tb_q_hint").innerText = qllist[jno].hint
+          dE("tb_q_expl").innerText = qllist[jno].expl
+          ji = 0;
+          jno++
+        } 
+      }, 5000);
+    }
+  } catch {}
 }
 // -----------------------
 // SIMULATIONS
@@ -659,59 +805,6 @@ async function changeItem(t) {
     iu(qmat); iu(qmcq); io(qans)
   }
 }
-// -----------------------
-// LESSONS
-async function newLesson(){
-  try {
-    
-    const docRef = await addDoc(collection(db, 'lesson'), {
-      title: "",
-      img: "",
-      y_url: "",
-      hint: "",
-      expl: "",
-      subject: "",
-      sgndon: serverTimestamp(),
-      madeby: user.id
-    })
-    locationHandler("edit_lesson/"+docRef.id,1)
-  } catch {
-
-  }
-}
-async function prepareLesson(){
-  try {
-    let docSnap = await getDoc(doc(db, 'lesson', window.location.hash.split("edit_lesson/")[1]))
-    if (docSnap.exists()) {
-      var docJSON = docSnap.data();
-      dE("aq_qtext").value = docJSON.title
-      dE("aq_imgurl").value = docJSON.img
-      dE("aq_yurl").value = docJSON.y_url
-      dE("aq_hint").value = docJSON.hint
-      dE("aq_subject").value = docJSON.subject
-    }
-  } catch {}
-}
-async function updateLessonWeb(){
-  try {
-    await addDoc(doc(db, 'lesson'), {
-      title: dE("aq_qtext").value,
-      img: dE("aq_imgurl").value,
-      y_url: dE("aq_yurl").value,
-      hint: dE("aq_hint").value,
-      expl: dE("aq_expl").value,
-      subject: dE("aq_subject").value,
-      sgndon: serverTimestamp()
-    });
-    var fiou;
-    const q = query(collection(db, "topic"), where("title", "==", qtopic));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {fiou = doc.id});
-  } catch (error) {
-    console.error('Error writing new message to Firebase Database', error);
-  }
-}
-
 // Show The Topic Details -- Depreciated
 function displayTopicList(type) {
   var divID,urlID,childID,eleList;
@@ -730,8 +823,6 @@ function displayTopicList(type) {
     })
   }
 }
-
-
 // Get Topic Info3
 async function getTopic(type) {
   var fireID = ""; var urlID = "";
@@ -821,11 +912,9 @@ async function printQBank(type) {
   }
   dE("printable").insertAdjacentHTML('beforeend', '<br></br>')
 }
-
 function getChapterList(subj){
   
 }
-
 async function addItemWeb(){
   var qmode = dE("aq_mode").value
   switch (qmode){
@@ -874,27 +963,6 @@ async function questionRenderer(docJSON, type) {
   dE("tp_lsno").innerText = "Question"
   dE("tp_question").style.display = "flex"
   dE("tp_lesson").style.display = "none"
-  // function findquestion(questionid){
-  //   var a = questionlist.length
-  //   for (var i=0;i<a;i++){
-  //       if (questionlist[i].questionid == questionid){
-  //         return i
-  //       }
-  //   }
-  // }
-  // var questionID = findquestion(qid)
-  // if ( questionID == undefined || questionID == null ){
-  //   var docRef = doc(db, "question", qid)
-  //   var docSnap = await getDoc(docRef);
-  //   if (docSnap.exists()) {
-  //     docJSON = docSnap.data();
-  //     var questionElement = {questionid:qid,title:docJSON.title,type:docJSON.type,subject:docJSON.subject,op1:docJSON.op1,op2:docJSON.op2,op:docJSON.op,expl:docJSON.expl,img:docJSON.img,ans:docJSON.ans}
-  //     questionlist.push(questionElement)
-  //     questionID = findquestion(qid)
-  //   }
-  //   else { locationHandler("error_page", 1); throw new Error }
-  // }
-  // docJSON = questionlist[questionID]
   tpmcqcon.innerHTML = ""
   dE("tp_qtext").innerText = docJSON.title
   dE("tp_img").src = docJSON.img
@@ -1486,6 +1554,8 @@ function nxtHand() { topicHandler(2) }
 function actHand() { renderTestList("active")}
 function upcHand() { renderTestList("upcoming")}
 function finHand() { renderTestList("finished")}
+function qbnkend(){dE("watermark").style.display = "flex";fullEle(dE("qbnk_vid"))}
+function qbnkstr(){prepareVideo()}
 function tsave(){testOperator("tts_answered")}
 function tclear(){testOperator("tts_notanswer")}
 function treview(){testOperator("tts_review")}
@@ -1563,6 +1633,9 @@ var u_chb = dE("uchb").addEventListener("click",uchb)
 var ttsub = dE("tt_sub").addEventListener("click",submitTest)
 var chp_btn = dE("chp_btn").addEventListener("click",chpHand)
 var aq_sims_save = dE("aq_sims_save").addEventListener("click",updateSimulationWeb)
+dE("qbnk_vid_btn_e").addEventListener("click",qbnkend)
+dE("qbnk_vid_btn").addEventListener("click",qbnkstr)
+
 }
 function plyVid() { window.player.playVideo() }
 function stpVid() { try {window.player.stopVideo()} catch{} }
