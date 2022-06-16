@@ -292,6 +292,32 @@ function locationHandler(newlocation, n1) {
   chgby = 1;
   stpVid()
 }
+// ----------------------
+// BATCHES
+async function newBatch(){
+  try {
+    const docRef = await addDoc(collection(db, 'batch'), {
+      name: "",
+      timetable: "",
+      crton: serverTimestamp(),
+      class: 0,
+    })
+    locationHandler("edit_batch/"+docRef.id,1)
+  } catch {
+  }
+}
+async function prepareBatch(){
+  
+}
+async function updateBatch(){
+
+}
+async function getBatch(){
+
+}
+// ----------------------
+// QBANK VIDEO
+// Slide Controller For QBANK Video
 function vidSlideController(docJSON){
   function iu(ele) { ele.style.display = "none" }
   function io(ele) { ele.style.display = "block" }
@@ -332,10 +358,10 @@ function vidSlideController(docJSON){
   renderMathInElement(dE('tp_ans_hold'));
   renderMathInElement(dE('tp_qtext'));
 }
+// Prepares Slides Controller
 async function prepareVideo(){
   dE("qbnk_vid_btn").style.display = "none"
   dE("qbnk_vid_btn_e").style.display = "none"
-  fullEle(dE("qbnk_vid"))
   try {
     let docSnap = await getDoc(doc(db, "qbank",window.location.hash.split("qbnk_vid/")[1] ))
     if (docSnap.exists()) {
@@ -349,7 +375,8 @@ async function prepareVideo(){
         dE("watermark").style.display = "none"
       let qllist = docJSON.qllist
       let stream = await recordScreen();
-      let mimeType = 'video/webm';
+      let mimeType = 'video/mp4';
+      fullEle(dE("qbnk_vid"))
       mediaRecorder = createRecorder(stream, mimeType); 
       var ji = 0;
       var ti = 0
@@ -397,7 +424,7 @@ async function prepareVideo(){
 }
 // -----------------------
 // SIMULATIONS
-// Get Simulation Details
+// Creates A Blank Simulation
 async function newSimulation(){
   try {
     
@@ -412,6 +439,7 @@ async function newSimulation(){
 
   }
 }
+// Prepares The Simulation Editor
 async function prepareSimulation(){
   try {
     let docSnap = await getDoc(doc(db, 'sims', window.location.hash.split("edit_sim/")[1]))
@@ -425,6 +453,7 @@ async function prepareSimulation(){
     }
   } catch {}
 }
+// Updates Simulation Details
 async function updateSimulationWeb(){
   try {
     await updateDoc(doc(db, 'sims',window.location.hash.split("edit_sim/")[1]), {
@@ -475,6 +504,7 @@ async function updateSimulationWeb(){
     console.error('Error writing new message to Firebase Database', error);
   }
 }
+// Displays Simulation For End User
 async function getSimulation() {
   var simid = window.location.hash.split("sims/")[1]
   var docRef = doc(db, 'sims', simid)
@@ -875,8 +905,8 @@ async function printQBank(type) {
       qtitle = docJSON.title;
       qtype = docJSON.type;
       qimg = docJSON.img;
-
-      
+      var expl = '<span class = "q_ans_expl" style = "display:none;">'+docJSON.expl+'</span>'
+      var ans = "<div style = 'font-weight:bold;color:green;font-size:10px;flex-direction:row;display:none' class = 'q_ans_1'>Answer:";
       var inhtml = '<div class = "qb_q"><span id = "' + ele.id + '">' + qtitle + '<div class = "qb_q_ty">(' + qtype + ')</span></div>'
       dE("eqb_add").insertAdjacentHTML('beforeend', inhtml);
       if (qimg != "") {
@@ -890,6 +920,9 @@ async function printQBank(type) {
           asi += "<div class = 'qb_mcq_opt'>" + ele1 + '</div>'
         }
         var qrt = '<div class = "qb_mcq" type = "a">' + asi + '</div>'
+        for (let ele1 of docJSON.answer){
+          ans += "<div class = 'qb_mcq_ans'>" + ele1 + '</div>'
+        }
 
       }
       if (qtype == "taf") {
@@ -908,6 +941,8 @@ async function printQBank(type) {
       }
       
       dE(ele.id).insertAdjacentHTML('beforeend', qrt)
+      dE(ele.id).insertAdjacentHTML('beforeend', ans+"</div>")
+      dE(ele.id).insertAdjacentHTML('beforeend', expl)
       renderMathInElement(dE('eqb_add'));
   }
   dE("printable").insertAdjacentHTML('beforeend', '<br></br>')

@@ -30,6 +30,26 @@ var player;
 var video_id = "4nOn9YLp7AE"
 var refer = window.location.search;
 
+
+document.getElementById("tans_btn").addEventListener("click",function(){
+  for (var i =0;i<document.getElementsByClassName("q_ans_1").length;i++){
+    document.getElementsByClassName("q_ans_1")[i].style.display = "flex"
+  }
+})
+document.getElementById("tansexpl_btn").addEventListener("click",function(){
+  for (var i =0;i<document.getElementsByClassName("q_ans_expl").length;i++){
+    document.getElementsByClassName("q_ans_expl")[i].style.display = "flex"
+  }
+})
+document.getElementById("tremove_btn").addEventListener("click",function(){
+  for (var i =0;i<document.getElementsByClassName("q_ans_1").length;i++){
+    document.getElementsByClassName("q_ans_1")[i].style.display = "none"
+  }
+  for (var i =0;i<document.getElementsByClassName("q_ans_expl").length;i++){
+    document.getElementsByClassName("q_ans_expl")[i].style.display = "none"
+  }
+})
+
 function watchonYT(vidID) {
   window.location = "https://youtube.com/watch?v=" + vidID
 }

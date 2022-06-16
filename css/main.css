@@ -193,10 +193,6 @@ body {
   }
   .qb_q {
   }
-  .qb_mcq{
-    /* display: flex;
-    flex-direction: column; */
-  }
   #eqb_add {
     counter-reset: qno;
   }
@@ -208,10 +204,13 @@ body {
   }
   .qb_mcq {
     counter-reset: optno;
-    display: block;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
   }
   .qb_mcq_opt {
     counter-increment: optno;
+    width:20vw;
   }
   .qb_mcq_opt:before {
       content: counter(optno,lower-alpha)") ";
@@ -248,6 +247,11 @@ body {
       break-inside: avoid;
       page-break-after:auto ;
       display:block;
+    }
+    .qb_mcq{
+      display: flex;
+    flex-direction: row;
+    justify-content: space-around;
     }
     #eqb_add {
       display:block;
@@ -288,7 +292,7 @@ body {
 }
 .div-qbnk1 {
   position: fixed;
-  top: 30%;
+  top: 50%;
   right: 3%;
 /* bring your own prefixes */
   transform: translate(-50%, -50%);
