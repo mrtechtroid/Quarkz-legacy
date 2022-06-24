@@ -263,13 +263,14 @@ function locationHandler(newlocation, n1) {
     case "add/qubank": handlebox = "fu_topic";newQBank();break;
     case "add/simulation": handlebox = "fu_simulation";newSimulation();break;
     case "add/tests": handlebox = "fu_tests";break;
-    case "chplist": handlebox = "chapterlist";break;
+    case "chplist": handlebox = "chapterlist";renderCList();break;
     default: handlebox = "error_page"; break;
   }
 
   if (location1.includes("instructions")){handlebox = "test_instructions";}
   if (location1.includes("cyberhunt")){handlebox = "cyberhunt";getCyberhunt()}
   if (location1.includes("sims")) { handlebox = "simulations"; getSimulation() }
+  if (location1.includes("chapter")) { handlebox = "chapter"; getChapterEList()}
   if (location1.includes("qbanks")) { handlebox = "topic"; getTopic(2); }
   if (location1.includes("qbnk_vid")) { handlebox = "qbnk_vid";dE("qbnk_vid_btn").style.display = "block" }
   if (location1.includes("attempt")) { handlebox = "testv1"; getTestInfo()}
@@ -793,17 +794,46 @@ async function updateTopicQBank(iun){
   } catch {
   }
 }
+function qbkclicker(){
+  window.location.hash = "#/qbanks/" + atob(this.id.split("chpqbk")[1])
+}
+function tpcclicker(){
+  window.location.hash = "#/topic/" + atob(this.id.split("chpqbk")[1])
+}
 async function getChapterEList(){
-  dE("aq_tpc_chaptername").innerHTML = ""
-  var docRef = doc(db, 'chapter', dE("aq_subj").value)
+  dE("chp_chaptername").innerHTML = ""
+  dE("chp_qbk_list").innerHTML = ""
+  var docRef = doc(db, 'chapter', window.location.hash.split("#/chapter/")[1])
   var docSnap = await getDoc(docRef);
   var iupa, docJSON;
   var poll = ""
-  if (docSnap.exists()) { var docJSON = docSnap.data(); iupa = docJSON.topics }
-    for (let ele of iupa) {
-      poll = poll + "<option value = '" + ele + "'>" + ele + "</option>"
+  if (docSnap.exists()) {
+     var docJSON = docSnap.data();
+     dE("chp_chaptername").innerText = docJSON.name
+     for (let ele of docJSON.qbanks){
+      dE("chp_qbk_list").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:pink" id="chpqbk' + btoa(ele.id) + '">' + ele.title + '</span>')
+      dE("chpqbk" + btoa(ele.id)).addEventListener('click',qbkclicker)
+     }
+     for (let ele of docJSON.topics){
+      dE("chp_tpc_list").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:pink" id="chptpc' + btoa(ele.id) + '">' + ele.title + '</span>')
+      dE("chptpc" + btoa(ele.id)).addEventListener('click',tpcclicker)
+     }
+
+  }
+}
+function chclicker(){
+  window.location.hash = "#/chapter/" + atob(this.id.split("qb")[1])
+}
+function renderCList(type){
+  dE("qb_cont").innerHTML = ""
+  console.log(chapterlist)
+  for (var i = 0;i<chapterlist.length;i++) {
+    var ele = chapterlist[i]
+    if (ele.subject == type) {
+      dE("qb_cont_2").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:pink" id="qb' + btoa(ele.id) + '">' + ele.name + '</span>')
+      dE("qb" + btoa(ele.id)).addEventListener('click',chclicker)
     }
-  dE("aq_tpc_chaptername").insertAdjacentHTML('beforeend', poll)
+  }
 }
 async function changeItem(t) {
   function iu(ele) { ele.style.display = "none" }
@@ -1108,6 +1138,8 @@ async function authStateObserver(user) {
       userinfo = docJSON
       userinfo.uuid = user.uid
       uname.textContent = docJSON.email
+      dE("dshd_uname").innerText = docJSON.email
+      dE("dshd_name").innerText = docJSON.name
       name.textContent = docJSON.name
       phone.textContent = docJSON.mblno
       email.textContent = docJSON.email
@@ -1132,20 +1164,23 @@ async function authStateObserver(user) {
     if (docSnap.exists()) {
       var docJSON = docSnap.data();
       batch.textContent = docJSON.name;
+      dE("dshd_batch").innerText = docJSON.name;
       calenid = docJSON.timetable
-      console.log(docJSON.tpcs.length)
       getTestList(batchno,user.uid)
       var iframeurl = "https://calendar.google.com/calendar/embed??height=600&wkst=2&bgcolor=%23ffffff&ctz=Asia%2FKolkata&showTitle=0&showCalendars=0&showTabs=0&showPrint=0&showDate=1&src=" + calenid + "%40group.calendar.google.com&amp;ctz=Asia%2FKolkata"
       tmtifr.src = iframeurl
-      for (var i = 0; i < docJSON.tpcs.length; i++) {
-        console.log(docJSON.tpcs[i].topicname,docJSON.tpcs[i].topicno)
-        topiclist.push({name:docJSON.tpcs[i].topicname, no:docJSON.tpcs[i].topicno})
-      }
-      console.log(topiclist)
-      for (var i = 0; i < docJSON.qbank.qbanktitle.length; i++) {
-        qlist.push({name:docJSON.qbank.qbanktitle[i], no:docJSON.qbank.qbankid[i]})
+      // if (docJSON.delon.seconds <= parseInt(Date.now()/1000)){
+      //   dE("overlay").style.display = "block"
+      //   alert("This Batch Has Been Deleted")
+      //   signOutUser()
+      // }
+      console.log(docJSON.chlist)
+      for (var i = 0; i < docJSON.chlist.length; i++) {
+        console.log(docJSON.chlist[i].name,docJSON.chlist[i].id,docJSON.chlist[i].subject)
+        chapterlist.push({name:docJSON.chlist[i].name, id:docJSON.chlist[i].id,subject:docJSON.chlist[i].subject})
       }
     }} catch {}
+
     spoints.style.display = "block"
     dE("dsh_btn").style.display = "block"
     if (window.location.hash == "" || window.location.hash == null || window.location.hash == undefined ){
@@ -1602,13 +1637,13 @@ function bsims(){getSimList("biology")}
 function cosims(){getSimList("computer")}
 function ssims(){getSimList("statistics")}
 function usims(){getSimList("unfiled")}
-function pchb(){getChapterList("physics")}
-function cchb(){getChapterList("chemistry")}
-function mchb(){getChapterList("maths")}
-function bchb(){getChapterList("biology")}
-function cochb(){getChapterList("computer")}
-function schb(){getChapterList("statistics")}
-function uchb(){getChapterList("unfiled")}
+function pchb(){renderCList("physics")}
+function cchb(){renderCList("chemistry")}
+function mchb(){renderCList("maths")}
+function bchb(){renderCList("biology")}
+function cochb(){renderCList("computer")}
+function schb(){renderCList("statistics")}
+function uchb(){renderCList("unfiled")}
 function uQL(){updateTopicQBank(1)}
 function uQL2(){updateTopicQBank(2)}
 var simbtn = dE("sim_btn").addEventListener("click", simHand)
@@ -1698,7 +1733,7 @@ var lessonlist = []
 var questionlist = []
 var qlist = []
 var simlist = []
-
+var chapterlist = []
 
 var userdetails = []
 
