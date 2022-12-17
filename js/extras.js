@@ -79,7 +79,6 @@ function onPlayerReady(event) {
 var yt_done = false;
 function onPlayerStateChange(event) {
   if (event.data == YT.PlayerState.PLAYING && !yt_done) {
-    setTimeout(stopVideo, 6000);
     yt_done = true;
   }
 }
@@ -161,3 +160,26 @@ function mcqchose(ele){
 if (screen.width < "300px"){
   document.getElementById("overlay").style.display = "block"
 }
+function updateUI(){
+  if (document.getElementById("pe_tst_type_2").checked){
+    document.getElementById("equ_gi").innerText = document.getElementById("pe_gi_ins").value
+  }
+  if (document.getElementById("pe_tst_type_1").checked){
+    console.log("hello")
+    document.querySelectorAll(".qb_q_ty").forEach(function(e){
+      switch (e.innerText){
+        case "(mcq)": {e.innerText = e.innerText + "("+document.getElementById("pe_mcq_pno").value+","+document.getElementById("pe_mcq_nno").value+")";break;}
+        case "(mcq_multiple)": {e.innerText = e.innerText + "("+document.getElementById("pe_mcmul_pno").value+","+document.getElementById("pe_mcmul_nno").value+")";break;}
+        case "(numerical)": {e.innerText = e.innerText + "("+document.getElementById("pe_num_pno").value+","+document.getElementById("pe_num_nno").value+")";break;}
+        case "(taf)": {e.innerText = e.innerText + "("+document.getElementById("pe_taf_pno").value+","+document.getElementById("pe_taf_nno").value+")";break;}
+        case "(explain)": {e.innerText = e.innerText + "("+document.getElementById("pe_exp_pno").value+","+document.getElementById("pe_exp_nno").value+")";break;}
+        case "(matrix)": {e.innerText = e.innerText + "("+document.getElementById("pe_mat_pno").value+","+document.getElementById("pe_mat_nno").value+")";break;}
+      }
+    })
+  }else{
+    // location.reload()
+  }
+}
+document.getElementById("pe_tst_type_1").addEventListener('change',updateUI)
+document.getElementById("pe_tst_type_2").addEventListener('change',updateUI)
+document.getElementById("tsinf_btn").addEventListener('change',updateUI)

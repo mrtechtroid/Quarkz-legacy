@@ -1,16 +1,10 @@
-// Import the functions you need from the SDKs you need
+// COPYRIGHT 2021-23 Quarkz By Mr Techtroid
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-analytics.js";
 import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
 import { getFirestore, orderBy, limit,writeBatch, collection, addDoc, onSnapshot, arrayUnion, arrayRemove, setDoc, updateDoc, getDocs, doc, serverTimestamp, getDoc, query, where } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, } from 'https://www.gstatic.com/firebasejs/9.6.0/firebase-storage.js';
 
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyDN8T7Pmw5e-LzmC3nAHEqI0Uk7FF7y6fc",
   authDomain: "quarkz.firebaseapp.com",
@@ -20,7 +14,6 @@ const firebaseConfig = {
   appId: "1:1050835442263:web:e7d05ca9373f2f6083a112",
   measurementId: "G-1Y3S45VWFH"
 };
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore();
@@ -35,7 +28,6 @@ function sd(seconds) {
   var h = Math.floor(seconds % (3600*24) / 3600);
   var m = Math.floor(seconds % 3600 / 60);
   var s = Math.floor(seconds % 60);
-  
   var dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days, ") : "";
   var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
   var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
@@ -55,19 +47,13 @@ charactersLength));
 }
 // StakOverflow: https://stackoverflow.com/a/48161723
 async function sha256(message) {
-  // encode as UTF-8
   const msgBuffer = new TextEncoder().encode(message);                    
-
-  // hash the message
   const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-
-  // convert ArrayBuffer to Array
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-
-  // convert bytes to hex string                  
+  const hashArray = Array.from(new Uint8Array(hashBuffer));               
   const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   return hashHex;
 }
+
 // Get Time Of Server
 function getServerTime(url){
   fetch(url)
@@ -82,6 +68,7 @@ function getServerTime(url){
     return date;
   });
 }
+
 // Make A Element Full Screen
 function fullEle(ele){
   if (ele.requestFullscreen) {
@@ -104,13 +91,14 @@ function renderMarkedMath(eleid, toid) {
   dE(toid).innerHTML = v
   renderMathInElement(dE(toid));
 }
+
 function log(msg){
-  window.location = "#msg_popup"
   dE("msg_popup").style.visibility = "visible"
   dE("msg_popup").style.opacity = "1"
   document.getElementById("msg_popup_txt").innerText = "Log"
   document.getElementById("msg_popup_content").innerText = msg
 }
+
 // https://www.educative.io/edpresso/how-to-create-a-screen-recorder-in-javascript
 let mediaRecorder;
 async function recordScreen() {
@@ -120,11 +108,8 @@ async function recordScreen() {
   });
 }
 function createRecorder (stream, mimeType) {
-  // the stream data is stored in this array
   let recordedChunks = []; 
-
   const mediaRecorder = new MediaRecorder(stream);
-
   mediaRecorder.ondataavailable = function (e) {
     if (e.data.size > 0) {
       recordedChunks.push(e.data);
@@ -134,12 +119,11 @@ function createRecorder (stream, mimeType) {
      saveFile(recordedChunks);
      recordedChunks = [];
   };
-  mediaRecorder.start(200); // For every 200ms the stream data will be stored in a separate chunk.
+  mediaRecorder.start(200);
   return mediaRecorder;
 }
 
 function saveFile(recordedChunks){
-
    const blob = new Blob(recordedChunks, {
       type: 'video/webm'
     });
@@ -190,6 +174,7 @@ function signUp() {
   var name = dE("rg_name").value;
   var mblno = dE("rg_mbleno").value;
   var stclass = dE("rg_class").value;
+  var stgender = dE("rg_gender").value;
   if (email == "" || password == "" || name == "" || mblno == "" || stclass == ""){
     alert("Details Cannot Be Empty")
   }
@@ -210,7 +195,9 @@ function signUp() {
               mblno: mblno,
               email: email,
               spoints: 0,
+              gen: stgender,
               sgndon: serverTimestamp(),
+              
               roles: { user: true }
             });
           }
@@ -233,7 +220,7 @@ function signUp() {
 // Important: Handles All Locations
 function locationHandler(newlocation, n1) {
   var iorole = adminrole == true || editorrole == true
-  if (iorole) { dE("adminonly").style.display = "flex";dE("tp_pnt").style.display = "block";dE("sms_edit").style.display = "block" } else { dE("adminonly").style.display = "none"; dE("sms_edit").style.display = "none"}
+  if (iorole) { dE("adminonly").style.display = "flex";dE("tp_pnt").style.display = "block";dE("tp_edt").style.display = "block";dE("sms_edit").style.display = "block" } else { dE("adminonly").style.display = "none"; dE("sms_edit").style.display = "none"}
   dE(handlebox).classList.remove("_open")
   if (n1 == 1) { window.location.hash = "#/" + newlocation }
   handlebox = newlocation
@@ -252,6 +239,7 @@ function locationHandler(newlocation, n1) {
     case "testinfo": handlebox = "testinfo";renderTestList("active"); break;
     case "legal": handlebox = "legal"; break;
     case "forum": handlebox = "forum"; break;
+    case "bugreport": handlebox = "bugreport"; break;
     case "qblist": handlebox = "qbanklist"; displayTopicList(2); break;
     case "tpclist": handlebox = "topiclist"; displayTopicList(1); break;
     case "simlist": handlebox = "simlist"; getSimList(); break;
@@ -286,9 +274,15 @@ function locationHandler(newlocation, n1) {
   if (location1.includes("edit_lesson")) { handlebox = "fu_simulation"; prepareLesson() }
   if (location1.includes("edit_tpc")) { handlebox = "fu_topic"; prepareTopicQBank(1) }
   if (location1.includes("edit_qubank")) { handlebox = "fu_topic"; prepareTopicQBank(2) }
-  if (userrole == false || userrole == null || userrole == undefined) { handlebox = "error_page" }
-  if (location1 == "login") { handlebox = "login" }
-  if (location1 == "register") { handlebox = "register" }
+  if (userrole == false || userrole == null || userrole == undefined) { 
+    if (location1 == "login" || location1 == "register" || location1 == "legal" || location1 == "about" || location1 == "bugreport"){
+
+    }else{
+      handlebox = "error_page"
+    }
+    }
+  // if (location1 == "login") { handlebox = "login" }
+  // if (location1 == "register") { handlebox = "register" }
   dE(handlebox).classList.add("_open")
   chgby = 1;
   stpVid()
@@ -555,7 +549,7 @@ async function getSimList(type) {
     try {
       for (let ele of simlist.chemistry) {
         if (ele != "") {
-          dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:red" id="sim' + btoa(ele) + '">' + ele + '</span>')
+          dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:crimson" id="sim' + btoa(ele) + '">' + ele + '</span>')
           dE("sim" + btoa(ele)).addEventListener('click', simClicker)
         }
       }
@@ -565,7 +559,7 @@ async function getSimList(type) {
     try {
       for (let ele of simlist.maths) {
         if (ele != "") {
-          dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:blue" id="sim' + btoa(ele) + '">' + ele + '</span>')
+          dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:turquoise" id="sim' + btoa(ele) + '">' + ele + '</span>')
           dE("sim" + btoa(ele)).addEventListener('click', simClicker)
         }
       }
@@ -575,7 +569,7 @@ async function getSimList(type) {
     try {
       for (let ele of simlist.biology) {
         if (ele != "") {
-          dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:green" id="sim' + btoa(ele) + '">' + ele + '</span>')
+          dE("sim_cont").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:lime" id="sim' + btoa(ele) + '">' + ele + '</span>')
           dE("sim" + btoa(ele)).addEventListener('click', simClicker)
         }
       }
@@ -798,11 +792,12 @@ function qbkclicker(){
   window.location.hash = "#/qbanks/" + atob(this.id.split("chpqbk")[1])
 }
 function tpcclicker(){
-  window.location.hash = "#/topic/" + atob(this.id.split("chpqbk")[1])
+  window.location.hash = "#/topic/" + atob(this.id.split("chptpc")[1])
 }
 async function getChapterEList(){
   dE("chp_chaptername").innerHTML = ""
   dE("chp_qbk_list").innerHTML = ""
+  dE("chp_tpc_list").innerHTML = ""
   var docRef = doc(db, 'chapter', window.location.hash.split("#/chapter/")[1])
   var docSnap = await getDoc(docRef);
   var iupa, docJSON;
@@ -810,22 +805,25 @@ async function getChapterEList(){
   if (docSnap.exists()) {
      var docJSON = docSnap.data();
      dE("chp_chaptername").innerText = docJSON.name
-     for (let ele of docJSON.qbanks){
-      dE("chp_qbk_list").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:pink" id="chpqbk' + btoa(ele.id) + '">' + ele.title + '</span>')
-      dE("chpqbk" + btoa(ele.id)).addEventListener('click',qbkclicker)
-     }
-     for (let ele of docJSON.topics){
-      dE("chp_tpc_list").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:pink" id="chptpc' + btoa(ele.id) + '">' + ele.title + '</span>')
-      dE("chptpc" + btoa(ele.id)).addEventListener('click',tpcclicker)
-     }
-
+     try{
+      for (let ele of docJSON.qbanks){
+        dE("chp_qbk_list").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:pink" id="chpqbk' + btoa(ele.id) + '">' + ele.title + '</span>')
+        dE("chpqbk" + btoa(ele.id)).addEventListener('click',qbkclicker)
+       }
+     } catch{}
+     try{
+      for (let ele of docJSON.topics){
+        dE("chp_tpc_list").insertAdjacentHTML('beforeend', '<span class="tlinks rpl" style = "color:pink" id="chptpc' + btoa(ele.id) + '">' + ele.title + '</span>')
+        dE("chptpc" + btoa(ele.id)).addEventListener('click',tpcclicker)
+       }
+     }catch{}
   }
 }
 function chclicker(){
   window.location.hash = "#/chapter/" + atob(this.id.split("qb")[1])
 }
 function renderCList(type){
-  dE("qb_cont").innerHTML = ""
+  dE("qb_cont_2").innerHTML = ""
   console.log(chapterlist)
   for (var i = 0;i<chapterlist.length;i++) {
     var ele = chapterlist[i]
@@ -1117,7 +1115,7 @@ function shuffleQBank() {
   }
 }
 async function authStateObserver(user) {
-  var uname = dE("prf_uname")
+  // var uname = dE("prf_uname")
   var upic = dE("prf_pphoto")
   var name = dE("prf_name")
   var phone = dE("prf_phone")
@@ -1137,7 +1135,7 @@ async function authStateObserver(user) {
       var docJSON = docSnap.data()
       userinfo = docJSON
       userinfo.uuid = user.uid
-      uname.textContent = docJSON.email
+      // uname.textContent = docJSON.email
       dE("dshd_uname").innerText = docJSON.email
       dE("dshd_name").innerText = docJSON.name
       name.textContent = docJSON.name
@@ -1157,6 +1155,11 @@ async function authStateObserver(user) {
       dE("overlay").style.display = "block"
       signOutUser()
       alert("This User Account Has Been Deleted")
+    }
+    if (docJSON.gen == "Male"){
+      dE("prf_tab_img").src = '/assets/q_male.svg'
+    }else if(docJSON.gen == "Female"){
+      dE("prf_tab_img").src = '/assets/q_female.svg'
     }
     try {
     var docRef = doc(db, "batch", batchno)
@@ -1190,7 +1193,7 @@ async function authStateObserver(user) {
     }
     locationHandler( window.location.hash.split("#/")[1], 1)
   } else {
-    uname.textContent = ""
+    // uname.textContent = ""
     name.textContent = ""
     phone.textContent = ""
     email.textContent = ""
@@ -1199,6 +1202,7 @@ async function authStateObserver(user) {
     spoints.style.display = "none"
     dE("dsh_btn").style.display = "none"
     dE("tp_pnt").style.display = "none"
+    dE("tp_edt").style.display = "none";
     locationHandler("login", 1)
     if (autosignin == 1){
       document.location.reload()
@@ -1262,6 +1266,18 @@ function printStuff(){
     changeLocationHash("printable/topic/"+ window.location.hash.split("topic/")[1],1)
   } else if (window.location.hash.includes("qbanks")){
     changeLocationHash("printable/qbank/"+ window.location.hash.split("qbanks/")[1],1)
+  }
+  if (window.location.hash.includes("edit_tpc/")){
+    changeLocationHash("printable/topic/"+ window.location.hash.split("edit_tpc/")[1],1)
+  } else if (window.location.hash.includes("edit_qubank/")){
+    changeLocationHash("printable/qbank/"+ window.location.hash.split("edit_qubank/")[1],1)
+  }
+}
+function editStuff(){
+  if (window.location.hash.includes("topic")){
+    changeLocationHash("edit_tpc/"+ window.location.hash.split("topic/")[1],1)
+  } else if (window.location.hash.includes("qbanks")){
+    changeLocationHash("edit_qubank/"+ window.location.hash.split("qbanks/")[1],1)
   }
 }
 function changeLocationHash(ele,v){
@@ -1418,6 +1434,7 @@ async function getTestInfo(){
   }
   dE("dsh_btn").style.display = "none"
   dE("tp_pnt").style.display = "none"
+  dE("tp_pnt").style.display = "none";
   var tbox = dE("testv1")
   fullEle(tbox)
   inittestHandler()
@@ -1678,6 +1695,8 @@ var tpsbm = dE("tp_sbm").addEventListener("click", checkQuestion)
 var lglbtn = dE("lgl_btn").addEventListener("click", lglHand)
 var qbabtn = dE("qba_btn").addEventListener("click", qbaHand)
 var tppnt = dE("tp_pnt").addEventListener("click",printStuff)
+var tppnt = dE("aq_export").addEventListener("click",printStuff)
+var tpedt = dE("tp_edt").addEventListener("click",editStuff)
 var cybbtn = dE("cyb_btn").addEventListener("click",cybHand)
 var tiact = dE("ti_act").addEventListener("click",actHand)
 var tiupc = dE("ti_upc").addEventListener("click",upcHand)
