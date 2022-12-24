@@ -15,7 +15,6 @@ const firebaseConfig = {
   measurementId: "G-1Y3S45VWFH"
 };
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 const db = getFirestore();
 const auth = getAuth();
 const storage = getStorage();
@@ -53,7 +52,20 @@ async function sha256(message) {
   const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   return hashHex;
 }
-
+// Check if two array's are equal
+function areEqual(arr1, arr2)
+    {
+        let N = arr1.length;
+        let M = arr2.length;
+        if (N != M)
+            return false;
+        arr1.sort();
+        arr2.sort();
+        for (let i = 0; i < N; i++)
+            if (arr1[i] != arr2[i])
+                return false;
+        return true;
+    }
 // Get Time Of Server
 function getServerTime(url){
   fetch(url)
@@ -68,7 +80,6 @@ function getServerTime(url){
     return date;
   });
 }
-
 // Make A Element Full Screen
 function fullEle(ele){
   if (ele.requestFullscreen) {
@@ -91,15 +102,17 @@ function renderMarkedMath(eleid, toid) {
   dE(toid).innerHTML = v
   renderMathInElement(dE(toid));
 }
-
-function log(msg){
+// Special Logging Function
+function log(title,msg){
   dE("msg_popup").style.visibility = "visible"
   dE("msg_popup").style.opacity = "1"
-  document.getElementById("msg_popup_txt").innerText = "Log"
+  document.getElementById("msg_popup_txt").innerText = title
   document.getElementById("msg_popup_content").innerText = msg
 }
+//Get Server Time
+function gST(){return getServerTime("https:/quarkz.netlify.app/time")}
 
-// https://www.educative.io/edpresso/how-to-create-a-screen-recorder-in-javascript
+// Video Creator - https://www.educative.io/edpresso/how-to-create-a-screen-recorder-in-javascript
 let mediaRecorder;
 async function recordScreen() {
   return await navigator.mediaDevices.getDisplayMedia({
@@ -122,7 +135,6 @@ function createRecorder (stream, mimeType) {
   mediaRecorder.start(200);
   return mediaRecorder;
 }
-
 function saveFile(recordedChunks){
    const blob = new Blob(recordedChunks, {
       type: 'video/webm'
@@ -137,8 +149,8 @@ function saveFile(recordedChunks){
     URL.revokeObjectURL(blob); // clear from memory
     document.body.removeChild(downloadLink);
 }
-function gST(){return getServerTime("https:/quarkz.netlify.app/time")}
-// -----------------------------------------------------------------------------------------------
+
+// Login Page
 // Sign In A User
 async function signIn() {
   var email = dE("lg_uname").value;
@@ -197,13 +209,12 @@ function signUp() {
               spoints: 0,
               gen: stgender,
               sgndon: serverTimestamp(),
-              
               roles: { user: true }
             });
           }
 
           catch (error) {
-            console.error('Error writing new message to Firebase Database', error);
+            console.error('Error Adding New User', error);
           }
         }
         a();
@@ -213,14 +224,22 @@ function signUp() {
         const errorMessage = error.message;
         // ..
       });
-
   }
-
 }
+// Location Handler 
 // Important: Handles All Locations
 function locationHandler(newlocation, n1) {
   var iorole = adminrole == true || editorrole == true
-  if (iorole) { dE("adminonly").style.display = "flex";dE("tp_pnt").style.display = "block";dE("tp_edt").style.display = "block";dE("sms_edit").style.display = "block" } else { dE("adminonly").style.display = "none"; dE("sms_edit").style.display = "none"}
+  if (iorole) { 
+    dE("adminonly").style.display = "flex";
+    dE("tp_pnt").style.display = "block";
+    dE("tp_edt").style.display = "block";
+    dE("sms_edit").style.display = "block";
+  } 
+  else {
+    dE("adminonly").style.display = "none"; 
+    dE("sms_edit").style.display = "none"
+  }
   dE(handlebox).classList.remove("_open")
   if (n1 == 1) { window.location.hash = "#/" + newlocation }
   handlebox = newlocation
@@ -228,7 +247,6 @@ function locationHandler(newlocation, n1) {
 
   switch (location1) {
     case "profile": handlebox = "profile"; break;
-    case "editprofle": handlebox = "editprofile"; break;
     case "about": handlebox = "aboutus"; break;
     case "login": handlebox = "login"; break;
     case "dashboard": handlebox = "dashboard"; break;
@@ -239,6 +257,7 @@ function locationHandler(newlocation, n1) {
     case "testinfo": handlebox = "testinfo";renderTestList("active"); break;
     case "legal": handlebox = "legal"; break;
     case "forum": handlebox = "forum"; break;
+    case 'testing':handlebox = "testing";break;
     case "bugreport": handlebox = "bugreport"; break;
     case "qblist": handlebox = "qbanklist"; displayTopicList(2); break;
     case "tpclist": handlebox = "topiclist"; displayTopicList(1); break;
@@ -266,7 +285,6 @@ function locationHandler(newlocation, n1) {
   if (location1.includes("printable/topic") && iorole == true) { handlebox = "printable"; printQBank(2); }
   if (location1.includes("printable/tests") && iorole == true) { handlebox = "printable"; printQBank(3); }
   if (location1 == "functions" && iorole == true) { handlebox = "functions"; changeItem() }
-  // if (location1.includes("update") && iorole == true) { handlebox = "functions"; changeItem() }
   if (location1.includes("users") && iorole == true) { handlebox = "users"; userUpdate() }
   if (location1.includes("topic")) { handlebox = "topic"; getTopic(1); }
   if (location1.includes("livequiz")) { handlebox = "livequiz"; lquizinit(); }
@@ -274,6 +292,7 @@ function locationHandler(newlocation, n1) {
   if (location1.includes("edit_lesson")) { handlebox = "fu_simulation"; prepareLesson() }
   if (location1.includes("edit_tpc")) { handlebox = "fu_topic"; prepareTopicQBank(1) }
   if (location1.includes("edit_qubank")) { handlebox = "fu_topic"; prepareTopicQBank(2) }
+  // if (location1.includes("redirect"))
   if (userrole == false || userrole == null || userrole == undefined) { 
     if (location1 == "login" || location1 == "register" || location1 == "legal" || location1 == "about" || location1 == "bugreport"){
 
@@ -281,11 +300,9 @@ function locationHandler(newlocation, n1) {
       handlebox = "error_page"
     }
     }
-  // if (location1 == "login") { handlebox = "login" }
-  // if (location1 == "register") { handlebox = "register" }
   dE(handlebox).classList.add("_open")
-  chgby = 1;
   stpVid()
+  console.log({userinfo,topicJSON,topicJSONno,editorrole, adminrole, userrole,topiclist,qlist,simlist,chapterlist,userdetails,curr_qlno,curr_qlid,editqllist,autosignin,testList,activeTestList,upcomingTestList,finishedTestList,testInfo,testQuestionList,testResponseList,activequestionid})
 }
 // ----------------------
 // BATCHES
@@ -630,24 +647,17 @@ function addItemToQLLIst(){
   for (var i = 0; i < document.getElementsByClassName("aq_i2").length; i++) {
     qop2.push(document.getElementsByClassName("aq_i2")[i].value)
   }
-  var json = {id:curr_qlid,mode: dE("aq_mode").value,title: dE("aq_qtext").value,y_url: dE("aq_yurl").value,img: dE("aq_imgurl").value,hint: dE("aq_hint").value,expl: dE("aq_expl").value,type: qtype,answer: qans,op: qop,op1: qop1,op2: qop2}
-  console.log(json)
+  var json = {id:curr_qlid,mode: dE("aq_mode").value,title: getHTM("aq_qtext"),y_url: dE("aq_yurl").value,hint: dE("aq_hint").value,expl: getHTM("aq_expl"),type: qtype,answer: qans,op: qop,op1: qop1,op2: qop2}
   return json
 }
 function rEQL(u){
   renderEditQLList(this.innerText)
 }
-function unique(){
-  return sha256();
-}
-// log(unique())
 function renderEditQLList(qno) {
-  // if (editqllist.length != 0){
     if (qno == "+"){
       let po = editqllist.length
-      // dE("question_list").insertAdjacentHTML('beforeend','<span class = "t_no_qno" id = "t_no_qno_'+po+'">'+po+'</span>')
-      // dE("t_no_qno_"+po).addEventListener("click",rEQL)
       editqllist[po] = {id:Date.now()+Math.random().toString(36).substr(2),mode: "",title: "",y_url: "",img: "",hint: "",expl:"",type: "mcq",answer: ["1"],op: ["1","2","3","4"],op1: [],op2: []}
+      if (window.location.hash.includes("edit_qubank")){editqllist[po].mode = "question"}
       qno = po
     }
     dE("question_list").innerHTML = ""
@@ -662,23 +672,15 @@ function renderEditQLList(qno) {
     editqllist[curr_qlno-1] = addItemToQLLIst()
     curr_qlno = qno;
   }else {
-    // curr_qlno = 1
-    // editqllist[0] = addItemToQLLIst()
-    // dE("question_list").innerHTML = ""
-    // dE("question_list").insertAdjacentHTML('beforeend','<span class = "t_no_qno" id = "t_no_qno_'+1+'">'+1+'</span>')
-    // dE("t_no_qno_"+1).addEventListener("click",rEQL)
-
   }
-  
   var op = editqllist[curr_qlno-1]
   curr_qlid = op.id
   dE("aq_mode").value = op.mode
-  dE("aq_qtext").value = op.title
+  setHTM("aq_qtext",op.title)
   dE("aq_yurl").value = op.y_url
-  dE("aq_imgurl").value = op.img
   dE("aq_type").value = op.type
   dE("aq_hint").value = op.hint
-  dE("aq_expl").value = op.expl
+  setHTM("aq_expl",op.expl) 
   if (op.type == "mcq" || op.type == "mcq_multiple"){
       dE("aq_mcq_con").innerHTML = ""
       for (var g = 0;g<op.op.length;g++){
@@ -686,13 +688,14 @@ function renderEditQLList(qno) {
         document.getElementsByClassName("aq_mcq")[g].value = op.op[g]
         for (var h = 0; h<op.answer.length;h++){
           if (op.op[g] == op.answer[h]){
-            // window.changeColor(document.getElementsByClassName("aq_mcq")[g])
             document.getElementsByClassName("aq_mcq")[g].classList.add("aq_mcq_ans")
             document.getElementsByClassName("aq_mcq_p")[g].style.borderColor = "lime"
           }
       }
     }
-  } else if (qtype == "num"){}
+  } else if (op.type == "numerical" || op.type == "explain" || op.type == "fill" || op.type == "taf"){
+    dE("aq_answer").value = op.answer
+  }
   changeItem()
 }
 async function newTopic(){
@@ -752,13 +755,11 @@ async function prepareTopicQBank(iun) {
       var docJSON = docSnap.data();
       dE("aq_tpcname").value = docJSON.name
       dE("aq_tpclevel").value = docJSON.level
-      dE("aq_tpc_chaptername").value = docJSON.chname
+      // dE("aq_tpc_chaptername").value = docJSON.chname
       dE("aq_tpc_subj").value = docJSON.subject
       dE("aq_tpc_chapterid").value = docJSON.chid
       editqllist = docJSON.qllist
-      // log(JSON.stringify(docJSON))
       renderEditQLList(0)
-      
     }
   } catch {} 
 }
@@ -782,7 +783,7 @@ async function updateTopicQBank(iun){
       qllist: editqllist,
       level: dE("aq_tpclevel").value,
       chid: dE("aq_tpc_chapterid").value,
-      chname:dE("aq_tpc_chaptername").value,
+      // chname:dE("aq_tpc_chaptername").value,
       subject:dE("aq_tpc_subj").value
     })
   } catch {
@@ -899,12 +900,6 @@ async function getTopic(type) {
   topicJSON = {}
   topicJSON.title =  docJSON.name
   topicJSON.qllist=docJSON.qllist
-  // for (let ele in docJSON.lesson) {
-  //   topicJSON.push(["lessons", docJSON.lesson[ele]])
-  // }
-  // for (let ele in docJSON.questions) {
-  //   topicJSON.push(["questions", docJSON.questions[ele]])
-  // }
   topicHandler(3)
 }
 // Print Question Bank
@@ -933,9 +928,10 @@ async function printQBank(type) {
       qtitle = docJSON.title;
       qtype = docJSON.type;
       qimg = docJSON.img;
-      var expl = '<span class = "q_ans_expl" style = "display:none;">'+docJSON.expl+'</span>'
+      if (qimg == undefined){qimg = ""}
+      var expl = '<div class = "q_ans_expl" style = "font-weight:bold;color:green;font-size:10px;flex-direction:display:none;">Explaination:'+docJSON.expl+'</div>'
       var ans = "<div style = 'font-weight:bold;color:green;font-size:10px;flex-direction:row;display:none' class = 'q_ans_1'>Answer:";
-      var inhtml = '<div class = "qb_q"><span id = "' + ele.id + '">' + qtitle + '<div class = "qb_q_ty">(' + qtype + ')</span></div>'
+      var inhtml = '<div class = "qbtp_q"><div id = "' + ele.id + '">' + qtitle + '<div class = "qb_q_ty">(' + qtype + ')</div></div>'
       dE("eqb_add").insertAdjacentHTML('beforeend', inhtml);
       if (qimg != "") {
         var iwo = '<div class = "qb_img"><img src = "' + qimg + '"></div>'
@@ -951,12 +947,11 @@ async function printQBank(type) {
         for (let ele1 of docJSON.answer){
           ans += "<div class = 'qb_mcq_ans'>" + ele1 + '</div>'
         }
-
       }
       if (qtype == "taf") {
         qrt = '<ol class = "qb_mcq" type = "a"><li>True</li><li>False</li></ol>'
       }
-      if (qtype == "explain" || qtype == "numerical") { qrt = "" }
+      if (qtype == "explain" || qtype == "numerical" || qtype == "fill") { qrt = "" }
 
       if (qtype == "matrix") {
         var qop1 = docJSON.op1;
@@ -967,7 +962,6 @@ async function printQBank(type) {
         }
         qrt = '<table>' + asi + '</table>'
       }
-      
       dE(ele.id).insertAdjacentHTML('beforeend', qrt)
       dE(ele.id).insertAdjacentHTML('beforeend', ans+"</div>")
       dE(ele.id).insertAdjacentHTML('beforeend', expl)
@@ -991,44 +985,27 @@ async function addItemWeb(){
 async function lessonRenderer(docJSON) {
   dE("tp_question").style.display = "none"
   dE("tp_lesson").style.display = "block"
-  // function findlesson(lessonid){
-  //   var a = lessonlist.length
-  //   for (var i=0;i<a;i++){
-  //       if (lessonlist[i].lessonid == lessonid){
-  //         return i
-  //       }
-  //   }
-  // }
-  // var lessID = findlesson(lessonid)
-  // if ( lessID == undefined || lessID == null ){
-  //   var docJSON
-  //   var docRef = doc(db, "lesson", lessonid)
-  //   var docSnap = await getDoc(docRef);
-  //   if (docSnap.exists()) { docJSON = docSnap.data(); }
-  //   else { locationHandler("error_page", 1); throw new Error }
-  //   var lessonElement = {lessonid:lessonid,title:docJSON.title,expl:docJSON.expl,img:docJSON.img,y_url:docJSON.y_url}
-  //   lessonlist.push(lessonElement)
-  //   lessID = findlesson(lessonid)
-  //   console.log(docJSON)
-  // }
   loadVid(docJSON.y_url)
   dE("tp_lsno").innerText = docJSON.title
-  dE("tp_expl").innerText = docJSON.expl
-  dE("tp_lsimg").src = docJSON.img
+  dE("tp_expl").innerHTML = docJSON.expl
+  // dE("tp_lsimg").src = docJSON.img
 }
 async function questionRenderer(docJSON, type) {
   function iu(ele) { ele.style.display = "none" }
   function io(ele) { ele.style.display = "block" }
   function qif(ele) { ele.style.display = "flex" }
+  iu(dE("tp_hint"));iu(dE("tp_expl"));iu(dE("tp_e_answer"));iu(dE("tp_status"))
   var tpmcqcon = dE("tp_mcq_con")
   var tpmatrix = dE("tp_matrix")
   var tpanswer = dE("tp_answer")
   dE("tp_lsno").innerText = "Question"
   dE("tp_question").style.display = "flex"
   dE("tp_lesson").style.display = "none"
+  dE("tp_question").setAttribute("dataid",docJSON.id)
+  dE("tp_question").setAttribute("qtype",docJSON.type)
   tpmcqcon.innerHTML = ""
-  dE("tp_qtext").innerText = docJSON.title
-  dE("tp_img").src = docJSON.img
+  dE("tp_qtext").innerHTML = docJSON.title
+  dE("tp_img").src = ""
   if (docJSON.type == "mcq" || docJSON.type == "mcq_multiple") {
     qif(tpmcqcon); iu(tpmatrix); iu(tpanswer)
     var qop = docJSON.op; var asi = "";
@@ -1069,11 +1046,8 @@ async function topicHandler(type) {
   }
   if (type == 3) { topicJSONno = 0 }
   var a = topicJSON.title
-  // console.log(a)
   dE("tp_title").innerText = a
-    // console.log(a[1])
   var cddd = topicJSON.qllist[topicJSONno]
-  // console.log(cddd)
   if (cddd.mode == "lesson") { lessonRenderer(cddd) }
   else if (cddd.mode == "question") { questionRenderer(cddd) }
   stpVid();
@@ -1083,13 +1057,11 @@ function addMCQ() {
   dE("aq_mcq_con").insertAdjacentHTML('beforeend', MCQ)
 }
 function clearAQ() {
-  dE("aq_qtext").value = ""
+  setHTM("aq_qtext","")
+  setHTM("aq_expl","")
   dE("aq_answer").value = ""
   dE("aq_yurl").value = ""
-  dE("aq_imgurl").value = ""
-  dE("aq_expl").value = ""
   dE("aq_hint").value = ""
-  // dE("aq_type").value = "mcq"
   for (var i = 0; i < document.getElementsByClassName("aq_mcq").length; i++) {
     document.getElementsByClassName("aq_mcq")[i].value = ""
   }
@@ -1153,8 +1125,8 @@ async function authStateObserver(user) {
     }
     if (docJSON.deleted == true){
       dE("overlay").style.display = "block"
+      log("Warning","User Account Has Been Deleted")
       signOutUser()
-      alert("This User Account Has Been Deleted")
     }
     if (docJSON.gen == "Male"){
       dE("prf_tab_img").src = '/assets/q_male.svg'
@@ -1172,14 +1144,13 @@ async function authStateObserver(user) {
       getTestList(batchno,user.uid)
       var iframeurl = "https://calendar.google.com/calendar/embed??height=600&wkst=2&bgcolor=%23ffffff&ctz=Asia%2FKolkata&showTitle=0&showCalendars=0&showTabs=0&showPrint=0&showDate=1&src=" + calenid + "%40group.calendar.google.com&amp;ctz=Asia%2FKolkata"
       tmtifr.src = iframeurl
-      // if (docJSON.delon.seconds <= parseInt(Date.now()/1000)){
-      //   dE("overlay").style.display = "block"
-      //   alert("This Batch Has Been Deleted")
-      //   signOutUser()
-      // }
-      console.log(docJSON.chlist)
+      if (docJSON.delon.seconds <= parseInt(Date.now()/1000)){
+        log("Warning","This Batch Has Been Deleted")
+        signOutUser()
+        window.reload()
+        throw new Error("DENIED")
+      }
       for (var i = 0; i < docJSON.chlist.length; i++) {
-        console.log(docJSON.chlist[i].name,docJSON.chlist[i].id,docJSON.chlist[i].subject)
         chapterlist.push({name:docJSON.chlist[i].name, id:docJSON.chlist[i].id,subject:docJSON.chlist[i].subject})
       }
     }} catch {}
@@ -1226,9 +1197,6 @@ function uploadImages() {
   };
   reader.readAsText(file.files[0]);
 }
-function rndAQ() {
-  renderMarkedMath("aq_qtext", "aq_renderer")
-}
 function signUpRestrict() {
   alert("The App Is Invite Only Registrations Are NOT Available Right Now")
 }
@@ -1259,7 +1227,52 @@ async function gtMsg() {
 
 }
 function checkQuestion() {
-
+  var qid = dE("tp_question").getAttribute("dataid");
+  console.log(qid)
+  var type = dE("tp_question").getAttribute("qtype");
+  var answer
+  var crranswer,explanation,hint
+  var status = 0
+  for (var i =0;i<topicJSON.qllist.length;i++){
+    console.log(topicJSON.qllist[i])
+    if (topicJSON.qllist[i].id == qid){
+      crranswer = topicJSON.qllist[i].answer
+      explanation = topicJSON.qllist[i].explanation
+      hint = topicJSON.qllist[i].hint
+      break;
+    }
+  }
+  if (type == "numerical" || type == "fill"){
+    answer = dE("tp_answer").value
+    if (crranswer == answer){
+      dE("tp_status").innerText = "Correct Answer";
+      status = 1
+    }else{
+      dE("tp_status").innerText = "Wrong Answer"
+      status = 0
+    }
+  }
+  if (type == "mcq" || type == "mcq_multiple" || type == "taf"){
+    answer = []
+    for (var k = 0;k<document.getElementsByClassName("tp_mcq_p").length;k++){
+     if (document.getElementsByClassName("tp_mcq_p")[k].classList.contains("aq_mcq_ans")){answer.push(document.getElementsByClassName("tp_mcq_p")[k].innerText)}
+    }
+    console.log(answer,crranswer)
+    if (areEqual(answer,crranswer)){
+        dE("tp_status").innerText = "Correct Answer"
+        status = 1
+    }else {
+      dE("tp_status").innerText = "Wrong Answer"
+      status = 0
+    }
+  }
+  dE("tp_status").style.display = "block"
+  dE("tp_hint").style.display = "block"
+  dE("tp_expl").style.display = "block"
+  dE("tp_e_answer").style.display = "block"
+  dE("tp_expl").innerHTML = explanation
+  dE("tp_hint").innerHTML = hint
+  dE("tp_e_answer").innerHTML = "Answer:" + crranswer
 }
 function printStuff(){
   if (window.location.hash.includes("topic")){
@@ -1297,7 +1310,6 @@ async function getTestList(batchid,userid){
     var docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       var docJSON = docSnap.data()
-      console.log(docJSON)
       testList = docJSON.tests;
     }
   }
@@ -1305,14 +1317,11 @@ async function getTestList(batchid,userid){
   {
     
     const q = query(collection(db,"tests"),where("finished", "array-contains", userid),limit(5));
-    console.log(userid)
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
       var min = doc.data()
       var docJSON = {title:min.title,testid:doc.id,finished:true,strton:min.strton,endon:min.endon}
       finishedTestList.push(docJSON)
-      console.log(docJSON)
       var a =0
       for (let ele of testList){
         if (ele.testid == docJSON.testid){
@@ -1322,7 +1331,6 @@ async function getTestList(batchid,userid){
       }
     });
   }
-  console.log(testList)
   var localtime = parseInt(Date.now()/1000)
   for (var d = 0;d<testList.length;d++){
     if (localtime > testList[d].strton.seconds && localtime < testList[d].endon.seconds){
@@ -1331,7 +1339,6 @@ async function getTestList(batchid,userid){
       upcomingTestList.push(testList[d])
     }
   }
-  // console.log(testList,activeTestList,upcomingTestList,finishedTestList)
 }
 function testClicker(){
   window.location.hash = "#/instructions/" + this.id.split("T")[1]
@@ -1377,15 +1384,6 @@ async function getTestInfo(){
       } 
     }
   }
-  // document.addEventListener("visibilitychange", async function(event){
-  //   await updateDoc(doc(db, "tests", testid,"responses",auth.currentUser.uid),{
-  //     warning:arrayUnion({type:"tab_change",time:Date.now()})
-  // })})
-  // window.addEventListener("resize", async function(event) {
-  //   await updateDoc(doc(db, "tests", testid,"responses",auth.currentUser.uid),{
-  //     warning:arrayUnion({type:"tab_resize",time:Date.now()})
-  //   })
-  // })
   try {
     docRef = doc(db, "tests", testid,"questions","questions");
     docSnap = await getDoc(docRef);
@@ -1456,7 +1454,7 @@ function testqHandler(id,no){
   for (let ele of testQuestionList.questions){
     if (id == ele.qid){
       dE("tt_qtitle").innerHTML = ""
-      var inhtml = '<li class = "qb_q" id = "Q' + ele.qid + '"><div class = "qb_ttl">' + ele.title + '<div id = "qb_q_ty" class = "qb_q_ty" >(' + ele.type + ')</div></div></li>'
+      var inhtml = '<div class = "qb_q" id = "Q' + ele.qid + '"><div class = "qb_ttl">' + ele.title + '<div id = "qb_q_ty" class = "qb_q_ty" >(' + ele.type + ')</div></div></div>'
       dE("tt_qtitle").insertAdjacentHTML('beforeend', inhtml);
       if (ele.img != "") {
         var iwo = '<div class = "qb_img"><img src = "' + ele.img + '"></div>'
@@ -1613,10 +1611,6 @@ async function submitTest(){
   testResponseList = [];
   activequestionid = ""
 }
-async function getCyberhunt(){
-}
-async function userUpdate() { 
-}
 function defineEvents(){
 function chItem() { changeItem(1) }
 function simHand() { changeLocationHash("simlist", 1) }
@@ -1627,7 +1621,6 @@ function regHand() { changeLocationHash("register", 1) }
 function prfHand() { changeLocationHash("profile", 1) }
 function dshHand() { changeLocationHash("dashboard", 1) }
 function adiHand() { changeLocationHash("functions", 1) }
-function pqbHand() { changeLocationHash("printable/qbank", 1) }
 function tstinfHand() { changeLocationHash("testinfo", 1) }
 function uscHand() { changeLocationHash("users", 1) }
 function tpcHand() { changeLocationHash("tpclist", 1) }
@@ -1636,6 +1629,7 @@ function frmHand() { changeLocationHash("forum", 1) }
 function lglHand() { changeLocationHash("legal", 1) }
 function qbaHand() { changeLocationHash("qblist", 1) }
 function chpHand() { changeLocationHash("chplist", 1) }
+
 function prvHand() { topicHandler(1) }
 function nxtHand() { topicHandler(2) }
 function actHand() { renderTestList("active")}
@@ -1675,13 +1669,9 @@ var shfbtn = dE("shf_btn").addEventListener("click", shuffleQBank);
 var aqao = dE("aq_ao").addEventListener("click", addMCQ);
 var aqro = dE("aq_ro").addEventListener("click", removeMCQ);
 var tmode = dE("aq_mode").addEventListener("change", changeItem)
-// var tsub = dE("aq_subject").addEventListener("change", chItem)
 var ttype = dE("aq_type").addEventListener("change", changeItem)
-// var aqsavebtn = dE("aq_save").addEventListener("click", addItemWeb);
-var aqqtxt = dE("aq_qtext").addEventListener("keyup", rndAQ);
 var dshbtn = dE("dsh_btn").addEventListener("click", dshHand);
 var adibtn = dE("adi_btn").addEventListener("click", adiHand)
-var pqbbtn = dE("pqb_btn").addEventListener("click", pqbHand)
 var aqsave = dE("aq_tpc_save").addEventListener("click",uQL )
 var aqsave = dE("aq_qbc_save").addEventListener("click",uQL2 )
 var tstinfbtn = dE("tstinf_btn").addEventListener("click", tstinfHand)
@@ -1724,44 +1714,34 @@ var chp_btn = dE("chp_btn").addEventListener("click",chpHand)
 var aq_sims_save = dE("aq_sims_save").addEventListener("click",updateSimulationWeb)
 dE("qbnk_vid_btn_e").addEventListener("click",qbnkend)
 dE("qbnk_vid_btn").addEventListener("click",qbnkstr)
-
 }
 function plyVid() { window.player.playVideo() }
 function stpVid() { try {window.player.stopVideo()} catch{} }
 function pauVid() { window.player.pauseVideo() }
 function loadVid(videoId) { player.loadVideoById(videoId); }
+function getHTM(id) {return window.getHTML(id) }
+function setHTM(id,html) {window.setHTML(id,html) }
 var Quarkz = {
   "copyright": "Mr Techtroid 2021-22",
   "vno": "v0.1.2",
   "author": "Mr Techtroid",
-  "last-updated": "24/05/2022(IST)",
+  "last-updated": "24/12/2022(IST)",
 }
-
-
 var handlebox = "login";
 var location1 = window.location.hash.split("#/")[1]
 var userinfo;
-
 var topicJSON = {};
 var topicJSONno = 0;
-
-
 var editorrole, adminrole, userrole;
 var topiclist = []
-var lessonlist = []
-var questionlist = []
 var qlist = []
 var simlist = []
 var chapterlist = []
-
 var userdetails = []
-
 var curr_qlno = 0
 var curr_qlid = ""
 var editqllist = []
-
 var autosignin = 0
-var answerlist = []
 var testList = []
 var activeTestList = []
 var upcomingTestList = []
@@ -1770,11 +1750,6 @@ var testInfo = []
 var testQuestionList = []
 var testResponseList = [];
 var activequestionid = ""
-var testTimerfunction,testTimer;
-
-
-// sgngoogle.addEventListener("click",signInWithGoogle);
-var chgby = 1;
 window.onhashchange = locationHandler
 initFirebaseAuth()
 defineEvents()

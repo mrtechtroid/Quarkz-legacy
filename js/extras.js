@@ -146,17 +146,25 @@ function fullscreen(){
   }
 }
 function mcqchose(ele){
-    if(ele.target !== this) {
-        console.log(ele)
-    for (var i = 0; i < document.getElementsByClassName("tp_mcq_p").length; i++) {
+
+    if (document.getElementById("tp_question").getAttribute("qtype") == "mcq"){
+      for (var i = 0; i < document.getElementsByClassName("tp_mcq_p").length; i++) {
         document.getElementsByClassName("tp_mcq_p")[i].classList.remove("aq_mcq_ans")
         document.getElementsByClassName("tp_mcq_p")[i].style.borderColor = "yellow"
+      }
+      ele.classList.add("aq_mcq_ans")
+      ele.style.borderColor = "lime"
+    }else {
+      if (ele.classList.contains("aq_mcq_ans")){
+        ele.classList.remove("aq_mcq_ans")
+        ele.style.borderColor = "yellow"
+      }else {
+        ele.classList.add("aq_mcq_ans")
+        ele.style.borderColor = "lime"
+      }
     }
-    ele.classList.add("aq_mcq_ans")
-    ele.style.borderColor = "lime"
-    ele.style.backgroundColor = "grey"
-    };
-}
+};
+
 if (screen.width < "300px"){
   document.getElementById("overlay").style.display = "block"
 }
@@ -183,3 +191,27 @@ function updateUI(){
 document.getElementById("pe_tst_type_1").addEventListener('change',updateUI)
 document.getElementById("pe_tst_type_2").addEventListener('change',updateUI)
 document.getElementById("tsinf_btn").addEventListener('change',updateUI)
+
+$(document).ready(function() {
+  $('.summernote').summernote({
+    toolbar: [
+      ['style', ['style']],
+      ['font', ['bold', 'italic', 'underline', 'clear']],
+      ['fontname', ['fontname']],
+      ['color', ['color']],
+      ['para', ['ul', 'ol', 'paragraph']],
+      ['height', ['height']],
+      ['table', ['table']],
+      ['insert', ['link', 'picture', 'hr']],
+      ['view', ['fullscreen', 'codeview']],
+      ['help', ['help']]
+    ],
+  });
+});
+
+function getHTML(id){
+  return $("#"+id).summernote('code')
+}
+function setHTML(id,html){
+  $("#"+id).summernote('code', html);
+}

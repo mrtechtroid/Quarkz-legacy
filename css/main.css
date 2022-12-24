@@ -123,7 +123,9 @@ body {
   display: none !important;
 
 }
-
+.note-editable{
+  color:white;
+}
 ._open {
   display: flex !important;
 }
@@ -223,7 +225,7 @@ body {
   width: 50vw;
   border-radius: 100px;
   margin: 6px;
-  background-color: #393E46;
+  /* background-color: #393E46; */
   color: white;
 
 }
@@ -336,13 +338,13 @@ body {
   background-color: transparent;
   text-decoration: none;
   border: none;
-  border-bottom: 3px solid lime;
+  border-bottom: 2px solid rgb(105, 114, 105);
   outline: none;
   color: white;
 }
 
 ._in_aq {
-  width: 70vw;
+  width: 72vw;
 }
 
 ._in_pq {
@@ -353,19 +355,8 @@ body {
   float: right;
   color: magenta;
 }
-
-.qb_q {}
-
 #eqb_add {
   counter-reset: qno;
-}
-
-.qb_q {
-  counter-increment: qno;
-}
-
-.qb_q:before {
-  content: counter(qno)") ";
 }
 
 .qb_mcq {
@@ -374,7 +365,9 @@ body {
   flex-direction: row;
   justify-content: space-around;
 }
-
+.qb_q::before{
+  content: counter(qno)") ";
+}
 .qb_mcq_opt {
   counter-increment: optno;
   width: 20vw;
@@ -405,6 +398,10 @@ body {
   position: relative;
   z-index: -1;
 }
+.note-modal-backdrop {
+  display: none!important;
+}
+.qb_q{counter-increment: qno;}
 @media screen {
   div.divFooter {
     display: none;
@@ -436,6 +433,7 @@ body {
     right: 0;
     
   }
+  .qb_q{counter-increment: qno;}
   body {
     position: relative;
     -webkit-print-color-adjust: exact !important;
@@ -463,18 +461,6 @@ body {
     color: black;
     background-color: black;
   }
-  /* #printable:before {
-    content: "";
-    position: absolute;
-    z-index: 0;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: 
-      url('data:image/svg+xml;utf8,<svg style="transform:rotate(-45deg)" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 50 60"><text x="0" y="25" fill="%23000">Quarkz </text></svg>') 
-      0 0/100% 100%;
-  } */
   #printable {
     backface-visibility: visible;
     background-color: transparent;
@@ -831,7 +817,7 @@ body {
   width: 50vw;
   border-radius: 100px;
   margin: 6px;
-  background-color: #393E46;
+  /* background-color: #393E46; */
   color: white;
 
 }
@@ -844,7 +830,6 @@ body {
   border: none;
   text-decoration: none;
 }
-
 .aq_i1,
 .aq_i2,
 .tp_i1,
@@ -858,22 +843,6 @@ body {
   width: 30vw;
   height: 3vh;
 }
-
-._in_aq,
-._in_pq {
-  font-size: 3vh;
-  background-color: transparent;
-  text-decoration: none;
-  border: none;
-  border-bottom: 3px solid lime;
-  outline: none;
-  color: white;
-}
-
-._in_aq {
-  width: 65vw;
-}
-
 .t_no_qno {
   width: 10vw;
   height: 5vh;
