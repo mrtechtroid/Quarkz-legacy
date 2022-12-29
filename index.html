@@ -76,7 +76,10 @@
         </div>
         
     </div>
-
+    <div id = "appinfo" class="full_page flex_type">
+        <span style="font-size: 5vh;">App Info</span>
+        <pre id="ren_appinf"></pre>
+    </div>
     <div id="aboutus" class="full_page flex_type">
         <span style="font-size: 5vh;">About Us</span>
         <img id ="abt_img" src="https://avatars1.githubusercontent.com/u/64828294?s=460&amp;v=4" alt="MTT Photo">
@@ -85,8 +88,11 @@
         <span>Its Built In A Way That It Is Easy For Both Teachers And Students To Use</span>
         <span>Quarkz Is Currently Under Beta Version And Many Features Will Come In The Future</span>
         <span>Contact Mail: <span class="sp_txt">mrtechtroid@outlook.com</span></span>
-        <button id="lgl_btn" class="tst_btn rpl">Legal</button>
-        <button id="rbu_btn" class="tst_btn rpl" onclick="window.location = '/#/bugreport'">Report Bugs</button>
+        <div style = "display: flex;flex-direction: row;overflow-y: auto;">
+            <button id="lgl_btn" class="tst_btn rpl">Legal</button>
+            <button id="rbu_btn" class="tst_btn rpl" onclick="window.location = '/#/bugreport'">Report Bugs</button>
+            <button id="apinf_btn" class="tst_btn rpl" onclick="window.location = '/#/appinfo'">App Info</button>
+        </div>
     </div>
 
     <div id="legal" class="full_page flex_type" style="text-align: center;">
@@ -96,8 +102,8 @@
             <ol>
                 <h3>Account Information And User Generated Content</h3>
                 <li>By Creating an account on this website, you state that you agree to these terms and condition.</li>
-                <li>All User Generated data(excluding passwords) can be accessed by Quarkz Admins Or Authorised Moderators Only.</li>
-                <li>When you request for account deletion, NO user generated data will be deleted. Instead the account will be unlinked from our Authentication services.However This data will be accessible only to Admins. </li>
+                <li>All User Generated data(excluding passwords) can be accessed by Quarkz Admins Or Authorised Moderators. </li>
+                <li>When you request for account deletion, NO user generated data will be deleted. Instead the account will be unlinked from our Authentication services.However This data will continue to be accessible only to Admins. </li>
                 <li>Any content uploaded or published or submitted or posted by you on the Platform, including without limitation, the content will be owned by You, but we are also granted a worldwide,non-exclusive,royalty-free,sub-licensable and transferable license to use, reproduce, distribute, share, display, publish, retain, make available online and/or electronically transmit such User-generated Content as well as technical information collected.</li>
                 <h3>Free Use Disclaimer</h3>
                 <li>Copyright Disclaimer under section 107 of the Copyright Act 1976, allowance is made for “fair use” for purposes such as criticism, comment, news reporting, teaching, scholarship, education and research. </li>
@@ -322,6 +328,7 @@
         </div>
         <button class="tst_btn rpl" id="aq_tpc_save">Save/Update Topic</button>
         <button class="tst_btn rpl" id="aq_qbc_save">Save/Update QBank</button>
+        <button class="tst_btn rpl" id="aq_tst_save">Save/Update Test</button>
         <button class="tst_btn rpl" id="aq_export">Export</button>
     </div>
     <div id="users" class="full_page flex_type">
@@ -381,6 +388,11 @@
             </div>
             <hr style="width: 100%;">
             <span style="font-size: small;">© 2021-22 Quarkz!</span>
+        </div>
+        <div style = "display: flex;">
+            <div id = "db_exam_info">
+                
+            </div>
         </div>
     </div>
     <div id="singletestreport" class="full_page flex_type">
@@ -722,18 +734,6 @@
             <div id="tp_hint" style="display: none;">Hint</div>
             <div id="tp_e_answer" style="display: none;">Answer</div>
             <div id="tp_expl" style="display: none;">Explanation</div>
-        </div>
-    </div>
-    <div id="topiclist" class="full_page flex_type">
-        <span style="font-size: 5vh;">Topic List</span>
-        <hr color="white" width="100%">
-        <div id="tli_cont" style="overflow-y: scroll;height:50vh;" class="flex_type">
-        </div>
-    </div>
-    <div id="qbanklist" class="full_page flex_type">
-        <span style="font-size: 5vh;">Question Banks</span>
-        <hr color="white" width="100%">
-        <div id="qb_cont" style="overflow-y: scroll;height:50vh;" class="flex_type">
         </div>
     </div>
     <div id="chapter" class="full_page flex_type">
