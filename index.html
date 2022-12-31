@@ -10,7 +10,7 @@
     <title>Quarkz!</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="icon" href="assets/Quarkz-T.png" type="image/icon type">
-    
+
     <!-- Google Fonts-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500&display=swap" rel="stylesheet">
@@ -27,12 +27,14 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js"
         integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR"
         crossorigin="anonymous"></script>
-    
+
     <!-- Purification Of Marked JS-->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <!-- JQuerySupport For SummerNote-->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
 
     <!-- SummerNote-->
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
@@ -47,20 +49,24 @@
 <body>
     <div id="overlay">
         <div id="overlay_div">
-            <span id="ovr_logo"><img src="/assets/Quarkz_white.png" >
+            <span id="ovr_logo"><img src="/assets/Quarkz_white.png">
                 <center>Updating to Version <span class="sp_txt">1.0.0</span></center>
             </span>
         </div>
     </div>
     <div id="watermark">
-        <span id="logo"><img id = "ovr_l_1" src="/assets/Quarkz-WT.png" style="height:6vh"><img style="height:6vh" id = "ovr_l_2" src="/assets/Quarkz.png"></span>
+        <span id="logo"><img id="ovr_l_1" src="/assets/Quarkz-WT.png" style="height:6vh"><img style="height:6vh"
+                id="ovr_l_2" src="/assets/Quarkz.png"></span>
         <div id="w_holder">
             <span id="spoints" class="no-print"></span>
             <span id="dsh_btn" class="no-print">☰</span>
         </div>
     </div>
-    <div class="full_page flex_type" id = "bugreport" style = "display:flex;align-items: center;justify-content: center;">
-        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeo2JZDaBApBiTeXmAnkVX60hSuJGHJkd9jsF9ePg0iM9ufjA/viewform?embedded=true" style = "width:90vw;height:90vh;border:none;" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+    <div class="full_page flex_type" id="bugreport" style="display:flex;align-items: center;justify-content: center;">
+        <iframe
+            src="https://docs.google.com/forms/d/e/1FAIpQLSeo2JZDaBApBiTeXmAnkVX60hSuJGHJkd9jsF9ePg0iM9ufjA/viewform?embedded=true"
+            style="width:90vw;height:90vh;border:none;" frameborder="0" marginheight="0"
+            marginwidth="0">Loading…</iframe>
     </div>
     <div id="login" class="full_page flex_type" style="justify-content: center;">
         <div id="lgn_bx">
@@ -72,23 +78,26 @@
                 <button class="tst_btn rpl" id="reg_in">Register</button>
             </div>
             <span id="lgn_err" class="err_txt" style="display: none;">ERROR:Wrong Username Or Password</span>
-            <span style="margin:auto;font-size:14px;text-decoration: none;"><a href = "/#/about" style="color: white;">About</a>&nbsp;&nbsp;<a href = "/#/legal" style="color: white;">Legal</a>&nbsp;&nbsp;<a href = "/#/bugreport" style="color: white;">Report A Bug</a></span>
+            <span style="margin:auto;font-size:14px;text-decoration: none;"><a href="/#/about"
+                    style="color: white;">About</a>&nbsp;&nbsp;<a href="/#/legal"
+                    style="color: white;">Legal</a>&nbsp;&nbsp;<a href="/#/bugreport" style="color: white;">Report A
+                    Bug</a></span>
         </div>
-        
+
     </div>
-    <div id = "appinfo" class="full_page flex_type">
+    <div id="appinfo" class="full_page flex_type">
         <span style="font-size: 5vh;">App Info</span>
         <pre id="ren_appinf"></pre>
     </div>
     <div id="aboutus" class="full_page flex_type">
         <span style="font-size: 5vh;">About Us</span>
-        <img id ="abt_img" src="https://avatars1.githubusercontent.com/u/64828294?s=460&amp;v=4" alt="MTT Photo">
+        <img id="abt_img" src="https://avatars1.githubusercontent.com/u/64828294?s=460&amp;v=4" alt="MTT Photo">
         <span>I Am Mr Techtroid The Main Developer Of <span class="sp_txt">Quarkz!</span></span>
         <span>I Built This Website As A Way For Schools To Head Towards Online Learning</span>
         <span>Its Built In A Way That It Is Easy For Both Teachers And Students To Use</span>
         <span>Quarkz Is Currently Under Beta Version And Many Features Will Come In The Future</span>
         <span>Contact Mail: <span class="sp_txt">mrtechtroid@outlook.com</span></span>
-        <div style = "display: flex;flex-direction: row;overflow-y: auto;">
+        <div style="display: flex;flex-direction: row;overflow-y: auto;">
             <button id="lgl_btn" class="tst_btn rpl">Legal</button>
             <button id="rbu_btn" class="tst_btn rpl" onclick="window.location = '/#/bugreport'">Report Bugs</button>
             <button id="apinf_btn" class="tst_btn rpl" onclick="window.location = '/#/appinfo'">App Info</button>
@@ -102,13 +111,25 @@
             <ol>
                 <h3>Account Information And User Generated Content</h3>
                 <li>By Creating an account on this website, you state that you agree to these terms and condition.</li>
-                <li>All User Generated data(excluding passwords) can be accessed by Quarkz Admins Or Authorised Moderators. </li>
-                <li>When you request for account deletion, NO user generated data will be deleted. Instead the account will be unlinked from our Authentication services.However This data will continue to be accessible only to Admins. </li>
-                <li>Any content uploaded or published or submitted or posted by you on the Platform, including without limitation, the content will be owned by You, but we are also granted a worldwide,non-exclusive,royalty-free,sub-licensable and transferable license to use, reproduce, distribute, share, display, publish, retain, make available online and/or electronically transmit such User-generated Content as well as technical information collected.</li>
+                <li>All User Generated data(excluding passwords) can be accessed by Quarkz Admins Or Authorised
+                    Moderators. </li>
+                <li>When you request for account deletion, NO user generated data will be deleted. Instead the account
+                    will be unlinked from our Authentication services.However This data will continue to be accessible
+                    only to Admins. </li>
+                <li>Any content uploaded or published or submitted or posted by you on the Platform, including without
+                    limitation, the content will be owned by You, but we are also granted a
+                    worldwide,non-exclusive,royalty-free,sub-licensable and transferable license to use, reproduce,
+                    distribute, share, display, publish, retain, make available online and/or electronically transmit
+                    such User-generated Content as well as technical information collected.</li>
                 <h3>Free Use Disclaimer</h3>
-                <li>Copyright Disclaimer under section 107 of the Copyright Act 1976, allowance is made for “fair use” for purposes such as criticism, comment, news reporting, teaching, scholarship, education and research. </li>
+                <li>Copyright Disclaimer under section 107 of the Copyright Act 1976, allowance is made for “fair use”
+                    for purposes such as criticism, comment, news reporting, teaching, scholarship, education and
+                    research. </li>
                 <h3>Licensing And Assets</h3>
-                <li>All Codes,Graphics,Assets,Files, And Information located in <span class = "sp_txt">quarkz.netlify.app</span> or any of Our Storage services such as Firebase, is part of Quarkz.Any Usage, Reproduction of Any Of The same Without Prior Consent Of Owner Mr Techtroid OR Quarkz Team Is Prohibited.</li>
+                <li>All Codes,Graphics,Assets,Files, And Information located in <span
+                        class="sp_txt">quarkz.netlify.app</span> or any of Our Storage services such as Firebase, is
+                    part of Quarkz.Any Usage, Reproduction of Any Of The same Without Prior Consent Of Owner Mr
+                    Techtroid OR Quarkz Team Is Prohibited.</li>
                 <li>Youtube Videos Which Are Used In This Website Belong To Their Respective Channel Owners</li>
                 <li>Usage Of Questions And Notes Are From Fair Use Under Education,Teaching And Research Category</li>
                 <li>Simulations Used In This Website Belong To The Respective Providers Mentioned</li>
@@ -177,41 +198,45 @@
             <option value="Male">Male</option>
             <option value="Female">Female</option>
         </select>
-    
+
         <button class="tst_btn rpl" id="rg_in">Register</button>
     </div>
     <div id="printable" class="full_page flex_type">
         <span style="font-size: 5vh;" class="no-print">Export</span>
         <hr color="white" width="100%" class="no-print">
-        <span class="no-print"><button class="tst_btn rpl no-print" onclick="print()">Print</button><button class="tst_btn rpl no-print"
-                id="shf_btn">Shuffle</button><button class="tst_btn rpl no-print" id="tsinf_btn">Update Bank
-                Info</button><button class="tst_btn rpl no-print" id="tans_btn">With Answers</button><button
-                class="tst_btn rpl no-print" id="tansexpl_btn">Bank
-                With Explanation And Answer</button><button class="tst_btn rpl no-print" id="tremove_btn">Remove
+        <span class="no-print"><button class="tst_btn rpl no-print" onclick="print()">Print</button><button
+                class="tst_btn rpl no-print" id="shf_btn">Shuffle</button><button class="tst_btn rpl no-print"
+                id="tsinf_btn">Update Bank
+                Info</button><button class="tst_btn rpl no-print" id="tans_btn">Answers</button><button
+                class="tst_btn rpl no-print" id="tansexpl_btn">Explanation And Answers</button><button
+                class="tst_btn rpl no-print" id="tremove_btn">Remove
                 All</button></span>
         <hr color="white" width="100%">
         <span style="font-size: 3vh;" id="qb_title">ERROR</span>
         <hr color="white" width="100%">
         <div id="pe_tst_info" class="flex_type no-print">
-            <span>Test<input id = "pe_tst_type_1" type="checkbox"></span>
-            <span id="">General Instructions<input id = "pe_tst_type_2" type="checkbox"></span>
+            <span>Test<input id="pe_tst_type_1" type="checkbox"></span>
+            <span id="">General Instructions<input id="pe_tst_type_2" type="checkbox"></span>
             <textarea type="answer" id="pe_gi_ins" class="_in_aq" style="resize: none;overflow-y: scroll;"
                 placeholder="General Instructions"></textarea>
-            <span>MCQ:<input type="number" id="pe_mcq_pno" class="_in_pq" value="3"><input type="number" id="pe_mcq_nno"
-                    class="_in_pq" value="-1"></span>
-            <span>MCQ Multiple:<input type="number" id="pe_mcmul_pno" class="_in_pq" value="3"><input type="number"
-                    id="pe_mcmul_nno" class="_in_pq" value="-1"></span>
-            <span>Numerical:<input type="number" id="pe_num_pno" class="_in_pq" value="4"><input type="number"
-                    id="pe_num_nno" class="_in_pq" value="0"></span>
-            <span>True Or False:<input type="number" id="pe_taf_pno" class="_in_pq" value="1"><input type="number"
-                    id="pe_taf_fno" class="_in_pq" value="0"></span>
-            <span>Explain:<input type="number" id="pe_exp_pno" class="_in_pq" value="4"><input type="number"
-                    id="pe_exp_nno" class="_in_pq" value="0"></span>
-            <span>Matrix<input type="number" id="pe_mat_pno" class="_in_pq" value="12"><input type="number"
-                    id="pe_mat_nno" class="_in_pq" value="-4"></span>
+            <div style="display: flex;flex-direction: row;flex-wrap: wrap;align-items: center;justify-content: center;">
+                <span>MCQ:<input type="number" id="pe_mcq_pno" class="_in_pq" value="3"><input type="number"
+                        id="pe_mcq_nno" class="_in_pq" value="-1"></span>
+                <span>MCQ Multiple:<input type="number" id="pe_mcmul_pno" class="_in_pq" value="3"><input type="number"
+                        id="pe_mcmul_nno" class="_in_pq" value="-1"></span>
+                <span>Numerical:<input type="number" id="pe_num_pno" class="_in_pq" value="4"><input type="number"
+                        id="pe_num_nno" class="_in_pq" value="0"></span>
+                <span>True Or False:<input type="number" id="pe_taf_pno" class="_in_pq" value="1"><input type="number"
+                        id="pe_taf_fno" class="_in_pq" value="0"></span>
+                <span>Explain:<input type="number" id="pe_exp_pno" class="_in_pq" value="4"><input type="number"
+                        id="pe_exp_nno" class="_in_pq" value="0"></span>
+                <span>Matrix<input type="number" id="pe_mat_pno" class="_in_pq" value="12"><input type="number"
+                        id="pe_mat_nno" class="_in_pq" value="-4"></span>
+            </div>
         </div>
-        <div id = "eqb_instr" style="text-align: left;width:90%;font-size: 14px;"><span style="color: green;">General Instructions:&nbsp;&nbsp;</span><span id = "equ_gi"></span></div>
-        <hr color="white" width="100%">
+        <div id="eqb_instr" style="text-align: left;width:90%;font-size: 14px;"><span style="color: green;">General
+                Instructions:&nbsp;&nbsp;</span><span id="equ_gi"></span><hr color="white" width="100%"></div>
+        
         <div id="eqb_add" style="width:90%;font-size: 14px;z-index: 1;" type="1">
         </div>
     </div>
@@ -252,7 +277,7 @@
     </div>
     <div id="fu_topic" class="full_page flex_type" style="overflow-y: scroll;">
         <span style="font-size: 5vh;" class="" id="fu_topic_title">Add/Edit Topic</span>
-        <input type="text" id="aq_tpcname" class="_in_aq" placeholder="Topic/Question Bank Name">
+        <input type="text" id="aq_tpcname" class="_in_aq" placeholder="Tests/Topic/Question Bank Name">
         <select name="type" id="aq_tpclevel" class="_in_aq" style="color:red">
             <option value="jee">JEE</option>
             <option value="neet">NEET</option>
@@ -268,6 +293,9 @@
             <option value="statistics">Statistics</option>
             <option value="unfiled">Unfiled</option>
         </select>
+        <div id = "aq_test_extra">
+            
+        </div>
         <div id="lqadd" style="display: flex;flex-direction: row;margin:10px;height: 50vh;">
             <div id="question_list"
                 style="border: 2px lime solid;width: 15vw;height:50vh;display: flex;flex-direction: column;align-items: center;text-align: center;font-size: 3vh;overflow-y: scroll;"
@@ -280,10 +308,10 @@
                     <option value="lesson">Lesson</option>
                 </select>
                 <div class="flex_type" id="aq_all" style="align-items: unset;">
-                    <div class="summernote" id = "aq_qtext">Question</div>
+                    <div class="summernote" id="aq_qtext">Question</div>
                     <input type="answer" id="aq_answer" class="_in_aq" placeholder="Answer">
                     <input type="url" id="aq_yurl" class="_in_aq" placeholder="Youtube ID">
-                    <div class="summernote" id = "aq_expl">Explanation</div>
+                    <div class="summernote" id="aq_expl">Explanation</div>
                     <textarea type="answer" id="aq_hint" class="_in_aq" style="resize: none;overflow-y: scroll;"
                         placeholder="Hint"></textarea>
 
@@ -347,7 +375,7 @@
         <hr color="white" width="100%">
 
         <span style="font-size: 3vh;">You don't have access to this page.</span>
-        <a class="tst_btn rpl" id="tt_save" href="/#/dashboard">Go To Dashboard</a>
+        <a class="tst_btn rpl" href="/#/dashboard">Go To Dashboard</a>
     </div>
     <div id="dashboard" class="full_page flex_type" style="display: flex;flex-direction: row;">
         <div id="sidebar">
@@ -362,7 +390,7 @@
             <hr style="width: 100%;">
             <div id="profile_tab"
                 style="display: flex;flex-direction: column;align-items: center;height:170px;max-width: 250px;">
-                <img id = "prf_tab_img" src="/assets/Quarkz_white.png"
+                <img id="prf_tab_img" src="/assets/Quarkz_white.png"
                     style="width: 100px;height:100px;object-fit: cover;margin:5px;">
                 <span style="color:rgb(0, 255, 221)" id="dshd_name">NAME</span>
                 <span style="color:rgb(104, 104, 92);font-size: small;" id="dshd_uname">@username</span>
@@ -389,9 +417,9 @@
             <hr style="width: 100%;">
             <span style="font-size: small;">© 2021-22 Quarkz!</span>
         </div>
-        <div style = "display: flex;">
-            <div id = "db_exam_info">
-                
+        <div style="display: flex;">
+            <div id="db_exam_info">
+
             </div>
         </div>
     </div>
@@ -525,6 +553,7 @@
                     After Which Your Test Will End</li>
                 <li>I have read and understood all the instructions. </li>
                 <li>All computer hardware allotted to me are in proper working condition. </li>
+                <li>Once the test has started, the clock will be set on the server. If you close the test window without completing the test then the clock will still be running on the window.</li>
                 <li>I declare that i am not in possession of / not wearing / not carrying any prohibited gadget like
                     mobile phone,bluetooth devices etc. /any prohibited material with me into the Examination Hall.</li>
                 <li>I agree that in case of not adhering to the instructions, I shall be liable to be debarred from this
@@ -539,8 +568,8 @@
         style="flex-direction: row;flex-wrap: wrap;height:max-content;min-height: 90vh;">
         <div style="display: flex;flex-direction: column;width: 60vw;height:80vh;margin:10px;min-width: 300px;">
             <div id="tt_extrabx"
-                style="display: flex;flex-direction:row;background-color: rgb(78, 72, 61);height: 40px;margin:10px;">
-                <span id="tt_timeleft" style="background-color: darkorange;">00:00:00</span>
+                style="display: flex;flex-direction:row;height: 40px;margin:10px;">
+                <span id="tt_timeleft" style="padding-left:20px;padding-right: 20px;background-color: rgb(100, 100, 52);border-radius: 5px 5px 5px 5px;">00:00:00</span>
                 <button id="tt_sub" class="tst_btn rpl">Submit</button>
             </div>
             <div id="tt_question" style="height:70vh;border:lime 3px solid;overflow-y: scroll;">
@@ -559,12 +588,12 @@
         </div>
         <div>
             <div id="tt_infobx"
-                style="width: 250px;height:120px;display: flex;flex-direction: column;align-items: center;border-radius:30px;background-color: rgb(78, 72, 61);padding:10px">
-                <span><span class="tts_notvisit">12</span>Not Visited</span>
-                <span><span class="tts_notanswer">21</span>Not Answered</span>
-                <span><span class="tts_answered">45</span>Answered</span>
-                <span><span class="tts_review">3</span>Review</span>
-                <span><span class="tts_ansreview">37</span>Review And Answered</span>
+                style="width: 250px;height:140px;display: flex;flex-direction: column;border-radius:30px;background-color: rgb(78, 72, 61);padding:10px;overflow-y: scroll;">
+                <div style="margin:9px"><span class="tts_notvisit">12</span>Not Visited</div>
+                <div style="margin:9px"><span class="tts_notanswer">21</span>Not Answered</div>
+                <div style="margin:9px"><span class="tts_answered">45</span>Answered</div>
+                <div style="margin:9px"><span class="tts_review">3</span>Review</div>
+                <div style="margin:9px"><span class="tts_ansreview">37</span>Review And Answered</div>
             </div>
             <div id="tt_qnobx"
                 style="display: inline-block;border-radius:30px;background-color: rgb(78, 72, 61);padding:10px;width: 250px;height: 40vh;margin:10px;overflow-y: scroll;">
@@ -576,7 +605,7 @@
     <div id="test_end" class="full_page flex_type">
         <span style="font-size: 5vh;" id="te_title">The Test Has Ended</span>
         <span style="font-size:3vh;">Your Results Will Be Released After<span id="te_endtime"></span></span>
-        <a class="tst_btn rpl" id="tt_save" href="/#/dashboard">Go To Dashboard</a>
+        <a class="tst_btn rpl" href="/#/dashboard">Go To Dashboard</a>
         <hr color="white" width="100%">
     </div>
     <div id="livequiz" class="full_page flex_type">
@@ -729,7 +758,7 @@
 
             <div>
                 <button class="tst_btn rpl" id="tp_sbm">Submit</button>
-                <div id = "tp_status"></div>
+                <div id="tp_status"></div>
             </div>
             <div id="tp_hint" style="display: none;">Hint</div>
             <div id="tp_e_answer" style="display: none;">Answer</div>
@@ -796,7 +825,7 @@
     </div>
     <div id="testing" class="full_page flex_type">
         <div id="summernote">Hello Summernote</div>
-        <script>$(document).ready(function() {$('#summernote').summernote();});</script>
+        <script>$(document).ready(function () { $('#summernote').summernote(); });</script>
     </div>
     <div id="cyberhunt" class="full_page flex_type">
         <div id="cyb_code" class="flex_type">
@@ -816,7 +845,8 @@
             <center>
                 <h2 id="msg_popup_txt">Note</h2>
             </center>
-            <a class="close" onclick="document.getElementById('msg_popup').style.visibility = 'hidden';document.getElementById('msg_popup').style.opacity = '0'">&times;</a>
+            <a class="close"
+                onclick="document.getElementById('msg_popup').style.visibility = 'hidden';document.getElementById('msg_popup').style.opacity = '0'">&times;</a>
             <p id="msg_popup_content"></p>
         </div>
     </div>

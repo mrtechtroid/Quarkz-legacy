@@ -37,6 +37,9 @@ document.getElementById("tans_btn").addEventListener("click",function(){
   }
 })
 document.getElementById("tansexpl_btn").addEventListener("click",function(){
+  for (var i =0;i<document.getElementsByClassName("q_ans_1").length;i++){
+    document.getElementsByClassName("q_ans_1")[i].style.display = "flex"
+  }
   for (var i =0;i<document.getElementsByClassName("q_ans_expl").length;i++){
     document.getElementsByClassName("q_ans_expl")[i].style.display = "flex"
   }
