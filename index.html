@@ -83,7 +83,6 @@
                     style="color: white;">Legal</a>&nbsp;&nbsp;<a href="/#/bugreport" style="color: white;">Report A
                     Bug</a></span>
         </div>
-
     </div>
     <div id="appinfo" class="full_page flex_type">
         <span style="font-size: 5vh;">App Info</span>
@@ -405,7 +404,7 @@
                 <div class="dshbox_v2" id="tstrep_btn">Test Reports</div>
                 <div class="dshbox_v2" id="tpc_btn" style="display: none;">Topics</div>
                 <div class="dshbox_v2" id="lvq_btn" style="display:none">Live Quiz</div>
-                <div class="dshbox_v2" id="frm_btn" onclick="window.location = 'forum.html'">Forum</div>
+                <div class="dshbox_v2" id="frm_btn" >Forum</div>
                 <div class="dshbox_v2" id="qba_btn" style="display: none;">Question Bank</div>
                 <div class="dshbox_v2" id="sim_btn">Simulations</div>
                 <div class="dshbox_v2" id="cyb_btn">Cyberhunts</div>
@@ -570,6 +569,7 @@
             <div id="tt_extrabx"
                 style="display: flex;flex-direction:row;height: 40px;margin:10px;">
                 <span id="tt_timeleft" style="padding-left:20px;padding-right: 20px;background-color: rgb(100, 100, 52);border-radius: 5px 5px 5px 5px;">00:00:00</span>
+                <span id="tt_testname" style="padding-left:20px;padding-right: 20px;border-radius: 5px 5px 5px 5px;width: 100%;background-color: rgb(38, 88, 19);text-align: right;margin-left: 5px;">TEST NAME</span>
                 <button id="tt_sub" class="tst_btn rpl">Submit</button>
             </div>
             <div id="tt_question" style="height:70vh;border:lime 3px solid;overflow-y: scroll;">
@@ -580,7 +580,7 @@
 
             </div>
             <div id="tt_footer" style="display:flex;">
-                <button class="tst_btn rpl" id="tt_save">Save And Next</button>
+                <button class="tst_btn rpl" id="tt_save">Save</button>
                 <button class="tst_btn rpl" id="tt_clear">Clear</button>
                 <button class="tst_btn rpl" id="tt_review">Mark For Review</button>
                 <button class="tst_btn rpl" id="tt_ansreview">Save And Mark For Review</button>
@@ -596,7 +596,7 @@
                 <div style="margin:9px"><span class="tts_ansreview">37</span>Review And Answered</div>
             </div>
             <div id="tt_qnobx"
-                style="display: inline-block;border-radius:30px;background-color: rgb(78, 72, 61);padding:10px;width: 250px;height: 40vh;margin:10px;overflow-y: scroll;">
+                style="display: flex;flex-direction: row;flex-wrap:wrap;border-radius:30px;background-color: rgb(78, 72, 61);padding:10px;width: 250px;height: 40vh;margin:10px;overflow-y: scroll;">
 
 
             </div>
@@ -827,6 +827,15 @@
         <div id="summernote">Hello Summernote</div>
         <script>$(document).ready(function () { $('#summernote').summernote(); });</script>
     </div>
+    <div id="Ariel" class="full_page flex_type">
+        <div id = "c-output" style="color:yellow;overflow-y: scroll;display: flex;flex-direction: column;height: 80vh;width: 90vw;border: 3px greenyellow solid;padding-left: 6px;">
+
+        </div>
+        <div>
+            <input type="text" id="c-input" class="_in_aq" placeholder="Command">
+            <button class="tst_btn rpl" id="c-exec">Execute</button>
+        </div>
+    </div>
     <div id="cyberhunt" class="full_page flex_type">
         <div id="cyb_code" class="flex_type">
             <span style="font-size: 5vh;">Join Cyberhunt!</span>
@@ -837,8 +846,19 @@
                 onclick="if (document.getElementById('cyb_cd_in').value != ''){window.location.hash = '/cyberhunt/'+document.getElementById('cyb_cd_in').value}">Submit</button>
         </div>
     </div>
-    <div id="cyb_editor">
-
+    <div id="forum" class="full_page flex_type">
+        <span style="font-size: 5vh;color:yellow" id="fm_title">Forum</span>
+        <hr width="100%" color="white">
+        <div style = "border:hotpink 3px solid;width:80%;">
+            <div id = 'pinned_msg' style = "background-color: rgb(38, 44, 31);color:rgb(21, 209, 209);overflow-y: scroll;height:30px;">Pinned Message:<span id = 'pinnedtxt' style = "">1</span></div>
+            <div id="forum_live" style="height:60vh;overflow-y: scroll;display: flex;flex-direction: column;">
+            </div>
+        </div>
+        
+        <div>
+            <input type="text" id="fm_message" class="_in_aq" placeholder="Message">
+            <button class="tst_btn rpl" id="fm_send">Send</button>
+        </div>
     </div>
     <div id="msg_popup" class="overlay">
         <div class="popup">

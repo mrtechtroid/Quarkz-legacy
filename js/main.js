@@ -4,7 +4,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase
 import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
 import { getFirestore, orderBy, limit, writeBatch, collection, addDoc, onSnapshot, arrayUnion, arrayRemove, setDoc, updateDoc, getDocs, doc, serverTimestamp, getDoc, query, where } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, } from 'https://www.gstatic.com/firebasejs/9.6.0/firebase-storage.js';
-
+import { sysaccess } from '/js/reworkui.js'
 const firebaseConfig = {
   apiKey: "AIzaSyDN8T7Pmw5e-LzmC3nAHEqI0Uk7FF7y6fc",
   authDomain: "quarkz.firebaseapp.com",
@@ -73,7 +73,7 @@ function getServerTime(url) {
       for (var pair of response.headers.entries()) { // accessing the entries
         if (pair[0] === 'date') {
           date = new Date(pair[1]).getTime()
-          console.log(date)
+          // console.log(date)
         }
       }
       return date;
@@ -283,6 +283,7 @@ function locationHandler(newlocation, n1) {
   if (location1.includes("qbnk_vid")) { handlebox = "qbnk_vid"; dE("qbnk_vid_btn").style.display = "block" }
   if (location1.includes("attempt")) { handlebox = "testv1"; getTestInfo() }
   if (location1.includes("printable/qbank") && iorole == true) { handlebox = "printable"; printQBank(1); }
+  if (location1.includes("ARIEL") && iorole == true) { handlebox = "Ariel";}
   if (location1.includes("printable/tests") && iorole == true) { handlebox = "printable"; printQBank(3); }
   if (location1 == "functions" && iorole == true) { handlebox = "functions"; changeItem() }
   if (location1.includes("users") && iorole == true) { handlebox = "users"; userUpdate() }
@@ -304,6 +305,7 @@ function locationHandler(newlocation, n1) {
   }
   dE(handlebox).classList.add("_open")
   stpVid()
+  if (location1 == "forum"){gtMsg(1);}else{gtMsg(2);forum_length = 1;forum_d = "afterbegin"}
   // console.log({ userinfo, topicJSON, topicJSONno, editorrole, adminrole, userrole, topiclist, qlist, simlist, chapterlist, userdetails, curr_qlno, curr_qlid, editqllist, autosignin, testList, activeTestList, upcomingTestList, finishedTestList, testInfo, testQuestionList, testResponseList, activequestionid })
 }
 // ----------------------
@@ -329,6 +331,79 @@ async function updateBatch() {
 async function getBatch() {
 
 }
+// FORUM
+// ----------------------
+async function sndMsg() {
+  var qtxt = dE("fm_message").value
+  if (qtxt.includes("/pinned")){
+    qtxt = qtxt.split("/pinned")[1]
+    try {
+      await updateDoc(doc(db,"forum","pinned"),{message:qtxt})
+    }catch{
+      alert("You Dont Have The Privilages For This Command")
+    }
+    async function upDoc(sTime){
+      await updateDoc(doc(db,"forum","ppinned"),{ppinned:arrayUnion({message:qtxt,user:userinfo.uuid,time:sTime})})
+    }
+      var sTime = await getServerTime("http://localhost:5500/time.html").then(upDoc(sTime))
+      
+  }else {
+    if (qtxt != "" && qtxt != null){
+      await addDoc(collection(db, "forum"), {
+        name: userinfo.name,
+        message: qtxt,
+        userid: userinfo.uuid,
+        sgndon: serverTimestamp()
+      })
+      dE("fm_message").value = ""
+    }else {
+      alert("Message Cannot Be Empty")
+    }
+  }
+}
+function displayMessage(id, time, name, text) {
+  var d = "<div id = 'dM" + id + "'><span class = 'dmName'>" + name + ": </span><span class = 'dmText'>" + text + "</span><span class = 'dmtime'>" + time + "</span></div>"
+  dE("forum_live").insertAdjacentHTML(forum_d, d)
+}
+function deleteMessage(id) { dE("dM" + id).remove() }
+let recentMessagesQuery;
+let reMSG;
+async function gtMsg(type) {
+  if (type == 1){
+    dE("forum_live").innerHTML = ""
+  recentMessagesQuery = query(collection(getFirestore(), 'forum'), orderBy('sgndon', 'desc'), limit(10));
+  reMSG = onSnapshot(recentMessagesQuery, function(snapshot) {
+    snapshot.docChanges().forEach(function(change) {
+      if (change.type === 'removed') {
+        deleteMessage(change.doc.id);
+      } else if (change.type == 'added') {
+          if (forum_length>=11){
+              forum_d = "beforeend"
+          }
+        var message = change.doc.data();
+        displayMessage(change.doc.id, "", message.name,
+                      message.message,);
+        forum_length = forum_length+1
+      }
+    });
+  });
+  } else if (type == 2){
+    reMSG()
+  }
+}
+async function getPinned(){
+var docRef = doc(db, 'forum', 'pinned')
+  var docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    var docRef = docSnap.data()
+    dE("pinnedtxt").innerText = docRef.message;
+  }
+}
+var fmsend = dE("fm_send").addEventListener("click", sndMsg)
+var forum_length = 1;
+var forum_d = "afterbegin"
+gtMsg();
+getPinned();
 // ----------------------
 // QBANK VIDEO
 // Slide Controller For QBANK Video
@@ -946,7 +1021,7 @@ async function updateTopicQBank(iun) {
   // Rendering Chapter List
   function renderCList(type) {
     dE("qb_cont_2").innerHTML = ""
-    console.log(chapterlist)
+    // console.log(chapterlist)
     for (var i = 0; i < chapterlist.length; i++) {
       var ele = chapterlist[i]
       if (ele.subject == type) {
@@ -1253,42 +1328,15 @@ async function updateTopicQBank(iun) {
   function signUpRestrict() {
     alert("The App Is Invite Only Registrations Are NOT Available Right Now")
   }
-  async function sndMsg() {
-    var qtxt = dE("fm_message").value
-    await addDoc(collection(db, "forum"), {
-      name: userinfo.name,
-      message: qtxt,
-      userid: userinfo.uuid,
-      sgndon: serverTimestamp()
-    })
-    dE("fm_message").value = ""
-  }
-
-  function displayMessage(id, time, name, text) {
-    var d = "<span id = 'dM" + id + "'><span class = 'dmName'>" + name + ": </span><span class = 'dmText'>" + text + "</span><span class = 'dmtime'>" + time + "</span></span><br>"
-    dE("forum_live").insertAdjacentHTML("beforeend", d)
-  }
-  function deleteMessage(id) { dE("dM" + id).remove() }
-  async function gtMsg() {
-    dE("forum_live").innerHTML = ""
-    const recentMessagesQuery = query(collection(getFirestore(), 'forum'), orderBy('sgndon', 'desc'), limit(12));
-    const querySnapshot = await getDocs(recentMessagesQuery);
-    querySnapshot.forEach((doc) => {
-      var c = doc.data()
-      displayMessage(doc.id, "", c.name, c.message)
-      // // console.log(doc)
-    });
-
-  }
   function checkQuestion() {
     var qid = dE("tp_question").getAttribute("dataid");
-    console.log(qid)
+    // console.log(qid)
     var type = dE("tp_question").getAttribute("qtype");
     var answer
     var crranswer, explanation, hint
     var status = 0
     for (var i = 0; i < topicJSON.qllist.length; i++) {
-      console.log(topicJSON.qllist[i])
+      // console.log(topicJSON.qllist[i])
       if (topicJSON.qllist[i].id == qid) {
         crranswer = topicJSON.qllist[i].answer
         explanation = topicJSON.qllist[i].explanation
@@ -1311,7 +1359,7 @@ async function updateTopicQBank(iun) {
       for (var k = 0; k < document.getElementsByClassName("tp_mcq_p").length; k++) {
         if (document.getElementsByClassName("tp_mcq_p")[k].classList.contains("aq_mcq_ans")) { answer.push(document.getElementsByClassName("tp_mcq_p")[k].innerText) }
       }
-      console.log(answer, crranswer)
+      // console.log(answer, crranswer)
       if (areEqual(answer, crranswer)) {
         dE("tp_status").innerText = "Correct Answer"
         status = 1
@@ -1423,7 +1471,7 @@ async function updateTopicQBank(iun) {
       renList = activeTestList
     } else if (type == "upcoming") { renList = upcomingTestList }
     else if (type == "finished") { renList = finishedTestList }
-    else { console.log("ERROR") }
+    // else { console.log("ERROR") }
     dE("testlinks").innerHTML = ""
     for (var ele of renList) {
       var strson = new Date(ele.strton.seconds * 1000)
@@ -1468,12 +1516,12 @@ async function updateTopicQBank(iun) {
       return 0;
     }
 
-    console.log(testInfo, testQuestionList)
+    // console.log(testInfo, testQuestionList)
     docRef = doc(db, "tests", testid, "responses", auth.currentUser.uid);
     docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       var yuta = docSnap.data().answers
-      console.log(yuta)
+      // console.log(yuta)
       for (var prop in yuta) {
         testResponseList.push({ qid: prop, ans: yuta[prop].ans, type: yuta[prop].type, time: yuta[prop].time });
       }
@@ -1484,7 +1532,7 @@ async function updateTopicQBank(iun) {
         warning: []
       })
     }
-    console.log(testInfo, testQuestionList, testResponseList)
+    // console.log(testInfo, testQuestionList, testResponseList)
 
     const testTimerfunction = setInterval(function () {
       var seconds = testInfo.timeallotted - 1;
@@ -1496,12 +1544,13 @@ async function updateTopicQBank(iun) {
     }, 1000);
     window.onbeforeunload = function (e) {
       e.preventDefault;
-      // submitTest()
+      submitTest()
     }
     window.onhashchange = function (e) {
       locationHandler()
-      // submitTest()
+      submitTest()
     }
+    dE("tt_testname").innerText = testInfo.title
     dE("dsh_btn").style.display = "none"
     dE("tp_pnt").style.display = "none"
     dE("tp_pnt").style.display = "none";
@@ -1510,7 +1559,7 @@ async function updateTopicQBank(iun) {
     inittestHandler()
   }
   function tqH() {
-    console.log(this.id, this.innerText)
+    // console.log(this.id, this.innerText)
     testqHandler(this.id, this.innerText)
   }
   function testqHandler(id, no) {
@@ -1534,10 +1583,10 @@ async function updateTopicQBank(iun) {
           for (let ele1 of qop) {
             asi += "<li>" + ele1 + '</li>'
           }
-          var qrt = '<ol class = "qb_mcq" type = "a">' + asi + '</ol>'
+          var qrt = '<ol class = "qb_mcq" type = "A">' + asi + '</ol>'
         }
         if (ele.type == "taf") {
-          qrt = '<ol class = "qb_mcq" type = "a"><li>True</li><li>False</li></ol>'
+          qrt = '<ol class = "qb_mcq" type = "A"><li>True</li><li>False</li></ol>'
         }
         if (ele.type == "explain" || ele.type == "numerical") { qrt = "" }
         if (ele.type == "matrix") {
@@ -1659,6 +1708,7 @@ async function updateTopicQBank(iun) {
     }
     dE(activequestionid).classList.remove("tts_notanswer", "tts_notvisit", "tts_answered", "tts_review", "tts_ansreview")
     dE(activequestionid).classList.add(type)
+
   }
   async function submitTest() {
     var testid = "T" + window.location.hash.split("#/attempt/")[1]
@@ -1685,6 +1735,7 @@ async function updateTopicQBank(iun) {
   window.onbeforeunload = function (event) {
     updatePoints()
   };
+  dE("te_title").innerText = "The Test Has Ended"
   function defineEvents() {
     function chItem() { changeItem(1) }
     function simHand() { changeLocationHash("simlist", 1) }
@@ -1833,3 +1884,4 @@ async function updateTopicQBank(iun) {
   window.onhashchange = locationHandler
   initFirebaseAuth()
   defineEvents()
+sysaccess()
