@@ -442,7 +442,8 @@ body {
 @media print {
   @page {
     size: A4;
-    margin: 25mm 25mm 25mm 25mm;
+    margin: 15mm 15mm 15mm 15mm;
+    background-image: url("/assets/Q_Print.png");
   }
 
   .divFooter {
@@ -478,8 +479,9 @@ body {
     background-color: transparent;
     background-image: none;
     margin: 0;
-    background:
-      url('data:image/svg+xml;utf8,<svg style = "font-family:Arial;font-size:14px;" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 50 60"><text x="0" y="25" fill="%23dbd9d3">Quarkz!</text></svg>') 0 0/100% 100vh;
+    background: url("/assets/Q_Print.png");
+    /* background: */
+      /* url('data:image/svg+xml;utf8,<svg style = "font-family:Arial;font-size:14px;" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 50 60"><text x="0" y="25" fill="%23dbd9d3">Quarkz!</text></svg>') 0 0/100% 100vh; */
   }
 
   #ovr_l_1 {

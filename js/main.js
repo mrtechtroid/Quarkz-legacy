@@ -1853,9 +1853,9 @@ async function updateTopicQBank(iun) {
   }
   var Quarkz = {
     "copyright": "Mr Techtroid 2021-22",
-    "vno": "v0.1.9",
+    "vno": "v0.2.0",
     "author": "Mr Techtroid",
-    "last-updated": "28/12/2022(IST)",
+    "last-updated": "05/01/2023(IST)",
     "serverstatus": "firebase-online",
   }
   var handlebox = "login";
