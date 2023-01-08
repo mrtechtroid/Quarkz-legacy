@@ -234,8 +234,10 @@
             </div>
         </div>
         <div id="eqb_instr" style="text-align: left;width:90%;font-size: 14px;"><span style="color: green;">General
-                Instructions:&nbsp;&nbsp;</span><span id="equ_gi"></span><hr color="white" width="100%"></div>
-        
+                Instructions:&nbsp;&nbsp;</span><span id="equ_gi"></span>
+            <hr color="white" width="100%">
+        </div>
+
         <div id="eqb_add" style="width:90%;font-size: 14px;z-index: 1;" type="1">
         </div>
     </div>
@@ -292,8 +294,8 @@
             <option value="statistics">Statistics</option>
             <option value="unfiled">Unfiled</option>
         </select>
-        <div id = "aq_test_extra">
-            
+        <div id="aq_test_extra">
+
         </div>
         <div id="lqadd" style="display: flex;flex-direction: row;margin:10px;height: 50vh;">
             <div id="question_list"
@@ -404,7 +406,7 @@
                 <div class="dshbox_v2" id="tstrep_btn">Test Reports</div>
                 <div class="dshbox_v2" id="tpc_btn" style="display: none;">Topics</div>
                 <div class="dshbox_v2" id="lvq_btn" style="display:none">Live Quiz</div>
-                <div class="dshbox_v2" id="frm_btn" >Forum</div>
+                <div class="dshbox_v2" id="frm_btn">Forum</div>
                 <div class="dshbox_v2" id="qba_btn" style="display: none;">Question Bank</div>
                 <div class="dshbox_v2" id="sim_btn">Simulations</div>
                 <div class="dshbox_v2" id="cyb_btn">Cyberhunts</div>
@@ -552,7 +554,8 @@
                     After Which Your Test Will End</li>
                 <li>I have read and understood all the instructions. </li>
                 <li>All computer hardware allotted to me are in proper working condition. </li>
-                <li>Once the test has started, the clock will be set on the server. If you close the test window without completing the test then the clock will still be running on the window.</li>
+                <li>Once the test has started, the clock will be set on the server. If you close the test window without
+                    completing the test then the clock will still be running on the window.</li>
                 <li>I declare that i am not in possession of / not wearing / not carrying any prohibited gadget like
                     mobile phone,bluetooth devices etc. /any prohibited material with me into the Examination Hall.</li>
                 <li>I agree that in case of not adhering to the instructions, I shall be liable to be debarred from this
@@ -566,10 +569,12 @@
     <div id="testv1" class="full_page flex_type"
         style="flex-direction: row;flex-wrap: wrap;height:max-content;min-height: 90vh;">
         <div style="display: flex;flex-direction: column;width: 60vw;height:80vh;margin:10px;min-width: 300px;">
-            <div id="tt_extrabx"
-                style="display: flex;flex-direction:row;height: 40px;margin:10px;">
-                <span id="tt_timeleft" style="padding-left:20px;padding-right: 20px;background-color: rgb(100, 100, 52);border-radius: 5px 5px 5px 5px;">00:00:00</span>
-                <span id="tt_testname" style="padding-left:20px;padding-right: 20px;border-radius: 5px 5px 5px 5px;width: 100%;background-color: rgb(38, 88, 19);text-align: right;margin-left: 5px;">TEST NAME</span>
+            <div id="tt_extrabx" style="display: flex;flex-direction:row;height: 40px;margin:10px;">
+                <span id="tt_timeleft"
+                    style="padding-left:20px;padding-right: 20px;background-color: rgb(100, 100, 52);border-radius: 5px 5px 5px 5px;">00:00:00</span>
+                <span id="tt_testname"
+                    style="padding-left:20px;padding-right: 20px;border-radius: 5px 5px 5px 5px;width: 100%;background-color: rgb(38, 88, 19);text-align: right;margin-left: 5px;">TEST
+                    NAME</span>
                 <button id="tt_sub" class="tst_btn rpl">Submit</button>
             </div>
             <div id="tt_question" style="height:70vh;border:lime 3px solid;overflow-y: scroll;">
@@ -823,12 +828,19 @@
             <span style="font-size: 2vh;" id="sms_prov">Sim Name</span>
         </div>
     </div>
+    <div id="notes" class="full_page flex_type">
+        <div style="position: fixed;">
+            <embed id="nt_id" src="" style="width: 95vw;height: 90vh;">
+            <div style="position: relative;right: 0px;top:0px;width:10vw;height: 5vh;background-color: black;"></div>
+        </div>
+    </div>
     <div id="testing" class="full_page flex_type">
         <div id="summernote">Hello Summernote</div>
         <script>$(document).ready(function () { $('#summernote').summernote(); });</script>
     </div>
     <div id="Ariel" class="full_page flex_type">
-        <div id = "c-output" style="color:yellow;overflow-y: scroll;display: flex;flex-direction: column;height: 80vh;width: 90vw;border: 3px greenyellow solid;padding-left: 6px;">
+        <div id="c-output"
+            style="color:yellow;overflow-y: scroll;display: flex;flex-direction: column;height: 80vh;width: 90vw;border: 3px greenyellow solid;padding-left: 6px;">
 
         </div>
         <div>
@@ -849,12 +861,14 @@
     <div id="forum" class="full_page flex_type">
         <span style="font-size: 5vh;color:yellow" id="fm_title">Forum</span>
         <hr width="100%" color="white">
-        <div style = "border:hotpink 3px solid;width:80%;">
-            <div id = 'pinned_msg' style = "background-color: rgb(38, 44, 31);color:rgb(21, 209, 209);overflow-y: scroll;height:30px;">Pinned Message:<span id = 'pinnedtxt' style = "">1</span></div>
+        <div style="border:hotpink 3px solid;width:80%;">
+            <div id='pinned_msg'
+                style="background-color: rgb(38, 44, 31);color:rgb(21, 209, 209);overflow-y: scroll;height:30px;">Pinned
+                Message:<span id='pinnedtxt' style="">1</span></div>
             <div id="forum_live" style="height:60vh;overflow-y: scroll;display: flex;flex-direction: column;">
             </div>
         </div>
-        
+
         <div>
             <input type="text" id="fm_message" class="_in_aq" placeholder="Message">
             <button class="tst_btn rpl" id="fm_send">Send</button>

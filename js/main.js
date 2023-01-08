@@ -277,6 +277,7 @@ function locationHandler(newlocation, n1) {
 
   if (location1.includes("instructions")) { handlebox = "test_instructions"; }
   if (location1.includes("cyberhunt")) { handlebox = "cyberhunt"; getCyberhunt() }
+  if (location1.includes("notes")) { handlebox = "notes"; getPDF() }
   if (location1.includes("sims")) { handlebox = "simulations"; getSimulation() }
   if (location1.includes("chapter")) { handlebox = "chapter"; getChapterEList() }
   if (location1.includes("qbanks")) { handlebox = "topic"; getTopic(2); }
@@ -297,7 +298,7 @@ function locationHandler(newlocation, n1) {
   if (location1.includes("edit_qubank")) { handlebox = "fu_topic"; prepareTopicQBank(2) }
   // if (location1.includes("redirect"))
   if (userrole == false || userrole == null || userrole == undefined) {
-    if (location1 == "login" || location1 == "register" || location1 == "legal" || location1 == "about" || location1 == "bugreport") {
+    if (location1 == "login" || location1 == "register" || location1.includes("notes")|| location1 == "legal" || location1 == "about" || location1 == "bugreport") {
 
     } else {
       handlebox = "error_page"
@@ -329,6 +330,11 @@ async function updateBatch() {
 
 }
 async function getBatch() {
+
+}
+async function getPDF() {
+  var id = window.location.hash.split("notes/")[1]
+  getDownloadURL(ref(storage, 'public/'+id+'.pdf')).then((url)=>{dE("nt_id").src = url+"";})
 
 }
 // FORUM
