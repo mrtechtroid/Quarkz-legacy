@@ -1383,9 +1383,9 @@ let recentMessagesQuery;
     }
     dE("tp_status").style.display = "block"
     dE("tp_hint").style.display = "block"
-    dE("tp_expl").style.display = "block"
+    dE("tp_a_expl").style.display = "block"
     dE("tp_e_answer").style.display = "block"
-    dE("tp_expl").innerHTML = explanation
+    dE("tp_a_expl").innerHTML = explanation
     dE("tp_hint").innerHTML = hint
     dE("tp_e_answer").innerHTML = "Answer:" + crranswer
   }
