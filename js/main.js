@@ -1352,7 +1352,7 @@ let recentMessagesQuery;
       // console.log(topicJSON.qllist[i])
       if (topicJSON.qllist[i].id == qid) {
         crranswer = topicJSON.qllist[i].answer
-        explanation = topicJSON.qllist[i].explanation
+        explanation = topicJSON.qllist[i].expl
         hint = topicJSON.qllist[i].hint
         break;
       }
