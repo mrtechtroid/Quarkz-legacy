@@ -1135,7 +1135,7 @@ let recentMessagesQuery;
     function iu(ele) { ele.style.display = "none" }
     function io(ele) { ele.style.display = "block" }
     function qif(ele) { ele.style.display = "flex" }
-    iu(dE("tp_hint")); iu(dE("tp_expl")); iu(dE("tp_e_answer")); iu(dE("tp_status"))
+    iu(dE("tp_hint")); iu(dE("tp_a_expl")); iu(dE("tp_e_answer")); iu(dE("tp_status"))
     var tpmcqcon = dE("tp_mcq_con")
     var tpmatrix = dE("tp_matrix")
     var tpanswer = dE("tp_answer")
@@ -1865,7 +1865,7 @@ let recentMessagesQuery;
     dE("ren_appinf").textContent = JSON.stringify(Quarkz, undefined, 2);
   }
   var Quarkz = {
-    "copyright": "Mr Techtroid 2021-22",
+    "copyright": "Mr Techtroid 2021-23",
     "vno": "v0.2.0",
     "author": "Mr Techtroid",
     "last-updated": "05/01/2023(IST)",
