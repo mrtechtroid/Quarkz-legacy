@@ -15,7 +15,6 @@ export function sysaccess() {
     w("c-exec").addEventListener("click",x)
     document.querySelector("body").insertAdjacentHTML("beforeend",
         `<script></script>`
-
     )
     const cs = console
     // console = {}
