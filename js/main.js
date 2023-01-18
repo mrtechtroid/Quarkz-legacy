@@ -283,6 +283,7 @@ function locationHandler(newlocation, n1) {
   if (location1.includes("qbanks")) { handlebox = "topic"; getTopic(2); }
   if (location1.includes("qbnk_vid")) { handlebox = "qbnk_vid"; dE("qbnk_vid_btn").style.display = "block" }
   if (location1.includes("attempt")) { handlebox = "testv1"; getTestInfo() }
+  if (location1.includes("finished")) { handlebox = "finishedtestinfo"; getSimpleTestReport() }
   if (location1.includes("testreport")) { handlebox = "testv1"; getTestReport() }
   if (location1.includes("printable/qbank") && iorole == true) { handlebox = "printable"; printQBank(1); }
   if (location1.includes("ARIEL") && iorole == true) { handlebox = "Ariel"; }
@@ -719,7 +720,7 @@ async function getSimList(type) {
 // -----------------------
 // TOPIC/QBANK
 function addItemToQLLIst() {
-  var qans = dE("aq_answer").value
+  var qans = [dE("aq_answer").value]
   var qtype = dE("aq_type").value
   var qop = [];
   var qop1 = [];
@@ -828,7 +829,7 @@ function renderEditQLList(qno) {
       }
     }
   } else if (op.type == "numerical" || op.type == "explain" || op.type == "fill" || op.type == "taf") {
-    dE("aq_answer").value = op.answer
+    dE("aq_answer").value = op.answer[0]
   }
   changeItem()
 }
@@ -1470,10 +1471,10 @@ async function getTestList(batchid, userid) {
   }
 }
 function testClicker() {
-  window.location.hash = "#/instructions/"
+  window.location.hash = "#/instructions/" + this.id
 }
 function finishedtestClicker() {
-  window.location.hash = "#/finished/"
+  window.location.hash = "#/finished/" + this.id
 }
 async function newTest() {
   try {
@@ -1513,6 +1514,49 @@ function renderTestList(type) {
         dE(ele.testid).addEventListener('click', finishedtestClicker)
       }
 
+    }
+  }
+}
+async function getSimpleTestReport() {
+  var testid = window.location.hash.split("#/finished/")[1]
+  var docRef = doc(db, "tests", testid);
+  var docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    testInfo = docSnap.data()
+    var attempted = 0;
+    dE("fti_title").innerText = testInfo.title
+    for (var ele of testInfo.finished) {
+      if (auth.currentUser.uid == ele) {
+        attempted = 1;
+        break;
+      }
+    }
+    if (attempted == 0) {
+      locationHandler("testend", 1)
+      dE("te_title").innerText = "You Have NOT Attempted This Test"
+    } else {
+      if (Date.now() / 1000 <= testInfo.endon.seconds && testInfo.noresult == false) {
+        locationHandler("testend", 1)
+        dE("te_title").innerText = "Test Reports will be available after deadline"
+      } else {
+        try {
+          docRef = doc(db, "tests", testid, "responses", auth.currentUser.uid);
+          docSnap = await getDoc(docRef);
+          var tT = docSnap.data()
+          if (docSnap.exists()) {
+            dE("fto_total").innerText = tT.info.usermarks + "/" + tT.info.total
+            dE("fto_correct").innerText = tT.info.correct
+            dE("fto_incorrect").innerText = tT.info.incorrect
+            dE("fto_unanswered").innerText = tT.info.unattempted
+            dE("fto_rank").innerText = "0"
+          }
+        }
+        catch {
+          dE("te_title").innerText = "ERROR"
+          locationHandler("testend", 1)
+          return 0;
+        }
+      }
     }
   }
 }
@@ -1649,10 +1693,58 @@ async function getTestInfo() {
 function tqH() {
   testqHandler(this.id, this.innerText)
 }
+async function computeResult() {
+  var trA;
+  log("Warning","Submitting Tests Answers: Please Do Not Close The Tab.")
+  var trL = [];
+  var marksList = [];
+  var testid = window.location.hash.split("#/attempt/")[1]
+  var docRef = doc(db, "tests", testid, "responses", auth.currentUser.uid);
+  var docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    var yuta = docSnap.data().answers
+    for (var prop in yuta) {
+      trL.push({ qid: prop, ans: yuta[prop].ans, type: yuta[prop].type, time: yuta[prop].time });
+    }
+  }
+  docRef = doc(db, "tests", testid, "questions", "answers");
+  docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    trA = docSnap.data().questions
+  }
+  var u = 0, c = 0, ic = 0;
+  var t = trA.length*4
+  for (var i = 0; i < trA.length; i++) {
+    for (var j = 0; j < trL.length; j++) {
+      if (trA[i].qid == trL[j].qid) {
+        var ele = trL[j]
+        if (ele == undefined) {
+          marksList.push({ qid: trA[i].qid, marks: 0, type: "unattempted" })
+          u = u + 4
+        } else {
+          if (areEqual(trA[i].answer, ele.ans)) {
+            marksList.push({ qid: trA[i].qid, marks: +4, type: "correct" })
+            c = c + 4
+          } else {
+            marksList.push({ qid: trA[i].qid, marks: -1, type: "incorrect" })
+            ic = ic - 1
+          }
+        }
+      }
+    }
+  }
+  var tFinal = { correct: c, incorrect: ic, unattempted: u, mList: marksList,total:t,usermarks:c+ic }
+  await updateDoc(doc(db, "tests", testid, "responses", auth.currentUser.uid), {
+    info: tFinal
+  })
+  document.getElementById('msg_popup').style.visibility = 'hidden';
+  document.getElementById('msg_popup').style.opacity = '0'
+  locationHandler("testend", 1)
+}
 function testqHandler(id, no) {
-  var MCQ = `<div id = "tt_mcq"><span><input type="radio" value="a" class = "q_ans" name = "q_op">A</span><span><input type="radio" value="b" class = "q_ans" name = "q_op">B</span><span><input type="radio" value="c" class = "q_ans" name = "q_op">C</span><span><input type="radio" value="d" class = "q_ans" name = "q_op">D</span></div>`
+  var MCQ = ``
   var TF = `<div id = "tt_mcq"><span><input type="radio" value="a" class = "q_ans" name = "q_op">True</span><span><input type="radio" value="b" class = "q_ans" name = "q_op">False</span></div> `
-  var MCQMULT = `<div id = "tt_mcq_multiple"><span><input type="checkbox" value="a" class = "q_ans" name = "q_op">A</span><span><input type="checkbox" value="b" class = "q_ans" name = "q_op">B</span><span><input type="checkbox" value="c" class = "q_ans" name = "q_op">C</span><span><input type="checkbox" value="d" class = "q_ans" name = "q_op">D</span></div>`
+  var MCQMULT = ``
   var NUM = `<div id = "tt_num"><input type = "number" class="q_ans"></div>`
   var FILL = `<div id="tt_fill"><input type = "text" class = "q_ans"></div>`
   var MATRIX = `<div id = "tt_matrix"><div>A<span><input type="checkbox" value="a" id="q_ans_a" name = "q_op">1</span><span><input type="checkbox" value="b" id="q_ans_a" name = "q_op">2</span><span><input type="checkbox" value="c" id="q_ans_a" name = "q_op">3</span><span><input type="checkbox" value="d" id="q_ans_a" name = "q_op">4</span></div><div>B<span><input type="checkbox" value="a" id="q_ans_a" name = "q_op">1</span><span><input type="checkbox" value="b" id="q_ans_a" name = "q_op">2</span><span><input type="checkbox" value="c" id="q_ans_a" name = "q_op">3</span><span><input type="checkbox" value="d" id="q_ans_a" name = "q_op">4</span></div><div>C<span><input type="checkbox" value="a" id="q_ans_a" name = "q_op">1</span><span><input type="checkbox" value="b" id="q_ans_a" name = "q_op">2</span><span><input type="checkbox" value="c" id="q_ans_a" name = "q_op">3</span><span><input type="checkbox" value="d" id="q_ans_a" name = "q_op">4</span></div><div>D<span><input type="checkbox" value="a" id="q_ans_a" name = "q_op">1</span><span><input type="checkbox" value="b" id="q_ans_a" name = "q_op">2</span><span><input type="checkbox" value="c" id="q_ans_a" name = "q_op">3</span><span><input type="checkbox" value="d" id="q_ans_a" name = "q_op">4</span></div></div>`
@@ -1666,10 +1758,17 @@ function testqHandler(id, no) {
       var inhtml = '<div class = "qb_q" id = "Q' + ele.qid + '"><div class = "qb_ttl">' + ele.title + '<div id = "qb_q_ty" class = "qb_q_ty qb_qt_ty" >(' + ele.type + ')</div></div></div>'
       dE("tt_qtitle").insertAdjacentHTML('beforeend', inhtml);
       var asi = "";
-      if (ele.type == "mcq" || ele.type == "mcq_multiple") {
+      if (ele.type == "mcq") {
         var qop = ele.op;
         for (let ele1 of qop) {
-          asi += "<li>" + ele1 + '</li>'
+          asi += '<li><input type="radio" class = "q_ans" value = "' + ele1 + '" name = "q_op">' + ele1 + '</input></li>'
+        }
+        var qrt = '<ol class = "qb_mcq" type = "A">' + asi + '</ol>'
+      }
+      if (ele.type == "mcq_multiple") {
+        var qop = ele.op;
+        for (let ele1 of qop) {
+          asi += '<li><input type="checkbox" class = "q_ans" value = "' + ele1 + '" name = "q_op">' + ele1 + '</input></li>'
         }
         var qrt = '<ol class = "qb_mcq" type = "A">' + asi + '</ol>'
       }
@@ -1698,9 +1797,11 @@ function testqHandler(id, no) {
         case "fill": ANS = FILL; break;
       }
       dE("tt_qtitle").insertAdjacentHTML('beforeend', ANS)
+      var tyio;
       if (!window.location.hash.includes("attempt")) {
         for (let ele of testReportAnswers.questions) {
           if (id == ele.qid) {
+            tyio = ele.answer
             var lio = '<div id="tg_answer">Answer: ' + ele.answer + '</div><div id="tg_expl">Explanation: ' + ele.expl + '</div>'
             dE("tt_qtitle").insertAdjacentHTML('beforeend', lio)
           }
@@ -1722,6 +1823,17 @@ function testqHandler(id, no) {
               ele32.value = ele23.ans
             }
           }
+          if (!window.location.hash.includes("attempt")) {
+            if (areEqual(ele23.ans, tyio)) {
+              dE("tt_qtitle").insertAdjacentHTML('beforeend', '<div style="color:lime">Correct</div>')
+            } else {
+              if (ele23.ans.length == 0) {
+                dE("tt_qtitle").insertAdjacentHTML('beforeend', '<div style="color:orange">Unanswered</div>')
+              } else {
+                dE("tt_qtitle").insertAdjacentHTML('beforeend', '<div style="color:red">Incorrect</div>')
+              }
+            }
+          }
         }
       }
       break;
@@ -1730,6 +1842,7 @@ function testqHandler(id, no) {
 }
 function inittestHandler() {
   var a = 1;
+  dE("tt_qnobx").innerHTML = ''
   for (let ele of testQuestionList.questions) {
     var box = '<span class = "tts_notvisit" id = "' + ele.qid + '">' + a + '</span>'
     a = a + 1
@@ -1823,7 +1936,7 @@ async function submitTest() {
   await updateDoc(doc(db, "tests", testid), {
     finished: arrayUnion(auth.currentUser.uid),
   })
-  locationHandler("testend", 1)
+  computeResult()
   var endat = new Date(testInfo.endon.seconds)
   dE("te_end").innerText = endat;
   testList = []

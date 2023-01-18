@@ -862,6 +862,37 @@
                 onclick="if (document.getElementById('cyb_cd_in').value != ''){window.location.hash = '/cyberhunt/'+document.getElementById('cyb_cd_in').value}">Submit</button>
         </div>
     </div>
+    <div id = "finishedtestinfo" class="full_page flex_type">
+        <span style="font-size: 5vh;color:yellow" id="fti_title">Test Name</span>
+        <hr color="white" width="100%">
+        <div id = "fto_overview" style = "display: flex;flex-direction: row;flex-wrap:wrap">
+            <div class = "fto_box">
+                <div class = "fto_box_title">TOTAL MARKS</div>
+                <div class = "fto_box_content" id = "fto_total">100/100</div>
+            </div>
+            <div class = "fto_box">
+                <div class = "fto_box_title">CORRECT</div>
+                <div class = "fto_box_content" id = "fto_correct">45</div>
+            </div>
+            <div class = "fto_box">
+                <div class = "fto_box_title">INCORRECT</div>
+                <div class = "fto_box_content" id = "fto_incorrect">-5</div>
+            </div>
+            <div class = "fto_box">
+                <div class = "fto_box_title">UNANSWERED</div>
+                <div class = "fto_box_content" id = "fto_unanswered">20</div>
+            </div>
+            <div class = "fto_box">
+                <div class = "fto_box_title">RANK</div>
+                <div class = "fto_box_content" id = "fto_rank">5</div>
+            </div>
+        </div>
+        <hr color="white" width="100%">
+        <div id = "fto_overview" style = "display: flex;flex-direction: row;flex-wrap:wrap">
+            <button class="tst_btn rpl" id="fto_detail" onclick='window.location.hash = "#/testreport/" + window.location.hash.split("#/finished/")[1]'>Detailed View</button>
+            <button class="tst_btn rpl" id="fto_lboard">Leaderboard</button>
+        </div>
+    </div>
     <div id="forum" class="full_page flex_type">
         <span style="font-size: 5vh;color:yellow" id="fm_title">Forum</span>
         <hr width="100%" color="white">
