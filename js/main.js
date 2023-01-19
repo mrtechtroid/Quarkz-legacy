@@ -1548,13 +1548,13 @@ async function getSimpleTestReport() {
       locationHandler("testend", 1)
       dE("te_title").innerText = "You Have NOT Attempted This Test"
     } else {
-      if (Date.now() / 1000 <= testInfo.endon.seconds && testInfo.noresult == false) {
-        locationHandler("testend", 1)
-        dE("te_title").innerText = "Test Reports will be available after deadline"
+      if (0&&(Date.now() / 1000 <= testInfo.endon.seconds && testInfo.noresult == false)) {
+        // locationHandler("testend", 1)
+        // dE("te_title").innerText = "Test Reports will be available after deadline"
       } else {
         try {
-          computeResult(1)
-          docRef = doc(db, "tests", testid, "responses", auth.currentUser.uid);
+          try{computeResult(1)}catch{}
+          try{docRef = doc(db, "tests", testid, "responses", auth.currentUser.uid);
           docSnap = await getDoc(docRef);
           var tT = docSnap.data()
           if (docSnap.exists()) {
@@ -1569,7 +1569,7 @@ async function getSimpleTestReport() {
           dE("te_title").innerText = "ERROR"
           locationHandler("testend", 1)
           return 0;
-        }
+        }}catch{}
       }
     }
   }
@@ -1598,7 +1598,7 @@ async function getTestReport() {
     } else {
       if (Date.now() / 1000 <= testInfo.endon.seconds && testInfo.noresult == false) {
         locationHandler("testend", 1)
-        dE("te_title").innerText = "Test Reports will be available after deadline"
+        dE("te_title").innerText = "Detailed Test Reports will be available after deadline"
       } else {
         try {
           docRef = doc(db, "tests", testid, "questions", "questions");
@@ -1672,12 +1672,13 @@ async function getTestInfo() {
       testResponseList.push({ qid: prop, ans: yuta[prop].ans, type: yuta[prop].type, time: yuta[prop].time });
     }
   } else {
+    var trL = {};
     for (var t = 0;t<testQuestionList.questions.length;t++){
-      testResponseList.push({qid:testQuestionList.questions[t].qid,type:"tts_notvisit"})
+      trL[`${testQuestionList.questions[t].qid}`] = {type:"tts_notvisit",answer:[]}
     }
     var it = new Date()
     await setDoc(doc(db, "tests", testid, "responses", auth.currentUser.uid), {
-      answers: testResponseList,
+      answers: trL,
       strton: serverTimestamp(),
       warning: [],
       actions: [{ type: "start", time: it, value: "1" }]
@@ -1746,7 +1747,7 @@ async function computeResult(type) {
     for (var j = 0; j < trL.length; j++) {
       if (trA[i].qid == trL[j].qid) {
         var ele = trL[j]
-        if (ele == undefined) {
+        if (ele == undefined || ele.ans.length == 0) {
           marksList.push({ qid: trA[i].qid, marks: 0, type: "unattempted" })
           u = u + 4
         } else {
