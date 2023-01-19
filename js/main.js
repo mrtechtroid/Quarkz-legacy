@@ -65,6 +65,14 @@ function areEqual(arr1, arr2) {
       return false;
   return true;
 }
+// Check if two objects are equal
+function areObjectsEqual(x, y) {
+  const ok = Object.keys, tx = typeof x, ty = typeof y;
+  return x && y && tx === 'object' && tx === ty ? (
+    ok(x).length === ok(y).length &&
+      ok(x).every(key => areObjectsEqual(x[key], y[key]))
+  ) : (x === y);
+}
 // Get Time Of Server
 function getServerTime(url) {
   fetch(url)
@@ -102,11 +110,16 @@ function renderMarkedMath(eleid, toid) {
   renderMathInElement(dE(toid));
 }
 // Special Logging Function
-function log(title, msg) {
+function log(title, msg, action,actionname) {
   dE("msg_popup").style.visibility = "visible"
   dE("msg_popup").style.opacity = "1"
+  dE("msg_action").style.display= "none"
   document.getElementById("msg_popup_txt").innerText = title
   document.getElementById("msg_popup_content").innerText = msg
+  if (action == undefined){action = function(){}}else{dE("msg_action").style.display= "block"}
+  if (actionname == undefined){actionname = ""}
+  dE("msg_action").onclick = action
+  dE("msg_action").innerText = actionname
 }
 const mergeById = (a1, a2) =>
   a1.map(itm => ({
@@ -961,7 +974,7 @@ async function updateTopicQBank(iun) {
     var a = [];
     for (var i = 0; i < editqllist.length; i++) {
       var ele = editqllist[i]
-      q.push({ qid: ele.qid, mode: ele.mode, title: ele.title, type: ele.type, op: ele.op, op1: ele.op1, op2: ele.op2 })
+      q.push({ qid: ele.qid, mode: ele.mode, title: ele.title, type: ele.type, op: ele.op, op1: ele.op1, op2: ele.op2,section:ele.section })
       a.push({ qid: ele.qid, hint: ele.hint, expl: ele.expl, answer: ele.answer })
     }
     try {
@@ -1540,6 +1553,7 @@ async function getSimpleTestReport() {
         dE("te_title").innerText = "Test Reports will be available after deadline"
       } else {
         try {
+          computeResult(1)
           docRef = doc(db, "tests", testid, "responses", auth.currentUser.uid);
           docSnap = await getDoc(docRef);
           var tT = docSnap.data()
@@ -1564,6 +1578,7 @@ async function getTestReport() {
   dE("tt_footer").style.display = "none"
   dE("tt_sub").style.display = "none"
   dE("tt_timeleft").style.display = "none"
+  dE("tt_marksaward").style.display = "block"
   var testid = window.location.hash.split("#/testreport/")[1]
   var docRef = doc(db, "tests", testid);
   var docSnap = await getDoc(docRef);
@@ -1621,6 +1636,7 @@ async function getTestInfo() {
   dE("tt_footer").style.display = "flex"
   dE("tt_sub").style.display = "block"
   dE("tt_timeleft").style.display = "block"
+  dE("tt_marksaward").style.display = "none"
   var testid = window.location.hash.split("#/attempt/")[1]
   var docRef = doc(db, "tests", testid);
   var docSnap = await getDoc(docRef);
@@ -1646,7 +1662,6 @@ async function getTestInfo() {
     locationHandler("testend", 1)
     return 0;
   }
-
   // console.log(testInfo, testQuestionList)
   docRef = doc(db, "tests", testid, "responses", auth.currentUser.uid);
   docSnap = await getDoc(docRef);
@@ -1657,9 +1672,12 @@ async function getTestInfo() {
       testResponseList.push({ qid: prop, ans: yuta[prop].ans, type: yuta[prop].type, time: yuta[prop].time });
     }
   } else {
+    for (var t = 0;t<testQuestionList.questions.length;t++){
+      testResponseList.push({qid:testQuestionList.questions[t].qid,type:"tts_notvisit"})
+    }
     var it = new Date()
     await setDoc(doc(db, "tests", testid, "responses", auth.currentUser.uid), {
-      answers: [],
+      answers: testResponseList,
       strton: serverTimestamp(),
       warning: [],
       actions: [{ type: "start", time: it, value: "1" }]
@@ -1693,16 +1711,26 @@ async function getTestInfo() {
 function tqH() {
   testqHandler(this.id, this.innerText)
 }
-async function computeResult() {
+async function computeResult(type) {
   var trA;
-  log("Warning","Submitting Tests Answers: Please Do Not Close The Tab.")
   var trL = [];
   var marksList = [];
-  var testid = window.location.hash.split("#/attempt/")[1]
+  var fg = []
+  var testid = ""
+  if (window.location.hash.includes("/attempt/")){
+    testid = window.location.hash.split("#/attempt/")[1]
+    log("Warning","Submitting Tests Answers: Please Do Not Close The Tab.")
+  }else if(window.location.hash.includes("/finished/")){
+    testid = window.location.hash.split("#/finished/")[1]
+  } else if (window.location.hash.includes("/testreport/")){
+    testid = window.location.hash.split("#/testreport/")[1]
+  }
+  
   var docRef = doc(db, "tests", testid, "responses", auth.currentUser.uid);
   var docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
     var yuta = docSnap.data().answers
+    fg = docSnap.data().info
     for (var prop in yuta) {
       trL.push({ qid: prop, ans: yuta[prop].ans, type: yuta[prop].type, time: yuta[prop].time });
     }
@@ -1734,12 +1762,22 @@ async function computeResult() {
     }
   }
   var tFinal = { correct: c, incorrect: ic, unattempted: u, mList: marksList,total:t,usermarks:c+ic }
-  await updateDoc(doc(db, "tests", testid, "responses", auth.currentUser.uid), {
-    info: tFinal
-  })
+  if (type == 1){
+    if (!areObjectsEqual(tFinal,fg)){
+      log("NOTICE","Please Wait, Marks Are Being Updated")
+      await updateDoc(doc(db, "tests", testid, "responses", auth.currentUser.uid), {
+        info: tFinal
+      })
+      locationHandler()
+    }
+  }else if (type == 0){
+    await updateDoc(doc(db, "tests", testid, "responses", auth.currentUser.uid), {
+      info: tFinal
+    })
+    locationHandler("testend", 1)
+  }
   document.getElementById('msg_popup').style.visibility = 'hidden';
   document.getElementById('msg_popup').style.opacity = '0'
-  locationHandler("testend", 1)
 }
 function testqHandler(id, no) {
   var MCQ = ``
@@ -1825,12 +1863,12 @@ function testqHandler(id, no) {
           }
           if (!window.location.hash.includes("attempt")) {
             if (areEqual(ele23.ans, tyio)) {
-              dE("tt_qtitle").insertAdjacentHTML('beforeend', '<div style="color:lime">Correct</div>')
+              dE("tt_marksaward").innerHTML = '<div style="color:lime">Correct(+4)</div>'
             } else {
               if (ele23.ans.length == 0) {
-                dE("tt_qtitle").insertAdjacentHTML('beforeend', '<div style="color:orange">Unanswered</div>')
+                dE("tt_marksaward").innerHTML = '<div style="color:orange">Unanswered(0)</div>'
               } else {
-                dE("tt_qtitle").insertAdjacentHTML('beforeend', '<div style="color:red">Incorrect</div>')
+                dE("tt_marksaward").innerHTML = '<div style="color:red">Incorrect(-1)</div>'
               }
             }
           }
@@ -1848,6 +1886,25 @@ function inittestHandler() {
     a = a + 1
     dE("tt_qnobx").insertAdjacentHTML("beforeend", box)
     dE(ele.qid).addEventListener("click", tqH)
+  }
+  if (!window.location.hash.includes("attempt")) {
+    for (let ele23 of testResponseList) {
+      var id = ele23.qid
+        for (let ele of testReportAnswers.questions) {
+          if (id == ele.qid) {
+            var tyio = ele.answer
+            if (areEqual(ele23.ans, tyio)) {
+              dE(id).classList.add("t_crr")
+            } else {
+              if (ele23.ans.length == 0) {
+                dE(id).classList.add("t_unat")
+              } else {
+                dE(id).classList.add("t_incrr")
+              }
+            }
+          }
+      }
+    }
   }
   for (let ele of testResponseList) {
     dE(ele.qid).classList.replace("tts_notvisit", ele.type)
@@ -1919,12 +1976,14 @@ async function testOperator(type) {
   dE(activequestionid).classList.remove("tts_notanswer", "tts_notvisit", "tts_answered", "tts_review", "tts_ansreview")
   dE(activequestionid).classList.add(type)
 
+
 }
 async function submitTest() {
   if (!window.location.hash.includes("attempt")) {
     log("Error", "Performing Test Operations in Test Reports Is Prohibited")
     return 1;
   }
+  
   var testid = window.location.hash.split("#/attempt/")[1]
   window.onbeforeunload = function () { }
   window.onhashchange = locationHandler
@@ -1936,9 +1995,9 @@ async function submitTest() {
   await updateDoc(doc(db, "tests", testid), {
     finished: arrayUnion(auth.currentUser.uid),
   })
-  computeResult()
-  var endat = new Date(testInfo.endon.seconds)
-  dE("te_end").innerText = endat;
+  computeResult(0)
+  var endat = new Date(testInfo.endon.seconds*1000)
+  dE("te_endtime").innerText = endat;
   testList = []
   activeTestList = []
   upcomingTestList = []
@@ -1947,6 +2006,8 @@ async function submitTest() {
   testQuestionList = []
   testResponseList = [];
   activequestionid = ""
+  dE("dsh_btn").style.display = "block"
+  dE("tp_pnt").style.display = "none"
 }
 window.onbeforeunload = function (event) {
   updatePoints()
@@ -1970,7 +2031,7 @@ function defineEvents() {
   function lglHand() { changeLocationHash("legal", 1) }
   function qbaHand() { changeLocationHash("qblist", 1) }
   function chpHand() { changeLocationHash("chplist", 1) }
-
+  function sTestHand() {log("Warning","Are You Sure You Want To End The Test",submitTest,"Yes,Submit")}
   function prvHand() { topicHandler(1) }
   function nxtHand() { topicHandler(2) }
   function actHand() { renderTestList("active") }
@@ -2052,7 +2113,7 @@ function defineEvents() {
   var co_chb = dE("cochb").addEventListener("click", cochb)
   var s_chb = dE("schb").addEventListener("click", schb)
   var u_chb = dE("uchb").addEventListener("click", uchb)
-  var ttsub = dE("tt_sub").addEventListener("click", submitTest)
+  var ttsub = dE("tt_sub").addEventListener("click", sTestHand)
   var chp_btn = dE("chp_btn").addEventListener("click", chpHand)
   var pass_rst_btn = dE("pass_rst_btn").addEventListener("click", requestPasschange)
   var aq_sims_save = dE("aq_sims_save").addEventListener("click", updateSimulationWeb)

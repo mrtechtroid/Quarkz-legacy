@@ -71,6 +71,7 @@
             <input type="password" id="lg_pass" class="text_bx_1" placeholder="Password">
             <div>
                 <button class="tst_btn rpl" id="sgn_in">Sign In</button>
+                <!-- <button class="tst_btn rpl" id="sgn_in_google">Sign In With Google</button> -->
                 <button class="tst_btn rpl" id="reg_in">Register</button>
             </div>
             <span id="lgn_err" class="err_txt" style="display: none;">ERROR:Wrong Username Or Password</span>
@@ -321,8 +322,14 @@
                     <div class="summernote" id="aq_expl">Explanation</div>
                     <textarea type="answer" id="aq_hint" class="_in_aq" style="resize: none;overflow-y: scroll;"
                         placeholder="Hint"></textarea>
-
-
+                    <select name="type" id="aq_section" class="_in_aq" style="color:red">
+                        <option value="Physics">Physics</option>
+                        <option value="Chemistry">Chemistry</option>
+                        <option value="Math">Math</option>
+                        <option value="Biology">Biology</option>
+                        <option value="Statistics">Statistics</option>
+                        <option value="Unfiled">Unfiled</option>
+                    </select>
                 </div>
                 <div id="aq_ans_hold">
                     <select name="type" id="aq_type" class="_in_aq" style="color:red">
@@ -409,7 +416,6 @@
                 <div class="dshbox_v2 " id="tmt_btn">Time Table</div>
                 <div class="dshbox_v2" id="chp_btn">Chapters</div>
                 <div class="dshbox_v2" id="tstinf_btn">Test Infos</div>
-                <div class="dshbox_v2" id="tstrep_btn">Test Reports</div>
                 <div class="dshbox_v2" id="tpc_btn" style="display: none;">Topics</div>
                 <div class="dshbox_v2" id="lvq_btn" style="display:none">Live Quiz</div>
                 <div class="dshbox_v2" id="frm_btn">Forum</div>
@@ -578,6 +584,8 @@
             <div id="tt_extrabx" style="display: flex;flex-direction:row;height: 40px;margin:10px;">
                 <span id="tt_timeleft"
                     style="padding-left:20px;padding-right: 20px;background-color: rgb(100, 100, 52);border-radius: 5px 5px 5px 5px;">00:00:00</span>
+                <span id="tt_marksaward"
+                    style="padding-left:20px;padding-right: 20px;background-color: rgb(18, 88, 218);;border-radius: 5px 5px 5px 5px;"></span>
                 <span id="tt_testname"
                     style="padding-left:20px;padding-right: 20px;border-radius: 5px 5px 5px 5px;width: 100%;background-color: rgb(38, 88, 19);text-align: right;margin-left: 5px;">TEST
                     NAME</span>
@@ -915,8 +923,9 @@
                 <h2 id="msg_popup_txt">Note</h2>
             </center>
             <a class="close"
-                onclick="document.getElementById('msg_popup').style.visibility = 'hidden';document.getElementById('msg_popup').style.opacity = '0'">&times;</a>
+                onclick="document.getElementById('msg_popup').style.visibility = 'hidden';document.getElementById('msg_popup').style.opacity = '0';document.getElementById('msg_action').onclick = ''">&times;</a>
             <p id="msg_popup_content"></p>
+            <button class = "tst_btn rpl" id = "msg_action"></button>
         </div>
     </div>
     <script src="js/main.js" type="module"></script>

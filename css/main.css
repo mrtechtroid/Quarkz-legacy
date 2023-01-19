@@ -150,10 +150,47 @@ body {
   border: gray 3px solid;
   width: 20vw;
 }
-
+.dimmed:after {
+  content: " ";
+  z-index: 10;
+  display: block;
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
 .pro_table th {
   border: orangered 3px solid;
   width: 20vh;
+}
+.t_crr{ position: relative;}
+.t_incrr{ position: relative;}
+.t_unat{ position: relative;}
+.t_crr::before{
+  position: absolute;
+  content: 'C';
+  bottom:2px;
+  right:8px;
+  color:rgb(0, 4, 255);
+  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAEVQTFRFAAAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/kkg1QAAABd0Uk5TADBff7+vIBCP/9+gcECQ8IDQwGDvULDg0L2uAAAAj0lEQVR4nO2SUQ+CMAyENymMDzeGDPn/P9UFCWpS6rOJ97Skt7trrs798ePwl0akbbqTcejZIV79PsA1ppTGzKQRbuS0S40aIUJ6uSmEzGzld/5dQEMCNfqBCcz5d0IBLfpHBjtkgGJ7zCy2Rwf9IXfXGHUPeRZdFrUsFzMM0krtO564rHk7h9XYJ9R72B4PdY4Ess6OA7IAAAAASUVORK5CYII=')
+}
+.t_incrr::before{
+  position: absolute;
+  content: 'X';
+  bottom:2px;
+  right:8px;
+  color:rgb(0, 4, 255);
+  background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAADNQTFRFAAAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA6Y43EAAAABF0Uk5TACB/MMD/z9DwgHBg4LAQUL+CKjl9AAAAgUlEQVR4nO3ROxKAIAwE0ACuAn7vf1oFImORtXfGbUjB5JEg8ue7cd4HLYP3zrgxYNRqwmC2iEi1SIhWA5EMFCQAmTyjIQToCAUUmTnQEHCgIngDpEzYJmG5Jlz6uqxMWPu6bCBu97oIsMvzTwygHBSpQMmFWKMqIBU5OKDI27o1J0mhAtutD+wYAAAAAElFTkSuQmCC')
+}
+.t_unat::before{
+  position: absolute;
+  content: 'U';
+  bottom:2px;
+  right:8px;
+  color:rgb(0, 4, 255);
+  background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAEJQTFRFAAAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA/wAA60NphwAAABZ0Uk5TAGB/QMD/gJDQsHDPECAwUO/wv5+voBP21iAAAABkSURBVHic7ZHLCoAgFAWv6THLR9nj/3+1BI0WZ9UucDYOMsIBRTo/Rg2a6AsDS7QHX4KxqaPBBNMUmElg4asFgH2Weq4tEElwj/CpnMtKJ4ikDGz74QEXaCDhRCGzhY2odX19AdugAyeYRe6mAAAAAElFTkSuQmCC')
 }
 .fto_box{
   display: flex;
