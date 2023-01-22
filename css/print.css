@@ -1,0 +1,137 @@
+@font-face {
+  font-family: Nunito;
+  src: url('https://fonts.googleapis.com/css2?family=Nunito:wght@500&display=swap');
+}
+@media print {
+    @page {
+      size: A4;
+      margin: 15mm 15mm 15mm 15mm;
+      background-image: url("/assets/Q_Print.png");
+    }
+  
+    .divFooter {
+      position: fixed;
+      bottom:5px;
+      left: 5px;
+      font-size: 15px;
+      color: rgb(5, 5, 32);
+      z-index: 0;
+  
+    }
+  
+    body:before {
+      content: "";
+      position: absolute;
+      z-index: -1000;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+  
+    }
+  
+    .qb_q {
+      counter-increment: qno;
+    }
+  
+    body {
+      position: relative;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      background-color: transparent;
+      background-image: none;
+      margin: 0;
+      border: 3px solid black;
+      background: url("https://quarkz.netlify.app/assets/Q_Print.png");
+      /* background: */
+        /* url('data:image/svg+xml;utf8,<svg style = "font-family:Arial;font-size:14px;" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 50 60"><text x="0" y="25" fill="%23dbd9d3">Quarkz!</text></svg>') 0 0/100% 100vh; */
+    }
+  
+    #ovr_l_1 {
+      display: none !important;
+    }
+  
+    #ovr_l_2 {
+      display: block !important;
+    }
+  
+    .no-print,
+    .no-print * {
+      display: none !important;
+    }
+  
+    hr {
+      color: black;
+      background-color: black;
+    }
+  
+    #printable {
+      backface-visibility: visible;
+      background-color: transparent;
+      border: black 3px solid;
+    }
+  
+    #eqb_instr {
+      color: black;
+    }
+  
+    .qb_ttl,
+    .qb_img,
+    .qb_q_ty,
+    .qb_mcq,
+    li {
+      page-break-inside: avoid !important;
+      position: relative;
+      break-inside: avoid;
+      page-break-after: auto;
+      display: block;
+    }
+  
+    .qb_mcq {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+    }
+  
+    #eqb_add {
+      display: block;
+      position: relative;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    .les_q, .les_expl{
+      color: black !important;
+    }
+    .qbtp_q {
+      color: black !important;
+      border-bottom: black 1px solid;
+      font-size: 15px;
+      position: relative;
+    }
+  
+    .qb_q_ty {
+      color: magenta !important;
+    }
+  
+    footer:before {
+      content: "Quarkz!"
+    }
+  
+    hr,
+    li {
+      color: black;
+    }
+  
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    font-family: Nunito;
+    font-size: 3vh;
+    justify-content: center;
+    align-items: center;
+    color: black;
+  }

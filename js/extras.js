@@ -196,7 +196,7 @@ document.getElementById("pe_tst_type_2").addEventListener('change',updateUI)
 document.getElementById("tsinf_btn").addEventListener('change',updateUI)
 
 $(document).ready(function() {
-  $('.summernote').summernote({
+  $('.summernote').summernote({   
     toolbar: [
       ['style', ['style']],
       ['font', ['bold', 'italic', 'underline', 'clear']],
@@ -211,10 +211,36 @@ $(document).ready(function() {
     ],
   });
 });
-
+function dE(id){return document.getElementById(id)}
 function getHTML(id){
   return $("#"+id).summernote('code')
 }
 function setHTML(id,html){
   $("#"+id).summernote('code', html);
+}
+function notesUIHandler(){
+  dE("un_preview").style.display = "none"
+  dE("un_edit").style.display = "none"
+ if (dE("un_rendermode").value == "preview"){
+  dE("un_preview").style.display = "block"
+  dE("un_preview").innerHTML = "<h1 style = 'text-align:center'>"+dE("un_title").value+"</h1><br>"+getHTML("un_editable")
+ }else if (dE("un_rendermode").value == "edit"){
+  dE("un_edit").style.display = "flex"
+ }
+ dE("uno"+window.location.hash.split("usernotes/")[1]).style.backgroundColor = dE("un_colorpicker").value
+}
+function sleep(ms) {
+  return new Promise(val => setTimeout(val, ms));
+}
+async function idElementPrint(ref){
+  iframe = dE("un_print_iframe")
+  const pri = iframe.contentWindow;
+  pri.document.open();
+  pri.document.write('<head><link rel="stylesheet" href="css/print.css" onload = "print()"></head>')
+  pri.document.write(ref.innerHTML);
+  pri.document.write('<div class="divFooter">Quarkz!</div>')
+  pri.document.close();
+  pri.focus();
+  // pri.print();
+  // pri.onafterprint = () => { document.body.removeChild(iframe); }
 }

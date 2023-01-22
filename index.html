@@ -700,7 +700,7 @@
     <div id="topic" class="full_page flex_type" style="height: max-content;">
         <span style="font-size: 5vh;color:yellow" id="tp_title">Topic Name</span>
         <hr width="100%" color="white">
-        <div class="flex_type" style="flex-direction: row;">
+        <div class="flex_type" style="flex-direction: row;flex-wrap: wrap;">
             <span style="font-size: 3vh;color:yellow" id="tp_lsno">Lesson Name</span>
             <button class="tst_btn rpl" id="tp_nxt">Next</button>
             <button class="tst_btn rpl" id="tp_prv">Previous</button>
@@ -797,7 +797,7 @@
     <div id="chapterlist" class="full_page flex_type">
         <span style="font-size: 5vh;">Chapters</span>
         <hr color="white" width="100%">
-        <div style="display: flex;flex-direction: row;">
+        <div style="display: flex;flex-direction: row;flex-wrap: wrap;">
             <button class="tst_btn rpl" id="pchb">Physics</button>
             <button class="tst_btn rpl" id="cchb">Chemistry</button>
             <button class="tst_btn rpl" id="mchb">Maths</button>
@@ -813,7 +813,7 @@
     <div id="simlist" class="full_page flex_type">
         <span style="font-size: 5vh;">Simulations List</span>
         <hr color="white" width="100%">
-        <div style="display: flex;flex-direction: row;">
+        <div style="display: flex;flex-direction: row;flex-wrap: wrap;">
             <button class="tst_btn rpl" id="psims">Physics</button>
             <button class="tst_btn rpl" id="csims">Chemistry</button>
             <button class="tst_btn rpl" id="msims">Maths</button>
@@ -828,7 +828,7 @@
     <div id="simulations" class="full_page flex_type">
         <span style="font-size: 5vh;">Simulations</span>
         <hr color="white" width="100%">
-        <div style="display: flex;flex-direction: row;"><span style="font-size: 5vh;" id="sms_name">Sim
+        <div style="display: flex;flex-direction: row;flex-wrap: wrap;"><span style="font-size: 5vh;" id="sms_name">Sim
                 Name</span><button class="tst_btn rpl" id="sms_edit" style="display: none;"
                 onclick='window.location.hash = "#/edit_sim/" + window.location.hash.split("#/sims/")[1]'>Edit
                 Sim</button></div>
@@ -907,7 +907,7 @@
         <div style="border:hotpink 3px solid;width:80%;">
             <div id='pinned_msg'
                 style="background-color: rgb(38, 44, 31);color:rgb(21, 209, 209);overflow-y: scroll;height:30px;">Pinned
-                Message:<span id='pinnedtxt' style="">1</span></div>
+                Message:<span id='pinnedtxt'>1</span></div>
             <div id="forum_live" style="height:60vh;overflow-y: scroll;display: flex;flex-direction: column;">
             </div>
         </div>
@@ -915,6 +915,34 @@
         <div>
             <input type="text" id="fm_message" class="_in_aq" placeholder="Message">
             <button class="tst_btn rpl" id="fm_send">Send</button>
+        </div>
+    </div>
+    <div id = "usernotes" class="full_page flex_type" style="flex-direction: row;">
+        <div id = "un_list" style="border:3px solid grey;width:20vw;height:90%">
+
+        </div>
+        <div id = "un_render" style="width:77vw;height:100%">
+            <div id = "un_tools" style = "width:100%;display: flex;flex-direction: row;flex-wrap: wrap;">
+                <select id = "un_rendermode" class="_in_aq" style="width: 100px;color:red;" onchange="notesUIHandler()" value = "edit">
+                    <option value="edit">edit</option>
+                    <option value="preview">preview</option>
+                </select>
+                <select id = "un_viewership" class="_in_aq" style="width: 100px;color:red;" onchange="notesUIHandler()">
+                    <option value="private">private</option>
+                    <option value="public_view">public(view_only)</option>
+                    <option value="public">public</option>
+                </select>
+                <input id="un_title" type="text" class="_in_aq" style="width:20vw;" value = "Notes Title">
+                <button id = "un_save" class = "rpl tst_btn" style = "height: 30px;">Save</button>
+                <button id = "un_print" class = "rpl tst_btn" style = "height: 30px;" onclick = 'dE("un_preview").style.display = "block";dE("un_preview").innerHTML = "<h1 style = text-align:center>"+dE("un_title").value+"</h1><br>"+getHTML("un_editable");idElementPrint(dE("un_preview"));'>Print</button>
+                <input id="colorpicker" type="color" name="favcolor" value="#ff0000" style="width:5vw;height:30px;background-color: transparent;border:none" onchange="notesUIHandler()">
+            </div>
+            <div id = "un_edit" style="height:90%;width:100%">
+                <div class="summernote" id="un_editable" style = "height:90%">Notes</div>
+            </div> 
+            <div id = "un_preview" style="height:90%;width:100%;overflow:scroll">
+            </div> 
+            <iframe style = "display: none;" id ="un_print_iframe"></iframe>
         </div>
     </div>
     <div id="msg_popup" class="overlay">

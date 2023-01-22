@@ -65,6 +65,11 @@ function areEqual(arr1, arr2) {
       return false;
   return true;
 }
+function mobileCheck(){
+  let check = false;
+  (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
+  return check;
+};
 // Check if two objects are equal
 function areObjectsEqual(x, y) {
   const ok = Object.keys, tx = typeof x, ty = typeof y;
@@ -290,10 +295,11 @@ function locationHandler(newlocation, n1) {
 
   if (location1.includes("instructions")) { handlebox = "test_instructions"; }
   if (location1.includes("cyberhunt")) { handlebox = "cyberhunt"; getCyberhunt() }
-  if (location1.includes("notes")) { handlebox = "notes"; getPDF() }
+  if (location1.includes("notes") && !location1.includes("usernotes")) { handlebox = "notes"; getPDF() }
   if (location1.includes("sims")) { handlebox = "simulations"; getSimulation() }
   if (location1.includes("chapter")) { handlebox = "chapter"; getChapterEList() }
   if (location1.includes("qbanks")) { handlebox = "topic"; getTopic(2); }
+  if (location1.includes("usernotes")) { handlebox = "usernotes";getUserNotes(); }
   if (location1.includes("qbnk_vid")) { handlebox = "qbnk_vid"; dE("qbnk_vid_btn").style.display = "block" }
   if (location1.includes("attempt")) { handlebox = "testv1"; getTestInfo() }
   if (location1.includes("finished")) { handlebox = "finishedtestinfo"; getSimpleTestReport() }
@@ -313,7 +319,7 @@ function locationHandler(newlocation, n1) {
   if (location1.includes("edit_qubank")) { handlebox = "fu_topic"; prepareTopicQBank(2) }
   // if (location1.includes("redirect"))
   if (userrole == false || userrole == null || userrole == undefined) {
-    if (location1 == "login" || location1 == "register" || location1.includes("notes") || location1 == "legal" || location1 == "about" || location1 == "bugreport") {
+    if (location1 == "login" || location1 == "register" || location1.includes("notes") || location1 == "legal" || location1 == "about" || location1 == "bugreport" || location1 == "appinfo") {
 
     } else {
       handlebox = "error_page"
@@ -346,6 +352,52 @@ async function updateBatch() {
 }
 async function getBatch() {
 
+}
+async function unotes1(){
+  await updateDoc(doc(db, "usernotes", window.location.hash.split("usernotes/")[1]), {
+    title: dE("un_title").value,
+    notes: getHTM("un_editable"),
+    lastupdated: serverTimestamp(),
+    type: dE("un_viewership").value
+   })
+}
+function unotes2(){
+  
+}
+async function getUserNotes(){
+  dE("un_rendermode").value = "edit"
+  try{window.notesUIHandler()}catch{}
+  if (window.location.hash.includes("usernotes/add")){
+    var docRef = await addDoc(collection(db, "usernotes"), {
+      title: "Notes Title",
+      notes: "",
+      uuid: userinfo.uuid,
+      crton: serverTimestamp(),
+      type: "private",
+      lastupdated: serverTimestamp()
+    })
+    locationHandler("#/usernotes/" + docRef.id, 1)
+  }else if (window.location.hash.includes("usernotes/delete")){
+    await deleteDoc(doc(db, "usernotes", window.location.hash.split("usernotes/delete/")[1]));
+  }else {
+    var docRef = doc(db, 'usernotes', window.location.hash.split("usernotes/")[1])
+    var docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      var docRef = docSnap.data()
+      dE("un_title").value = docRef.title;
+      setHTM("un_editable",docRef.notes);
+      dE("un_viewership").value = docRef.type;
+    }
+}
+}
+function uNotesClicker(){
+  window.location.hash = "#/usernotes/" + this.id.split("uno")[1] 
+}
+async function getUserNotesList(){
+  for (var i =0;i<userinfo.usernotes.length;i++){
+    dE("un_list").insertAdjacentHTML("beforeend","<div class='t_notes' id='uno"+userinfo.usernotes[i].id+"' style='background-color: "+userinfo.usernotes[i].color+"'><span class='tntc2' id='"+userinfo.usernotes[i].id+"'>"+userinfo.usernotes[i].title+"</span></div>")
+  }
+  dE("uno"+userinfo.usernotes[i].id).addEventListener("click",uNotesClicker)
 }
 async function getPDF() {
   var id = window.location.hash.split("notes/")[1]
@@ -1292,6 +1344,7 @@ async function authStateObserver(user) {
       userrole = docJSON.roles['user']
       editorrole = docJSON.roles['editor']
       adminrole = docJSON.roles['admin']
+      userinfo.usernotes = docJSON.usernotes
     }
     if (docJSON.deleted == true) {
       log("Warning", "User Account Has Been Deleted")
@@ -2013,6 +2066,12 @@ async function submitTest() {
 window.onbeforeunload = function (event) {
   updatePoints()
 };
+function internetStatus(type){
+  if (type == 1){document.getElementById('msg_popup').style.visibility = 'hidden';document.getElementById('msg_popup').style.opacity = '0'}
+  else if (type == 0){log("WARNING","You Are Currently Offline.")}
+}
+window.addEventListener('online', () => internetStatus(1));
+window.addEventListener('offline', () => internetStatus(0));
 dE("te_title").innerText = "The Test Has Ended"
 function defineEvents() {
   function chItem() { changeItem(1) }
@@ -2079,6 +2138,8 @@ function defineEvents() {
   var aqsave = dE("aq_tpc_save").addEventListener("click", uQL)
   var aqsave = dE("aq_qbc_save").addEventListener("click", uQL2)
   var aqsave = dE("aq_tst_save").addEventListener("click", uQL3)
+  var unsave = dE("un_save").addEventListener("click",unotes1)
+  var unprint = dE("un_print").addEventListener("click",unotes2)
   var tstinfbtn = dE("tstinf_btn").addEventListener("click", tstinfHand)
   var tpcbtn = dE("tpc_btn").addEventListener("click", tpcHand)
   var uscbtn = dE("usc_btn").addEventListener("click", uscHand)
