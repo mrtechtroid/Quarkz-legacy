@@ -8,7 +8,7 @@
 
     <title>Quarkz!</title>
     <link rel="stylesheet" href="css/main.css">
-    <link rel="icon" href="assets/Quarkz-T.png" type="image/icon type">
+    <link rel="icon" href="/assets/Quarkz-T.png" type="image/icon type">
 
     <!-- Google Fonts-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -35,6 +35,9 @@
     <!-- SummerNote-->
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
+    <!-- Progress Bar-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/0.6.1/progressbar.min.js" integrity="sha512-7IoDEsIJGxz/gNyJY/0LRtS45wDSvPFXGPuC7Fo4YueWMNOmWKMAllEqo2Im3pgOjeEwsOoieyliRgdkZnY0ow==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
         .full_page {
             display: none
@@ -301,8 +304,12 @@
             <option value="statistics">Statistics</option>
             <option value="unfiled">Unfiled</option>
         </select>
-        <div id="aq_test_extra">
-
+        <div id="aq_test_extra" style="flex-direction: column;">
+            <input type="text" id="aq_tst_batches" class="_in_aq" placeholder="Batch ID">
+            <input type="datetime-local" id="aq_tst_stron" class="_in_aq">
+            <input type="datetime-local" id="aq_tst_endon" class="_in_aq">
+            <input type="text" id="aq_tst_syllabi" class="_in_aq" placeholder="Syllabus">
+            <input type="number" id="aq_tst_timealotted" class="_in_aq" placeholder="Time Alloted">
         </div>
         <div id="lqadd" style="display: flex;flex-direction: row;margin:10px;height: 50vh;">
             <div id="question_list"
@@ -327,6 +334,7 @@
                         <option value="Chemistry">Chemistry</option>
                         <option value="Math">Math</option>
                         <option value="Biology">Biology</option>
+                        <option value="Computer">Computer</option>
                         <option value="Statistics">Statistics</option>
                         <option value="Unfiled">Unfiled</option>
                     </select>
@@ -364,7 +372,7 @@
                     </div>
                     <button class="tst_btn rpl" id="aq_ao">Add Option</button>
                     <button class="tst_btn rpl" id="aq_ro">Remove Option</button>
-                    <button class="tst_btn rpl" id="aq_ro">Remove Entry</button>
+                    <button class="tst_btn rpl" id="aq_re">Remove Entry</button>
                 </div>
             </div>
         </div>
@@ -416,6 +424,7 @@
                 <div class="dshbox_v2 " id="tmt_btn">Time Table</div>
                 <div class="dshbox_v2" id="chp_btn">Chapters</div>
                 <div class="dshbox_v2" id="tstinf_btn">Test Infos</div>
+                <div class="dshbox_v2" id="usn_btn" onclick = "window.location.hash = '/usernotes/'">Your Notes</div>
                 <div class="dshbox_v2" id="tpc_btn" style="display: none;">Topics</div>
                 <div class="dshbox_v2" id="lvq_btn" style="display:none">Live Quiz</div>
                 <div class="dshbox_v2" id="frm_btn">Forum</div>
@@ -586,6 +595,8 @@
                     style="padding-left:20px;padding-right: 20px;background-color: rgb(100, 100, 52);border-radius: 5px 5px 5px 5px;">00:00:00</span>
                 <span id="tt_marksaward"
                     style="padding-left:20px;padding-right: 20px;background-color: rgb(18, 88, 218);;border-radius: 5px 5px 5px 5px;"></span>
+                <span id="tt_timespent"
+                    style="padding-left:20px;padding-right: 20px;background-color: rgb(171, 18, 218);border-radius: 5px 5px 5px 5px;margin-left:5px;"></span>
                 <span id="tt_testname"
                     style="padding-left:20px;padding-right: 20px;border-radius: 5px 5px 5px 5px;width: 100%;background-color: rgb(38, 88, 19);text-align: right;margin-left: 5px;">TEST
                     NAME</span>
@@ -615,8 +626,22 @@
             </div>
             <div id="tt_qnobx"
                 style="display: flex;flex-direction: row;flex-wrap:wrap;border-radius:30px;background-color: rgb(78, 72, 61);padding:10px;width: 250px;height: 40vh;margin:10px;overflow-y: scroll;">
-
-
+                <div>
+                    <span>Physics</span>
+                    <div id = "tw_Physics" style="display: flex;flex-direction: row;flex-wrap:wrap;height:auto"></div>
+                    <span>Chemistry</span>
+                    <div id = "tw_Chemistry" style="display: flex;flex-direction: row;flex-wrap:wrap;height:auto"></div>
+                    <span>Math</span>
+                    <div id = "tw_Math" style="display: flex;flex-direction: row;flex-wrap:wrap;height:auto"></div>
+                    <span>Computer</span>
+                    <div id = "tw_Computer" style="display: flex;flex-direction: row;flex-wrap:wrap;height:auto"></div>
+                    <span>Biology</span>
+                    <div id = "tw_Biology" style="display: flex;flex-direction: row;flex-wrap:wrap;height:auto"></div>
+                    <span>Statistics</span>
+                    <div id = "tw_Statistics" style="display: flex;flex-direction: row;flex-wrap:wrap;height:auto"></div>
+                    <span>Unfiled</span>
+                    <div id = "tw_Unfiled" style="display: flex;flex-direction: row;flex-wrap:wrap;height:auto"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -870,7 +895,7 @@
                 onclick="if (document.getElementById('cyb_cd_in').value != ''){window.location.hash = '/cyberhunt/'+document.getElementById('cyb_cd_in').value}">Submit</button>
         </div>
     </div>
-    <div id = "finishedtestinfo" class="full_page flex_type">
+    <div id = "finishedtestinfo" class="full_page flex_type" style = "overflow-y: scroll;">
         <span style="font-size: 5vh;color:yellow" id="fti_title">Test Name</span>
         <hr color="white" width="100%">
         <div id = "fto_overview" style = "display: flex;flex-direction: row;flex-wrap:wrap">
@@ -898,8 +923,24 @@
         <hr color="white" width="100%">
         <div id = "fto_overview" style = "display: flex;flex-direction: row;flex-wrap:wrap">
             <button class="tst_btn rpl" id="fto_detail" onclick='window.location.hash = "#/testreport/" + window.location.hash.split("#/finished/")[1]'>Detailed View</button>
-            <button class="tst_btn rpl" id="fto_lboard">Leaderboard</button>
         </div>
+        <div style="display:flex;flex-direction:row;flex-wrap:wrap;">
+            <div style="display:flex;flex-direction:column;flex-wrap:wrap;">
+                <span style="font-size: 3vh;">Section Wise Scores</span>
+                <div id = "fto_percents" style="display: flex;flex-direction: column;"></div>
+                <div>Legend: <span style = "color:green">Correct</span>&nbsp;<span style = "color:red">Incorrect</span>&nbsp;<span style = "color:orange">Unattempted</span></div>
+            </div>
+            <div style = "margin-left:20px;display:flex;flex-direction:column;">
+                <span style="font-size: 3vh;">Leaderboard</span>
+                <div id="fto_leaderboard"></div>
+            </div>
+        </div>
+        <div style="display:flex;flex-direction:column;flex-wrap:wrap;">
+            <span style="font-size: 3vh;">Section Wise Time Spent</span>
+            <div id = "fto_time" style="display: flex;flex-direction: column;"></div>
+            <div>Legend: <span style = "color:green">Correct</span>&nbsp;<span style = "color:red">Incorrect</span>&nbsp;<span style = "color:orange">Unattempted</span></div>
+        </div>
+        
     </div>
     <div id="forum" class="full_page flex_type">
         <span style="font-size: 5vh;color:yellow" id="fm_title">Forum</span>
@@ -934,7 +975,7 @@
                 </select>
                 <input id="un_title" type="text" class="_in_aq" style="width:20vw;" value = "Notes Title">
                 <button id = "un_save" class = "rpl tst_btn" style = "height: 30px;">Save</button>
-                <button id = "un_print" class = "rpl tst_btn" style = "height: 30px;" onclick = 'dE("un_preview").style.display = "block";dE("un_preview").innerHTML = "<h1 style = text-align:center>"+dE("un_title").value+"</h1><br>"+getHTML("un_editable");idElementPrint(dE("un_preview"));'>Print</button>
+                <button id = "un_print" class = "rpl tst_btn" style = "height: 30px;">Print</button>
                 <input id="colorpicker" type="color" name="favcolor" value="#ff0000" style="width:5vw;height:30px;background-color: transparent;border:none" onchange="notesUIHandler()">
             </div>
             <div id = "un_edit" style="height:90%;width:100%">

@@ -1,7 +1,7 @@
 // COPYRIGHT 2021-23 Quarkz By Mr Techtroid
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
 // import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-analytics.js";
-import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence, GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
 import { getFirestore, orderBy, limit, writeBatch, collection, addDoc, onSnapshot, arrayUnion, arrayRemove, setDoc, updateDoc, getDocs, doc, serverTimestamp, getDoc, query, where } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, } from 'https://www.gstatic.com/firebasejs/9.6.0/firebase-storage.js';
 import { sysaccess } from '/js/reworkui.js'
@@ -17,6 +17,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore();
 const auth = getAuth();
+setPersistence(auth, browserSessionPersistence)
+  .then(() => {
+    return signInWithEmailAndPassword(auth, email, password);
+  })
+  .catch((error) => {
+    // log("Error",error)
+  });
+
 const storage = getStorage();
 
 // Helper Functions
@@ -65,9 +73,9 @@ function areEqual(arr1, arr2) {
       return false;
   return true;
 }
-function mobileCheck(){
+function mobileCheck() {
   let check = false;
-  (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
+  (function (a) { if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true; })(navigator.userAgent || navigator.vendor || window.opera);
   return check;
 };
 // Check if two objects are equal
@@ -75,7 +83,7 @@ function areObjectsEqual(x, y) {
   const ok = Object.keys, tx = typeof x, ty = typeof y;
   return x && y && tx === 'object' && tx === ty ? (
     ok(x).length === ok(y).length &&
-      ok(x).every(key => areObjectsEqual(x[key], y[key]))
+    ok(x).every(key => areObjectsEqual(x[key], y[key]))
   ) : (x === y);
 }
 // Get Time Of Server
@@ -108,6 +116,16 @@ function fullEle(ele) {
 function dE(ele) {
   return document.getElementById(ele)
 }
+function sortObj(objs, param, type) {
+  var sorter2;
+  if (type == 0) {
+    sorter2 = (sortBy) => (a, b) => a[sortBy] > b[sortBy] ? 1 : -1;
+  } if (type == 1) {
+    sorter2 = (sortBy) => (a, b) => a[sortBy] > b[sortBy] ? -1 : 1;
+  }
+  console.log(objs.sort(sorter2(param)))
+  return objs.sort(sorter2(param));
+}
 // Make Elements Latex Rendered
 function renderMarkedMath(eleid, toid) {
   var v = marked.parse(dE(eleid).value)
@@ -115,14 +133,14 @@ function renderMarkedMath(eleid, toid) {
   renderMathInElement(dE(toid));
 }
 // Special Logging Function
-function log(title, msg, action,actionname) {
+function log(title, msg, action, actionname) {
   dE("msg_popup").style.visibility = "visible"
   dE("msg_popup").style.opacity = "1"
-  dE("msg_action").style.display= "none"
+  dE("msg_action").style.display = "none"
   document.getElementById("msg_popup_txt").innerText = title
   document.getElementById("msg_popup_content").innerText = msg
-  if (action == undefined){action = function(){}}else{dE("msg_action").style.display= "block"}
-  if (actionname == undefined){actionname = ""}
+  if (action == undefined) { action = function () { } } else { dE("msg_action").style.display = "block" }
+  if (actionname == undefined) { actionname = "" }
   dE("msg_action").onclick = action
   dE("msg_action").innerText = actionname
 }
@@ -299,7 +317,7 @@ function locationHandler(newlocation, n1) {
   if (location1.includes("sims")) { handlebox = "simulations"; getSimulation() }
   if (location1.includes("chapter")) { handlebox = "chapter"; getChapterEList() }
   if (location1.includes("qbanks")) { handlebox = "topic"; getTopic(2); }
-  if (location1.includes("usernotes")) { handlebox = "usernotes";getUserNotes(); }
+  if (location1.includes("usernotes")) { handlebox = "usernotes"; getUserNotes(); }
   if (location1.includes("qbnk_vid")) { handlebox = "qbnk_vid"; dE("qbnk_vid_btn").style.display = "block" }
   if (location1.includes("attempt")) { handlebox = "testv1"; getTestInfo() }
   if (location1.includes("finished")) { handlebox = "finishedtestinfo"; getSimpleTestReport() }
@@ -353,21 +371,21 @@ async function updateBatch() {
 async function getBatch() {
 
 }
-async function unotes1(){
+async function unotes1() {
   await updateDoc(doc(db, "usernotes", window.location.hash.split("usernotes/")[1]), {
     title: dE("un_title").value,
     notes: getHTM("un_editable"),
     lastupdated: serverTimestamp(),
     type: dE("un_viewership").value
-   })
+  })
 }
-function unotes2(){
-  
+function unotes2() {
+
 }
-async function getUserNotes(){
+async function getUserNotes() {
   dE("un_rendermode").value = "edit"
-  try{window.notesUIHandler()}catch{}
-  if (window.location.hash.includes("usernotes/add")){
+  try { window.notesUIHandler() } catch { }
+  if (window.location.hash.includes("usernotes/add")) {
     var docRef = await addDoc(collection(db, "usernotes"), {
       title: "Notes Title",
       notes: "",
@@ -377,27 +395,29 @@ async function getUserNotes(){
       lastupdated: serverTimestamp()
     })
     locationHandler("#/usernotes/" + docRef.id, 1)
-  }else if (window.location.hash.includes("usernotes/delete")){
+  } else if (window.location.hash.includes("usernotes/delete")) {
     await deleteDoc(doc(db, "usernotes", window.location.hash.split("usernotes/delete/")[1]));
-  }else {
+  } else if (window.location.hash == ("")) {
+    getUserNotesList()
+  } else {
     var docRef = doc(db, 'usernotes', window.location.hash.split("usernotes/")[1])
     var docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       var docRef = docSnap.data()
       dE("un_title").value = docRef.title;
-      setHTM("un_editable",docRef.notes);
+      setHTM("un_editable", docRef.notes);
       dE("un_viewership").value = docRef.type;
     }
-}
-}
-function uNotesClicker(){
-  window.location.hash = "#/usernotes/" + this.id.split("uno")[1] 
-}
-async function getUserNotesList(){
-  for (var i =0;i<userinfo.usernotes.length;i++){
-    dE("un_list").insertAdjacentHTML("beforeend","<div class='t_notes' id='uno"+userinfo.usernotes[i].id+"' style='background-color: "+userinfo.usernotes[i].color+"'><span class='tntc2' id='"+userinfo.usernotes[i].id+"'>"+userinfo.usernotes[i].title+"</span></div>")
   }
-  dE("uno"+userinfo.usernotes[i].id).addEventListener("click",uNotesClicker)
+}
+function uNotesClicker() {
+  window.location.hash = "#/usernotes/" + this.id.split("uno")[1]
+}
+async function getUserNotesList() {
+  for (var i = 0; i < userinfo.usernotes.length; i++) {
+    dE("un_list").insertAdjacentHTML("beforeend", "<div class='t_notes' id='uno" + userinfo.usernotes[i].id + "' style='background-color: " + userinfo.usernotes[i].color + "'><span class='tntc2' id='" + userinfo.usernotes[i].id + "'>" + userinfo.usernotes[i].title + "</span></div>")
+  }
+  dE("uno" + userinfo.usernotes[i].id).addEventListener("click", uNotesClicker)
 }
 async function getPDF() {
   var id = window.location.hash.split("notes/")[1]
@@ -807,9 +827,9 @@ function addItemToQLLIst() {
     qop2.push(document.getElementsByClassName("aq_i2")[i].value)
   }
   if (location1.includes("edit_test")) {
-    var json = { qid: curr_qlid, mode: dE("aq_mode").value, title: getHTM("aq_qtext"), y_url: dE("aq_yurl").value, hint: dE("aq_hint").value, expl: getHTM("aq_expl"), type: qtype, answer: qans, op: qop, op1: qop1, op2: qop2 }
+    var json = { qid: curr_qlid, mode: dE("aq_mode").value, title: getHTM("aq_qtext"), y_url: dE("aq_yurl").value, hint: dE("aq_hint").value, expl: getHTM("aq_expl"), type: qtype, answer: qans, op: qop, op1: qop1, op2: qop2, section: dE("aq_section").value }
   } else {
-    var json = { id: curr_qlid, mode: dE("aq_mode").value, title: getHTM("aq_qtext"), y_url: dE("aq_yurl").value, hint: dE("aq_hint").value, expl: getHTM("aq_expl"), type: qtype, answer: qans, op: qop, op1: qop1, op2: qop2 }
+    var json = { id: curr_qlid, mode: dE("aq_mode").value, title: getHTM("aq_qtext"), y_url: dE("aq_yurl").value, hint: dE("aq_hint").value, expl: getHTM("aq_expl"), type: qtype, answer: qans, op: qop, op1: qop1, op2: qop2, section: dE("aq_section").value }
   }
   return json
 }
@@ -849,7 +869,7 @@ function rEQL(u) {
 function renderEditQLList(qno) {
   if (qno == "+") {
     let po = editqllist.length
-    editqllist[po] = { id: Date.now() + Math.random().toString(36).substr(2), mode: "", title: "", y_url: "", img: "", hint: "", expl: "", type: "mcq", answer: ["1"], op: ["1", "2", "3", "4"], op1: [], op2: [] }
+    editqllist[po] = { id: Date.now() + Math.random().toString(36).substr(2), mode: "", title: "", y_url: "", img: "", hint: "", expl: "", type: "mcq", answer: ["1"], op: ["1", "2", "3", "4"], op1: [], op2: [], section: "Unfiled" }
     if (window.location.hash.includes("edit_qubank") || window.location.hash.includes("edit_test")) { editqllist[po].mode = "question" }
     if (location1.includes("edit_test")) {
       editqllist[po].qid = editqllist[po].id
@@ -880,6 +900,7 @@ function renderEditQLList(qno) {
   dE("aq_yurl").value = op.y_url
   dE("aq_type").value = op.type
   dE("aq_hint").value = op.hint
+  dE("aq_section").value = op.section
   setHTM("aq_expl", op.expl)
   if (op.type == "mcq" || op.type == "mcq_multiple") {
     dE("aq_mcq_con").innerHTML = ""
@@ -939,7 +960,7 @@ async function prepareTopicQBank(iun) {
     dE("aq_tpc_save").style.display = "block"
     dE("aq_qbc_save").style.display = "none"
     dE("aq_tst_save").style.display = "none"
-
+    dE("aq_test_extra").style.display = "none"
   } else if (iun == 2) {
     // QBank
     col = 'qbank'
@@ -948,6 +969,7 @@ async function prepareTopicQBank(iun) {
     dE("aq_mode").innerHTML = `<option value="question">Question</option>`
     dE("aq_tpc_save").style.display = "none"
     dE("aq_tst_save").style.display = "none"
+    dE("aq_test_extra").style.display = "none"
     dE("aq_qbc_save").style.display = "block"
   } else if (iun == 3) {
     // Tests
@@ -957,6 +979,7 @@ async function prepareTopicQBank(iun) {
     dE("aq_mode").innerHTML = `<option value="question">Question</option>`
     dE("aq_tpc_save").style.display = "none"
     dE("aq_qbc_save").style.display = "none"
+    dE("aq_test_extra").style.display = "flex"
     dE("aq_tst_save").style.display = "block"
   }
   try {
@@ -975,6 +998,16 @@ async function prepareTopicQBank(iun) {
         dE("aq_tpcname").value = docJSON.title
         dE("aq_tpclevel").value = docJSON.level
         dE("aq_tpc_subj").value = docJSON.subject
+        dE("aq_tst_batches").value = docJSON.batch.toString()
+        function dateparser(var1) {
+          var now = new Date(var1);
+          now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+          return now.toISOString().slice(0, 16);
+        }
+        dE("aq_tst_stron").value = dateparser(docJSON.strton.seconds * 1000)
+        dE("aq_tst_endon").value = dateparser(docJSON.endon.seconds * 1000)
+        dE("aq_tst_timealotted").value = docJSON.timeallotted
+        dE("aq_tst_syllabi").value = docJSON.syllabus
         let docSnap2 = await getDoc(doc(db, "tests", id, "questions", "questions"))
         let docSnap3 = await getDoc(doc(db, "tests", id, "questions", "answers"))
         let q = []
@@ -988,8 +1021,22 @@ async function prepareTopicQBank(iun) {
     }
   } catch { }
 }
+function removeEntry(){
+  for (var i = 0;i<editqllist.length;i++){
+    if (editqllist[i].qid == curr_qlid || editqllist.id == curr_qlid){
+      editqllist.splice(i,1)
+      renderEditQLList(0)
+      curr_qlid = editqllist[i-1].qid || editqllist[i-1].id
+      if (curr_qlid == undefined){curr_qlid = ""}
+    }
+  }
+}
 async function updateTopicQBank(iun) {
-  addItemToQLLIst()
+  for (var i = 0;i<editqllist.length;i++){
+    if (editqllist[i].qid == curr_qlid || editqllist.id == curr_qlid){
+      editqllist[i] = addItemToQLLIst()
+    }
+  }
   var col, id;
   if (iun == 1) {
     // Topic
@@ -1017,8 +1064,16 @@ async function updateTopicQBank(iun) {
     }
   } else if (iun == 3) {
     try {
+      var fgio = new Date(dE("aq_tst_stron").value)
+      var fgio2 = new Date(dE("aq_tst_endon").value)
+      var wer = dE("aq_tst_batches").value.split(",")
       const docRef = await updateDoc(doc(db, col, id), {
-        name: dE("aq_tpcname").value,
+        title: dE("aq_tpcname").value,
+        timeallotted: dE("aq_tst_timealotted").value,
+        syllabus: dE("aq_tst_syllabi").value,
+        strton: fgio,
+        endon: fgio2,
+        batch: wer,
       })
     } catch {
     }
@@ -1026,14 +1081,15 @@ async function updateTopicQBank(iun) {
     var a = [];
     for (var i = 0; i < editqllist.length; i++) {
       var ele = editqllist[i]
-      q.push({ qid: ele.qid, mode: ele.mode, title: ele.title, type: ele.type, op: ele.op, op1: ele.op1, op2: ele.op2,section:ele.section })
-      a.push({ qid: ele.qid, hint: ele.hint, expl: ele.expl, answer: ele.answer })
+      q.push({ qid: ele.qid, mode: ele.mode, title: ele.title, type: ele.type, op: ele.op, op1: ele.op1, op2: ele.op2, section: ele.section })
+      a.push({ qid: ele.qid, hint: ele.hint, expl: ele.expl, answer: ele.answer, section: ele.section })
     }
     try {
       const docRef = await updateDoc(doc(db, col, id, "questions", "questions"), {
         questions: q
       })
-    } catch {
+    } catch (error) {
+      log(error)
     }
     try {
       const docRef = await updateDoc(doc(db, col, id, "questions", "answers"), {
@@ -1555,6 +1611,17 @@ async function newTest() {
       finished: [],
       batch: []
     })
+      var docRef1 = await setDoc(doc(db, 'tests',docRef.id,"questions","questions"), {
+        questions:[]
+      })
+      var docRef2 = await setDoc(doc(db, 'tests',docRef.id,"questions","answers"), {
+        questions:[]
+      })
+      var docRef4 = await setDoc(doc(db, 'tests',docRef.id,"responses","finished"), {
+        finished:[],
+        leaderboard:[]
+      })
+
     locationHandler("edit_tests/" + docRef.id, 1)
   } catch {
   }
@@ -1591,41 +1658,165 @@ async function getSimpleTestReport() {
     testInfo = docSnap.data()
     var attempted = 0;
     dE("fti_title").innerText = testInfo.title
-    for (var ele of testInfo.finished) {
+    docRef = doc(db, "tests", testid,"responses","finished");
+    docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      for (var ele of docSnap.data().finished) {
       if (auth.currentUser.uid == ele) {
         attempted = 1;
         break;
       }
     }
+    }
     if (attempted == 0) {
       locationHandler("testend", 1)
       dE("te_title").innerText = "You Have NOT Attempted This Test"
     } else {
-      if (0&&(Date.now() / 1000 <= testInfo.endon.seconds && testInfo.noresult == false)) {
+      if (0 && (Date.now() / 1000 <= testInfo.endon.seconds && testInfo.noresult == false)) {
         // locationHandler("testend", 1)
         // dE("te_title").innerText = "Test Reports will be available after deadline"
       } else {
         try {
-          try{computeResult(1)}catch{}
-          try{docRef = doc(db, "tests", testid, "responses", auth.currentUser.uid);
-          docSnap = await getDoc(docRef);
-          var tT = docSnap.data()
-          if (docSnap.exists()) {
-            dE("fto_total").innerText = tT.info.usermarks + "/" + tT.info.total
-            dE("fto_correct").innerText = tT.info.correct
-            dE("fto_incorrect").innerText = tT.info.incorrect
-            dE("fto_unanswered").innerText = tT.info.unattempted
-            dE("fto_rank").innerText = "0"
+          try { computeResult(1) } catch { }
+          try {
+            docRef = doc(db, "tests", testid, "responses", auth.currentUser.uid);
+            docSnap = await getDoc(docRef);
+            var tT = docSnap.data()
+            if (docSnap.exists()) {
+              dE("fto_total").innerText = tT.info.usermarks + "/" + tT.info.total
+              dE("fto_correct").innerText = tT.info.correct
+              dE("fto_incorrect").innerText = tT.info.incorrect
+              dE("fto_unanswered").innerText = tT.info.unattempted
+              testActionLogger = tT.actions
+              reQW = tT.info.mList
+              dE("fto_rank").innerText = "0"
+              function r(t, c, ic, un, tm) {
+                var z = tm - (c - ic * 4)
+                var gf = c + ic
+                return `<div><span>` + t + `(` + gf + ` Marks)</span><div style = "width:40vw;height:30px;display:flex;flex-direction:row;"><div style="width:` + c / tm * 40 + `vw;background-color:green;height:30px;text-align:center;color:white">` + c + `/` + tm + `</div><div style="width:` + Math.abs(4 * ic / tm * 40) + `vw;background-color:red;height:30px;text-align:center;color:white">` + ic + `/` + tm + `</div><div style="width:` + (1 - (c - ic * 4) / tm) * 40 + `vw;background-color:orange;height:30px;text-align:center;color:black">` + z + `/` + tm + `</div></div></div>`
+              }
+              var ion1 = ["Physics", "Chemistry", "Math", "Biology", "Statistics", "Computer", "Unfiled"]
+              dE("fto_percents").innerHTML = ""
+              for (var eleX of ion1) {
+                var el2e2 = tT.info.subjectmarks[eleX]
+                if (!areObjectsEqual(el2e2, { correct: 0, unattempted: 0, incorrect: 0, total: 0 })) {
+                  dE("fto_percents").insertAdjacentHTML("beforeend", r(eleX, el2e2.correct, el2e2.incorrect, el2e2.unattempted, el2e2.total))
+                }
+              }
+              analyseActions(1).then(function () {
+                function qw(t, c, ic, un, tm) {
+                  var z = tm - (c + ic)
+                  return `<div><span>` + t + `(` + sd(tm) + `)</span><div style = "width:80vw;height:30px;display:flex;flex-direction:row;"><div style="width:` + c / tm * 80 + `vw;background-color:green;height:30px;text-align:center;color:white">` + sd(c) + `</div><div style="width:` + ic / tm * 80 + `vw;background-color:red;height:30px;text-align:center;color:white">` + sd(ic) + `</div><div style="width:` + (1 - (c + ic) / tm) * 80 + `vw;background-color:orange;height:30px;text-align:center;color:black">` + sd(z) + `</div></div></div>`
+                }
+                var ion1 = ["Physics", "Chemistry", "Math", "Biology", "Statistics", "Computer", "Unfiled"]
+                dE("fto_time").innerHTML = ""
+                for (var eleX of ion1) {
+                  var eXZe2 = analysedActions.subject[eleX]
+                  if (!areObjectsEqual(eXZe2, { correct: 0, unattempted: 0, incorrect: 0, total: 0 })) {
+                    dE("fto_time").insertAdjacentHTML("beforeend", qw(eleX, eXZe2.correct, eXZe2.incorrect, eXZe2.unattempted, eXZe2.total))
+                  }
+                }
+              })
+            }
+            try {
+              var leaderboard;
+              docRef = doc(db, "tests", testid, "responses", "finished");
+              docSnap = await getDoc(docRef);
+              if (docSnap.exists()) {
+                leaderboard = docSnap.data().leaderboard
+              }
+              dE("fto_leaderboard").innerHTML = ""
+              leaderboard = sortObj(leaderboard, "marks", 1)
+              for (var i = 0; i < leaderboard.length; i++) {
+                var e = i + 1
+                if (userinfo.uuid == leaderboard[i].uid) { dE("fto_rank").innerText = e }
+                dE("fto_leaderboard").insertAdjacentHTML("beforeend", '<div class = "tlinks" style = "flex-direction:row;width:25vw;justify-content:space-between;"><span class = "t_gre">&nbsp;' + e + '</span><span class = "t_name">' + leaderboard[i].name + '</span><span class = "t_gre">&nbsp;&nbsp;' + leaderboard[i].marks + '</span></div>')
+              }
+            } catch {
+
+            }
           }
-        }
-        catch {
-          dE("te_title").innerText = "ERROR"
-          locationHandler("testend", 1)
-          return 0;
-        }}catch{}
+          catch {
+            dE("te_title").innerText = "ERROR"
+            locationHandler("testend", 1)
+            return 0;
+          }
+        } catch { }
       }
     }
   }
+}
+async function analyseActions(typi) {
+  var tQList
+  if (typi == 1) {
+    var q = window.location.hash.split("/finished/")[1]
+    var docRef = doc(db, "tests", q, "questions", "questions");
+    var docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      tQList = docSnap.data().questions
+    }
+  } else if (typi == 2) {
+    tQList = []
+    tQList = testQuestionList
+  }
+
+  var qnos = {};
+  for (var i = 0; i < testActionLogger.length; i++) {
+    testActionLogger[i].time = testActionLogger[i].time.seconds
+  }
+  var tAL = sortObj(testActionLogger, "time", 0)
+  var curr_time;
+  var next_time;
+  for (var i = 0; i < tAL.length; i++) {
+    if (tAL[i].type == "start") {
+      curr_time = tAL[i].time
+    } else if (tAL[i].type == "change") {
+      next_time = tAL[i].time
+      if (qnos[tAL[i].value] == undefined) {
+        qnos[tAL[i].value] = {}
+        qnos[tAL[i].value].time = 0
+      }
+      qnos[tAL[i].value].time += next_time - curr_time
+      curr_time = next_time
+      next_time = 0
+    }
+  }
+  var subJTimes = {
+    "Physics": { correct: 0, unattempted: 0, incorrect: 0, total: 0 },
+    "Chemistry": { correct: 0, unattempted: 0, incorrect: 0, total: 0 }, "Math": { correct: 0, unattempted: 0, incorrect: 0, total: 0 },
+    "Biology": { correct: 0, unattempted: 0, incorrect: 0, total: 0 }, "Computer": { correct: 0, unattempted: 0, incorrect: 0, total: 0 },
+    "Statistics": { correct: 0, unattempted: 0, incorrect: 0, total: 0 }, "Unfiled": { correct: 0, unattempted: 0, incorrect: 0, total: 0 }
+  }
+  var c = 0;
+  var ic = 0;
+  var un = 0;
+  for (var i = 0; i < tQList.length; i++) {
+    for (var j = 0; j < reQW.length; j++) {
+      if (tQList[i].qid == reQW[j].qid) {
+        var ele = qnos[tQList[i].qid]
+        if (qnos[tQList[i].qid] == undefined) {
+          qnos[tQList[i].section] = {}
+          qnos[tQList[i].section].time = 0
+        } else {
+          subJTimes[tQList[i].section].total += ele.time
+          if (reQW[i].marks == 0) {
+            subJTimes[tQList[i].section].unattempted += ele.time
+            un = un + ele.time
+          } else {
+            if (reQW[i].marks == 4) {
+              subJTimes[tQList[i].section].correct += ele.time
+              c = c + ele.time
+            } else {
+              subJTimes[tQList[i].section].incorrect += ele.time
+              ic = ic + ele.time
+            }
+          }
+        }
+      }
+    }
+  }
+  var tFinal = { questions: qnos, subject: subJTimes, correct: c, incorrect: ic, unattempted: un }
+  analysedActions = tFinal
 }
 async function getTestReport() {
   dE("tt_footer").style.display = "none"
@@ -1639,11 +1830,15 @@ async function getTestReport() {
     testInfo = docSnap.data()
     var attempted = 0;
     dE("tt_testname").innerText = testInfo.title
-    for (var ele of testInfo.finished) {
+    docRef = doc(db, "tests", testid,"responses","finished");
+    docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      for (var ele of docSnap.data().finished) {
       if (auth.currentUser.uid == ele) {
         attempted = 1;
         break;
       }
+    }
     }
     if (attempted == 0) {
       locationHandler("testend", 1)
@@ -1695,11 +1890,15 @@ async function getTestInfo() {
   var docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
     testInfo = docSnap.data()
-    for (var ele of testInfo.finished) {
-      if (auth.currentUser.uid == ele) {
-        locationHandler("testend", 1)
-        dE("te_title").innerText = "You Have Already Attempted This Test"
-        return 0;
+    docRef = doc(db, "tests", testid, "responses", "finished")
+    docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      for (var ele of docSnap.data().finished) {
+        if (auth.currentUser.uid == ele) {
+          locationHandler("testend", 1)
+          dE("te_title").innerText = "You Have Already Attempted This Test"
+          return 0;
+        }
       }
     }
   }
@@ -1726,8 +1925,8 @@ async function getTestInfo() {
     }
   } else {
     var trL = {};
-    for (var t = 0;t<testQuestionList.questions.length;t++){
-      trL[`${testQuestionList.questions[t].qid}`] = {type:"tts_notvisit",answer:[]}
+    for (var t = 0; t < testQuestionList.questions.length; t++) {
+      trL[`${testQuestionList.questions[t].qid}`] = { type: "tts_notvisit", answer: [] }
     }
     var it = new Date()
     await setDoc(doc(db, "tests", testid, "responses", auth.currentUser.uid), {
@@ -1736,6 +1935,7 @@ async function getTestInfo() {
       warning: [],
       actions: [{ type: "start", time: it, value: "1" }]
     })
+    testActionLogger.push({ type: "start", time: it, value: "1" })
   }
 
   testTimerfunction = setInterval(function () {
@@ -1771,15 +1971,15 @@ async function computeResult(type) {
   var marksList = [];
   var fg = []
   var testid = ""
-  if (window.location.hash.includes("/attempt/")){
+  if (window.location.hash.includes("/attempt/")) {
     testid = window.location.hash.split("#/attempt/")[1]
-    log("Warning","Submitting Tests Answers: Please Do Not Close The Tab.")
-  }else if(window.location.hash.includes("/finished/")){
+    log("Warning", "Submitting Tests Answers: Please Do Not Close The Tab.")
+  } else if (window.location.hash.includes("/finished/")) {
     testid = window.location.hash.split("#/finished/")[1]
-  } else if (window.location.hash.includes("/testreport/")){
+  } else if (window.location.hash.includes("/testreport/")) {
     testid = window.location.hash.split("#/testreport/")[1]
   }
-  
+
   var docRef = doc(db, "tests", testid, "responses", auth.currentUser.uid);
   var docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
@@ -1795,38 +1995,59 @@ async function computeResult(type) {
     trA = docSnap.data().questions
   }
   var u = 0, c = 0, ic = 0;
-  var t = trA.length*4
+  var t = trA.length * 4
+  var subjectmarks = {
+    "Physics": { correct: 0, unattempted: 0, incorrect: 0, total: 0 },
+    "Chemistry": { correct: 0, unattempted: 0, incorrect: 0, total: 0 }, "Math": { correct: 0, unattempted: 0, incorrect: 0, total: 0 },
+    "Biology": { correct: 0, unattempted: 0, incorrect: 0, total: 0 }, "Computer": { correct: 0, unattempted: 0, incorrect: 0, total: 0 },
+    "Statistics": { correct: 0, unattempted: 0, incorrect: 0, total: 0 }, "Unfiled": { correct: 0, unattempted: 0, incorrect: 0, total: 0 }
+  }
   for (var i = 0; i < trA.length; i++) {
     for (var j = 0; j < trL.length; j++) {
       if (trA[i].qid == trL[j].qid) {
         var ele = trL[j]
-        if (ele == undefined || ele.ans.length == 0) {
+        if (ele.ans == undefined){
+          ele.ans = []
+        }
+        if (ele.ans.length == 0) {
           marksList.push({ qid: trA[i].qid, marks: 0, type: "unattempted" })
           u = u + 4
+          subjectmarks[trA[i].section].unattempted += 4
+          subjectmarks[trA[i].section].total += 4
         } else {
           if (areEqual(trA[i].answer, ele.ans)) {
             marksList.push({ qid: trA[i].qid, marks: +4, type: "correct" })
             c = c + 4
+            subjectmarks[trA[i].section].correct += 4
+            subjectmarks[trA[i].section].total += 4
           } else {
             marksList.push({ qid: trA[i].qid, marks: -1, type: "incorrect" })
             ic = ic - 1
+            subjectmarks[trA[i].section].incorrect += -1
+            subjectmarks[trA[i].section].total += 4
           }
         }
       }
     }
   }
-  var tFinal = { correct: c, incorrect: ic, unattempted: u, mList: marksList,total:t,usermarks:c+ic }
-  if (type == 1){
-    if (!areObjectsEqual(tFinal,fg)){
-      log("NOTICE","Please Wait, Marks Are Being Updated")
+  var tFinal = { correct: c, incorrect: ic, unattempted: u, mList: marksList, total: t, usermarks: c + ic, subjectmarks: subjectmarks }
+  if (type == 1) {
+    if (!areObjectsEqual(tFinal, fg)) {
+      log("NOTICE", "Please Wait, Marks Are Being Updated")
       await updateDoc(doc(db, "tests", testid, "responses", auth.currentUser.uid), {
         info: tFinal
       })
+      await updateDoc(doc(db, "tests", testid, "responses", "finished"), {
+        leaderboard: arrayUnion({ "uid": userinfo.uuid, "marks": tFinal.usermarks, "name": userinfo.name }),
+      })
       locationHandler()
     }
-  }else if (type == 0){
+  } else if (type == 0) {
     await updateDoc(doc(db, "tests", testid, "responses", auth.currentUser.uid), {
       info: tFinal
+    })
+    await updateDoc(doc(db, "tests", testid, "responses", "finished"), {
+      leaderboard: arrayUnion({ "uid": userinfo.uuid, "marks": tFinal.usermarks, "name": userinfo.name }),
     })
     locationHandler("testend", 1)
   }
@@ -1894,6 +2115,9 @@ function testqHandler(id, no) {
         for (let ele of testReportAnswers.questions) {
           if (id == ele.qid) {
             tyio = ele.answer
+            if (analysedActions != undefined) {
+              dE("tt_timespent").innerText = sd(analysedActions.questions[ele.qid].time)
+            }
             var lio = '<div id="tg_answer">Answer: ' + ele.answer + '</div><div id="tg_expl">Explanation: ' + ele.expl + '</div>'
             dE("tt_qtitle").insertAdjacentHTML('beforeend', lio)
           }
@@ -1934,31 +2158,41 @@ function testqHandler(id, no) {
 }
 function inittestHandler() {
   var a = 1;
-  dE("tt_qnobx").innerHTML = ''
+  dE("tw_Physics").innerHTML = ''
+  dE("tw_Chemistry").innerHTML = ''
+  dE("tw_Math").innerHTML = ''
+  dE("tw_Computer").innerHTML = ''
+  dE("tw_Statistics").innerHTML = ''
+  dE("tw_Biology").innerHTML = ''
+  dE("tw_Unfiled").innerHTML = ''
   for (let ele of testQuestionList.questions) {
     var box = '<span class = "tts_notvisit" id = "' + ele.qid + '">' + a + '</span>'
     a = a + 1
-    dE("tt_qnobx").insertAdjacentHTML("beforeend", box)
+    dE("tw_" + ele.section).insertAdjacentHTML("beforeend", box)
     dE(ele.qid).addEventListener("click", tqH)
   }
   if (!window.location.hash.includes("attempt")) {
     for (let ele23 of testResponseList) {
       var id = ele23.qid
-        for (let ele of testReportAnswers.questions) {
-          if (id == ele.qid) {
-            var tyio = ele.answer
-            if (areEqual(ele23.ans, tyio)) {
-              dE(id).classList.add("t_crr")
+      for (let ele of testReportAnswers.questions) {
+        if (id == ele.qid) {
+          var tyio = ele.answer
+          if (ele23.ans == undefined){
+            ele23.ans = []
+          }
+          if (areEqual(ele23.ans, tyio)) {
+            dE(id).classList.add("t_crr")
+          } else {
+            if (ele23.ans.length == 0) {
+              dE(id).classList.add("t_unat")
             } else {
-              if (ele23.ans.length == 0) {
-                dE(id).classList.add("t_unat")
-              } else {
-                dE(id).classList.add("t_incrr")
-              }
+              dE(id).classList.add("t_incrr")
             }
           }
+        }
       }
     }
+    analyseActions(2)
   }
   for (let ele of testResponseList) {
     dE(ele.qid).classList.replace("tts_notvisit", ele.type)
@@ -2037,7 +2271,7 @@ async function submitTest() {
     log("Error", "Performing Test Operations in Test Reports Is Prohibited")
     return 1;
   }
-  
+
   var testid = window.location.hash.split("#/attempt/")[1]
   window.onbeforeunload = function () { }
   window.onhashchange = locationHandler
@@ -2046,11 +2280,10 @@ async function submitTest() {
     actions: testActionLogger,
     warning: []
   })
-  await updateDoc(doc(db, "tests", testid), {
+  await updateDoc(doc(db, "tests", testid, "responses", "finished"), {
     finished: arrayUnion(auth.currentUser.uid),
-  })
-  computeResult(0)
-  var endat = new Date(testInfo.endon.seconds*1000)
+  }).then(computeResult(0))
+  var endat = new Date(testInfo.endon.seconds * 1000)
   dE("te_endtime").innerText = endat;
   testList = []
   activeTestList = []
@@ -2066,9 +2299,9 @@ async function submitTest() {
 window.onbeforeunload = function (event) {
   updatePoints()
 };
-function internetStatus(type){
-  if (type == 1){document.getElementById('msg_popup').style.visibility = 'hidden';document.getElementById('msg_popup').style.opacity = '0'}
-  else if (type == 0){log("WARNING","You Are Currently Offline.")}
+function internetStatus(type) {
+  if (type == 1) { document.getElementById('msg_popup').style.visibility = 'hidden'; document.getElementById('msg_popup').style.opacity = '0' }
+  else if (type == 0) { log("WARNING", "You Are Currently Offline.") }
 }
 window.addEventListener('online', () => internetStatus(1));
 window.addEventListener('offline', () => internetStatus(0));
@@ -2091,7 +2324,7 @@ function defineEvents() {
   function lglHand() { changeLocationHash("legal", 1) }
   function qbaHand() { changeLocationHash("qblist", 1) }
   function chpHand() { changeLocationHash("chplist", 1) }
-  function sTestHand() {log("Warning","Are You Sure You Want To End The Test",submitTest,"Yes,Submit")}
+  function sTestHand() { log("Warning", "Are You Sure You Want To End The Test", submitTest, "Yes,Submit") }
   function prvHand() { topicHandler(1) }
   function nxtHand() { topicHandler(2) }
   function actHand() { renderTestList("active") }
@@ -2131,6 +2364,7 @@ function defineEvents() {
   var shfbtn = dE("shf_btn").addEventListener("click", shuffleQBank);
   var aqao = dE("aq_ao").addEventListener("click", addMCQ);
   var aqro = dE("aq_ro").addEventListener("click", removeMCQ);
+  var aqre = dE("aq_re").addEventListener("click", removeEntry);
   var tmode = dE("aq_mode").addEventListener("change", changeItem)
   var ttype = dE("aq_type").addEventListener("change", changeItem)
   var dshbtn = dE("dsh_btn").addEventListener("click", dshHand);
@@ -2138,8 +2372,8 @@ function defineEvents() {
   var aqsave = dE("aq_tpc_save").addEventListener("click", uQL)
   var aqsave = dE("aq_qbc_save").addEventListener("click", uQL2)
   var aqsave = dE("aq_tst_save").addEventListener("click", uQL3)
-  var unsave = dE("un_save").addEventListener("click",unotes1)
-  var unprint = dE("un_print").addEventListener("click",unotes2)
+  var unsave = dE("un_save").addEventListener("click", unotes1)
+  var unprint = dE("un_print").addEventListener("click", unotes2)
   var tstinfbtn = dE("tstinf_btn").addEventListener("click", tstinfHand)
   var tpcbtn = dE("tpc_btn").addEventListener("click", tpcHand)
   var uscbtn = dE("usc_btn").addEventListener("click", uscHand)
@@ -2179,6 +2413,11 @@ function defineEvents() {
   var chp_btn = dE("chp_btn").addEventListener("click", chpHand)
   var pass_rst_btn = dE("pass_rst_btn").addEventListener("click", requestPasschange)
   var aq_sims_save = dE("aq_sims_save").addEventListener("click", updateSimulationWeb)
+  dE("un_print").addEventListener("click", function () {
+    dE("un_preview").style.display = "block";
+    dE("un_preview").innerHTML = "<h1 style = 'text-align:center;margin:0px'>" + dE("un_title").value + "</h1><br>" + getHTML("un_editable");
+    window.idElementPrint(dE("un_preview"), userinfo.name);
+  })
   dE("qbnk_vid_btn_e").addEventListener("click", qbnkend)
   dE("qbnk_vid_btn").addEventListener("click", qbnkstr)
 }
@@ -2196,7 +2435,7 @@ function immersiveMode() {
 }
 var Quarkz = {
   "copyright": "Mr Techtroid 2021-23",
-  "vno": "v0.2.0",
+  "vno": "v0.2.1",
   "author": "Mr Techtroid",
   "last-updated": "05/01/2023(IST)",
   "serverstatus": "firebase-online",
@@ -2226,6 +2465,8 @@ var testResponseList = [];
 var activequestionid = ""
 var testActionLogger = []
 var testReportAnswers = []
+var reQW;
+var analysedActions;
 window.onhashchange = locationHandler
 initFirebaseAuth()
 defineEvents()

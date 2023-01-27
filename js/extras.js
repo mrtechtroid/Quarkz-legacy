@@ -232,13 +232,13 @@ function notesUIHandler(){
 function sleep(ms) {
   return new Promise(val => setTimeout(val, ms));
 }
-async function idElementPrint(ref){
+async function idElementPrint(ref,uname){
   iframe = dE("un_print_iframe")
   const pri = iframe.contentWindow;
   pri.document.open();
   pri.document.write('<head><link rel="stylesheet" href="css/print.css" onload = "print()"></head>')
   pri.document.write(ref.innerHTML);
-  pri.document.write('<div class="divFooter">Quarkz!</div>')
+  pri.document.write('<div class="divFooter" style = "text-align:center;">By ' + uname + ' @ Quarkz!</div>')
   pri.document.close();
   pri.focus();
   // pri.print();

@@ -12,7 +12,8 @@
     .divFooter {
       position: fixed;
       bottom:5px;
-      left: 5px;
+      left: 50%;
+      transform: translateY(50%);
       font-size: 15px;
       color: rgb(5, 5, 32);
       z-index: 0;

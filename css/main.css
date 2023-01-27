@@ -697,7 +697,26 @@ body {
   text-align: left;
   font-size: 14px;
 }
-
+#fto_leaderboard{
+  width: 30vw;
+  height: 55vh;
+  overflow-y: scroll;
+  border: solid 3px yellow;
+  text-align: left;
+  font-size: 14px;
+  
+}
+#tt_timespent{
+  font-size: 14px;
+  width: 300px;
+}
+.t_gre{
+  background-color: #122235;
+  border-radius: 5px 5px 5px 5px;
+  height: 25px;
+  width: 50px;
+  text-align: center;
+}
 .slider {
   -webkit-appearance: none;
   /* Override default CSS styles */
