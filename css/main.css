@@ -424,6 +424,12 @@ body {
 .qb_mcq {
   counter-reset: optno;
   display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.qb_mcq_exp {
+  counter-reset: optno;
+  display: flex;
   flex-direction: row;
   justify-content: space-around;
 }

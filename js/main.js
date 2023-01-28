@@ -1,7 +1,7 @@
 // COPYRIGHT 2021-23 Quarkz By Mr Techtroid
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
 // import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-analytics.js";
-import { getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence, GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged, setPersistence,browserLocalPersistence, browserSessionPersistence,inMemoryPersistence, GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
 import { getFirestore, orderBy, limit, writeBatch, collection, addDoc, onSnapshot, arrayUnion, arrayRemove, setDoc, updateDoc, getDocs, doc, serverTimestamp, getDoc, query, where } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, } from 'https://www.gstatic.com/firebasejs/9.6.0/firebase-storage.js';
 import { sysaccess } from '/js/reworkui.js'
@@ -17,7 +17,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore();
 const auth = getAuth();
-setPersistence(auth, browserSessionPersistence)
+setPersistence(auth, browserLocalPersistence)
   .then(() => {
     return signInWithEmailAndPassword(auth, email, password);
   })
@@ -612,6 +612,18 @@ async function prepareVideo() {
       }, 5000);
     }
   } catch { }
+}
+async function getCyberhunt(){
+  if (window.location.hash.split("/cyberhunt/")[1] == ""){
+    dE("cyb_code").style.display = "flex"
+    dE("cyb_viewer").style.display = "none"
+    dE("cyb_edit").style.display = "none"
+  }else{
+    dE("cyb_code").style.display = "none"
+    dE("cyb_viewer").style.display = "flex"
+    dE("cyb_edit").style.display = "none"
+    
+  }
 }
 // -----------------------
 // SIMULATIONS
@@ -1211,13 +1223,13 @@ async function printQBank(type) {
         for (let ele1 of qop) {
           asi += "<div class = 'qb_mcq_opt'>" + ele1 + '</div>'
         }
-        var qrt = '<div class = "qb_mcq" type = "a">' + asi + '</div>'
+        var qrt = '<div class = "qb_mcq_exp" type = "a">' + asi + '</div>'
         for (let ele1 of docJSON.answer) {
           ans += "<div class = 'qb_mcq_ans'>" + ele1 + '</div>'
         }
       }
       if (qtype == "taf") {
-        qrt = '<ol class = "qb_mcq" type = "a"><li>True</li><li>False</li></ol>'
+        qrt = '<ol class = "qb_mcq_exp" type = "a"><li>True</li><li>False</li></ol>'
       }
       if (qtype == "explain" || qtype == "numerical" || qtype == "fill") { qrt = "" }
 
@@ -1927,6 +1939,7 @@ async function getTestInfo() {
     var trL = {};
     for (var t = 0; t < testQuestionList.questions.length; t++) {
       trL[`${testQuestionList.questions[t].qid}`] = { type: "tts_notvisit", answer: [] }
+      testResponseList.push({qid:testQuestionList.questions[t].qid,type: "tts_notvisit", answer: []})
     }
     var it = new Date()
     await setDoc(doc(db, "tests", testid, "responses", auth.currentUser.uid), {
@@ -1936,6 +1949,7 @@ async function getTestInfo() {
       actions: [{ type: "start", time: it, value: "1" }]
     })
     testActionLogger.push({ type: "start", time: it, value: "1" })
+    
   }
 
   testTimerfunction = setInterval(function () {
@@ -2124,19 +2138,23 @@ function testqHandler(id, no) {
         }
       }
       renderMathInElement(dE('tt_qtitle'));
+      var fghu = 0;
       for (let ele23 of testResponseList) {
         if (ele23.qid == id) {
           for (var i = 0; i < document.getElementsByClassName("q_ans").length; i++) {
             var ele32 = document.getElementsByClassName("q_ans")[i]
             if (ele.type == "mcq" || ele.type == "mcq_multiple") {
+              if (ele23.ans == undefined){ele23.ans = []}
               for (let el433 of ele23.ans) {
                 if (ele32.value == el433) {
-                  ele32.checked = true
+                  ele32.checked = true;
+                  fghu = 1;
                   break;
                 }
               }
             } else {
-              ele32.value = ele23.ans
+              ele32.value = ele23.ans;
+              fghu = 1;
             }
           }
           if (!window.location.hash.includes("attempt")) {
@@ -2150,6 +2168,21 @@ function testqHandler(id, no) {
               }
             }
           }
+        }
+      }
+      if (fghu == 0){
+        var fghut = 0;
+        for (var k =0;k<testResponseList.length;k++){
+          if (testResponseList[k].qid == activequestionid){
+            testResponseList[k].type = "tts_notanswer"
+            testResponseList[k].ans = []
+            fghut = 1
+            dE(activequestionid).classList.remove("tts_notanswer", "tts_notvisit", "tts_answered", "tts_review", "tts_ansreview")
+            dE(activequestionid).classList.add("tts_notanswer")
+          }
+        }
+        if (fghut == 0){
+          testResponseList.push({ qid: activequestionid, ans: [], type: "tts_notanswer" })
         }
       }
       break;
@@ -2355,6 +2388,7 @@ function defineEvents() {
   function uQL3() { updateTopicQBank(3) }
   var simbtn = dE("sim_btn").addEventListener("click", simHand)
   var sgnbtn = dE("sgn_in").addEventListener("click", signIn);
+  // var sgngglbtn = dE("sgn_in_google").addEventListener("click", signInwithGoogle);
   var regbtn = dE("reg_in").addEventListener("click", regHand);;
   var rgbtn = dE("rg_in").addEventListener("click", signUp);
   var sgnout = dE("lgt_btn").addEventListener("click", signOutUser);
