@@ -244,3 +244,11 @@ async function idElementPrint(ref,uname){
   // pri.print();
   // pri.onafterprint = () => { document.body.removeChild(iframe); }
 }
+function examlog(examname, dates, examinfo, syllabus) {
+  dE("exam_msg_popup").style.visibility = "visible"
+  dE("exam_msg_popup").style.opacity = "1"
+  document.getElementById("exam_title").innerText = examname
+  document.getElementById("exam_dates").innerText = dates
+  dE("exam_einfo").href = examinfo
+  dE("exam_syl").href = syllabus
+}

@@ -262,6 +262,7 @@
             <div class="dshbox_v2 rpl" onclick="window.location.hash = '#/add/tests'">Add Test</div>
             <div class="dshbox_v2 rpl" onclick="window.location.hash = '#/update/tests'">Update Test</div>
             <div class="dshbox_v2 rpl" onclick="window.location.hash = '#/update/batch'">Update Batches</div>
+            <div class="dshbox_v2 rpl" onclick="window.location.hash = '#/edit_exams'">Edit Exams</div>
         </div>
     </div>
     <div id="fu_uplimg" class="full_page flex_type" style="overflow-y: scroll;">
@@ -321,10 +322,17 @@
                 <select name="type" id="aq_mode" class="_in_aq" style="color:red">
                     <option value="question">Question</option>
                     <option value="lesson">Lesson</option>
+                    <option value="exam">Exam</option>
                 </select>
-                <div class="flex_type" id="aq_all" style="align-items: unset;">
+                <div class = "flex_type" id = "aq_exams">
+                    <input type="text" id="aq_examname" class="_in_aq" placeholder="Exam Names">
+                    <input type="text" id="aq_examdate" class="_in_aq" placeholder="Exam Dates">
+                    <input type="text" id="aq_examinfo" class="_in_aq" placeholder="Exam Info Link">
+                    <input type="text" id="aq_examsyllabus" class="_in_aq" placeholder="Syllabus Link">
+                </div>
+                <div class="flex_type" id="aq_all" style="align-items: unset;" id = "aq_uiad">
                     <div class="summernote" id="aq_qtext">Question</div>
-                    <input type="answer" id="aq_answer" class="_in_aq" placeholder="Answer">
+                    <input type="text" id="aq_answer" class="_in_aq" placeholder="Answer">
                     <input type="url" id="aq_yurl" class="_in_aq" placeholder="Youtube ID">
                     <div class="summernote" id="aq_expl">Explanation</div>
                     <textarea type="answer" id="aq_hint" class="_in_aq" style="resize: none;overflow-y: scroll;"
@@ -372,13 +380,14 @@
                     </div>
                     <button class="tst_btn rpl" id="aq_ao">Add Option</button>
                     <button class="tst_btn rpl" id="aq_ro">Remove Option</button>
-                    <button class="tst_btn rpl" id="aq_re">Remove Entry</button>
                 </div>
+                <button class="tst_btn rpl" id="aq_re">Remove Entry</button>
             </div>
         </div>
         <button class="tst_btn rpl" id="aq_tpc_save">Save/Update Topic</button>
         <button class="tst_btn rpl" id="aq_qbc_save">Save/Update QBank</button>
         <button class="tst_btn rpl" id="aq_tst_save">Save/Update Test</button>
+        <button class="tst_btn rpl" id="aq_exam_save">Save/Update Exams</button>
         <button class="tst_btn rpl" id="aq_export">Export</button>
     </div>
     <div id="users" class="full_page flex_type">
@@ -439,9 +448,34 @@
             <hr style="width: 100%;">
             <span style="font-size: small;">© 2021-23 Quarkz!</span>
         </div>
-        <div style="display: flex;">
-            <div id="db_exam_info">
-
+        <div style="display: flex;flex-direction: row;flex-wrap: wrap;margin-left: 10px;align-items: flex-start;height:100%;margin-top: 15px;justify-content: space-evenly;">
+            <div id="db_exam_info" style="display:flex;flex-direction:column;overflow-y: scroll;height: 30vh;border:grey solid 2px;width:400px;border-radius: 10px 10px 10px 10px;align-items: center;margin:5px;">
+                <span style = "font-size: 25px;color:yellow">Exam Info</span>
+                <div id = "db_exam_list"></div>
+            </div>
+            <div id="db_social_media" style="display:flex;flex-direction:column;height: 30vh;border:grey solid 2px;width:400px;border-radius: 10px 10px 10px 10px;align-items: center;margin:5px;text-align: center;">
+                <span style = "font-size: 25px;color:yellow">We're on Social Media</span>
+                <span style = "font-size: 14px;color:grey">Follow us, & share with your friends. It motivates us to keep working hard for you to bring new features. </span>
+                <img style = "width:50px;" class = "rpl" onclick = "window.open('https://www.youtube.com/@quarkz./', '_blank');" src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAABaCAMAAABHRa6wAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAACcFBMVEUAAAD/Ly//BQX/AAD/ExP/MDD/LS3/LCz/PDz/Z2f/X1//EhL/CAj/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/CAj/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/R0f/Q0P/Wlr/QED/Vlb/PT3/UlL/PDz/UFD/Ojr/Tk7/OTn/TEz/ODj/S0v/Nzf/Skr/Nzf/SUn/Njb/SEj/Njb/SEj/Njb/R0f/NTX/R0f/NTX/R0f/NTX/Rkb/NTX/NTX/AAD/AAD/AAD/CAj/Hh7/HBz/HBz/Gxv/Gxv/Ghr/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/FBT/HR3/AAD/AQH/BQX/wcH/EBD/////jY3/X1//7+//MzP/x8f/DQ3/mZn/Zmb/9vb/Ojr/0ND/EhL/oqL/dXX/+vr/QkL/1dX/GRn/qKj/fHz/SUn/3Nz/Hh7/sbH/paX/S0s8CEr+AAAAsHRSTlMAAAAAAAAAAAAAAAAABhMhKzdCUVlkbnqHjpidpqi3us7C1tnP3uLl7uzn18W2saV8ZVtQRjYBHDxaq8HT5vP98uivXkAiBidyrN3ksnkvCpenGaG5VfWCqhXb+kNxs8bp9ESQjLjN8OP5AQ4JIBYxJkE4VUhlVnJlgHSOgJiKoZOpnrKftKu9r8LA9/bYAQ4bJC88R1BYYnB6goqQlZykp7WzvL69xcrJzNrZxqmjGt/aNR4AAAABYktHRLUzDlpLAAAAB3RJTUUH5wEdCycyRsErbAAAAv5JREFUaN7dmudXE1EQxR8bu0KiKCSgggFi1KhRUexKVEQFxV6xYa/Yu2LBrkjvKE0CtmcZe+/df8nNCgfhgLi7z9xznE/58ub+srtvd97MZewP4SNJBl8/o6lzF/+u3QICzZag4O49eoaE9rKGhUfYbLbe9j5y2PvKPyPC+1kdoSH9BwwMDrKYnQGDBg+JHGoy+vkaJMmHqQtpWNTwEYGWkaNGjxk7juuP8dFWh8vinDBxUoyhRe3JsVOmCtBsNqbFxU9vnmJGwr/Uro+Zs5r+97O9I++JOU1cBZP35D0R2Vh/rnf1OXc21Pf3tj7n8b/rG72v3+AuGOYhAHj9kzgfos8X1Om3wuhzvrAWIBYFkFALsAgFsFhS9GNQ+pwbFYAlOIBEBcCMA1iqACzDASz31CqtV+AAlHeRAajPPZVBFBJgJXYT/NoGiUiAJBlgFRJgtQzgQgJYZYA1ahfdFgiwtg1ru07tojt374kjaMfar1e9iOi+MIANrIP6RSTHA0EAG9kmbQD08JEQgM1si0YAosdPBABsZcmaAYie6gfYxrbrACB6phdgB9upC4Cev9AHsIvt1gdA9PKVHoA9bK9eAKLXOgD2sf36AYjeaAY4wA6KAKC37zQCHGKHhQAQvf+gCeAISxEEQPRRC8BRdkwYANEn9bmOsxMCAYg+q82Vyk4KBaAvX9XlOsVOiwUg+qYq1xnxAETfVeQ6+x8CqL0F8IdQ7Db8oTZXKv5FlCIMQOOrGP4xgn+O4QUJvCSDF6Xwshx+MEnWASDkaAY/nMKP5/AGBbxFA29Swdt0+EYlvFULb1bD2/XwgQV8ZAMfWsHHdvjBJXx0Cx9ew8f3eAMD3MIBN7HgbTxwIxPeyoU3s+HtfHhDI97SqVwFrKm1jsJj63VaXI6w6HMiRM/bLzjikv7O1tsofCSp48W0S+kZmVnZObl5+QWFRcUll6+UlpVXVF6tcrura67JUVPtdlddr6woLyu9cbOkuKiwID8vNyc7KzMj/VZap5aMzT8BRpXwJFof0ooAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjMtMDEtMjlUMTE6Mzk6NTArMDA6MDCGz66vAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDIzLTAxLTI5VDExOjM5OjUwKzAwOjAw95IWEwAAACB0RVh0c29mdHdhcmUAaHR0cHM6Ly9pbWFnZW1hZ2ljay5vcme8zx2dAAAAGHRFWHRUaHVtYjo6RG9jdW1lbnQ6OlBhZ2VzADGn/7svAAAAF3RFWHRUaHVtYjo6SW1hZ2U6OkhlaWdodAA5MDwVcVIAAAAXdEVYdFRodW1iOjpJbWFnZTo6V2lkdGgAMTI40I0R3QAAABl0RVh0VGh1bWI6Ok1pbWV0eXBlAGltYWdlL3BuZz+yVk4AAAARdEVYdFRodW1iOjpTaXplADE1NDVC02RgawAAABZ0RVh0VGh1bWI6OlVSSQBmaWxlOi8vUE5HOqYqZyIAAAAASUVORK5CYII=">
+            </div>
+            <div id="db_study_resources" style="display:flex;flex-direction:column;height: 30vh;border:grey solid 2px;width:400px;border-radius: 10px 10px 10px 10px;align-items: center;margin:5px;text-align: center;">
+                <span style = "font-size: 25px;color:yellow">Additional Study Resources</span>
+                <div class = "tlinks_min rpl" onclick = "window.location.hash = '/mainsformulas/'"><span style="font-size: 16px;">JEE Mains Formula Sheets</span></div>
+                <div class = "tlinks_min rpl" onclick = "window.location.hash = '/downloads/'"><span style="font-size: 16px;">FREE PDF Downloads</span></div>
+            </div>
+        </div>
+    </div>
+    <div id="exam_msg_popup" class="overlay">
+        <div class="popup">
+            <center>
+                <h2 id="exam_title">Note</h2>
+            </center>
+            <a class="close"
+                onclick="document.getElementById('exam_msg_popup').style.visibility = 'hidden';document.getElementById('exam_msg_popup').style.opacity = '0';document.getElementById('exam_msg_action').onclick = ''">&times;</a>
+            <p id="exam_dates"></p>
+            <div class = "display:flex;flex-direction:row;flex-wrap:wrap;">
+                <a id = "exam_einfo" class = "tst_btn rpl" target="_blank">Exam Info</a>
+                <a id = "exam_syl" class = "tst_btn rpl" target="_blank">Syllabus</a>
             </div>
         </div>
     </div>
@@ -833,7 +867,6 @@
         </div>
         <div id="qb_cont_2" style="overflow-y: scroll;height:50vh;" class="flex_type">
         </div>
-        <span>All Chapters Are Currently Under Unfiled Section</span>
     </div>
     <div id="simlist" class="full_page flex_type">
         <span style="font-size: 5vh;">Simulations List</span>
@@ -900,10 +933,15 @@
 
         </div>
         <div id = "cyb_viewer" class="flex_type" style="width:100%;height:100%">
-            <div style="display:flex;flex-direction:column;justify-content: left;width:100%;margin-left:5vw;">
+            <div style="display:flex;flex-direction:column;justify-content: left;width:100%;margin-left:5vw;margin-top:10px;">
                 <span style="font-size: 16px;">Welcome to</span>
-                <span id = "cyb_v_name" style="font-size: 25px">CyberHunt Name</span>
-                <span id = "cyb_v_status" style="font-size: 19px">started on XX:XX</span>
+                <span id = "cyb_v_name" style="font-size: 30px">CyberHunt Name</span>
+                <span id = "cyb_v_status" style="font-size: 18px">started on XX:XX</span>
+                <span id = "cyb_v_crtby" style="font-size: 15px">By Mr Techtroid</span>
+            </div>
+            <span style="font-size: 16px;">Participants List</span>
+            <div id = "cyb_v_plist" style="display:flex;flex-direction:row;flex-wrap:wrap;border: solid grey 2px;border-radius: 10px 10px 10px;width:90%;height:40vh;padding:10px;overflow-y: scroll;">
+                <div class = "cyb_v_plist_p" style="display: flex;flex-direction: column;width:100px;height:50px;border: solid grey 2px;border-radius: 10px 10px 10px;text-align: center;"><span>Mr Techtroid</span></div>
             </div>
         </div>
         
@@ -1009,6 +1047,9 @@
             <p id="msg_popup_content"></p>
             <button class = "tst_btn rpl" id = "msg_action"></button>
         </div>
+    </div>
+    <div id = "downloads">
+
     </div>
     <script src="js/main.js" type="module"></script>
     <script src="js/extras.js"></script>

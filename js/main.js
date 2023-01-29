@@ -1,7 +1,7 @@
 // COPYRIGHT 2021-23 Quarkz By Mr Techtroid
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
 // import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-analytics.js";
-import { getAuth, onAuthStateChanged, setPersistence,browserLocalPersistence, browserSessionPersistence,inMemoryPersistence, GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged, setPersistence,browserLocalPersistence,  GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
 import { getFirestore, orderBy, limit, writeBatch, collection, addDoc, onSnapshot, arrayUnion, arrayRemove, setDoc, updateDoc, getDocs, doc, serverTimestamp, getDoc, query, where } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, } from 'https://www.gstatic.com/firebasejs/9.6.0/firebase-storage.js';
 import { sysaccess } from '/js/reworkui.js'
@@ -330,11 +330,12 @@ function locationHandler(newlocation, n1) {
   if (location1.includes("topic")) { handlebox = "topic"; getTopic(1); }
   if (location1.includes("printable/topic") && iorole == true) { handlebox = "printable"; printQBank(2); }
   if (location1.includes("livequiz")) { handlebox = "livequiz"; lquizinit(); }
-  if (location1.includes("edit_sim")) { handlebox = "fu_simulation"; prepareSimulation() }
-  if (location1.includes("edit_lesson")) { handlebox = "fu_simulation"; prepareLesson() }
-  if (location1.includes("edit_tpc")) { handlebox = "fu_topic"; prepareTopicQBank(1) }
-  if (location1.includes("edit_test")) { handlebox = "fu_topic"; prepareTopicQBank(3) }
-  if (location1.includes("edit_qubank")) { handlebox = "fu_topic"; prepareTopicQBank(2) }
+  if (location1.includes("edit_sim") && iorole == true) { handlebox = "fu_simulation"; prepareSimulation() }
+  if (location1.includes("edit_lesson") && iorole == true) { handlebox = "fu_simulation"; prepareLesson() }
+  if (location1.includes("edit_tpc") && iorole == true) { handlebox = "fu_topic"; prepareTopicQBank(1) }
+  if (location1.includes("edit_test") && iorole == true) { handlebox = "fu_topic"; prepareTopicQBank(3) }
+  if (location1.includes("edit_qubank") && iorole == true) { handlebox = "fu_topic"; prepareTopicQBank(2) }
+  if (location1.includes("edit_exams") && iorole == true) { handlebox = "fu_topic"; prepareTopicQBank(4) }
   // if (location1.includes("redirect"))
   if (userrole == false || userrole == null || userrole == undefined) {
     if (location1 == "login" || location1 == "register" || location1.includes("notes") || location1 == "legal" || location1 == "about" || location1 == "bugreport" || location1 == "appinfo") {
@@ -345,6 +346,7 @@ function locationHandler(newlocation, n1) {
   }
   dE(handlebox).classList.add("_open")
   stpVid()
+  editqllist = []
   if (location1 == "forum") { gtMsg(1); } else { gtMsg(2); forum_length = 1; forum_d = "afterbegin" }
   // console.log({ userinfo, topicJSON, topicJSONno, editorrole, adminrole, userrole, topiclist, qlist, simlist, chapterlist, userdetails, curr_qlno, curr_qlid, editqllist, autosignin, testList, activeTestList, upcomingTestList, finishedTestList, testInfo, testQuestionList, testResponseList, activequestionid })
 }
@@ -614,7 +616,7 @@ async function prepareVideo() {
   } catch { }
 }
 async function getCyberhunt(){
-  if (window.location.hash.split("/cyberhunt/")[1] == ""){
+  if (window.location.hash.split("/cyberhunt/")[1] == "" || window.location.hash.split("/cyberhunt")[1] == ""){
     dE("cyb_code").style.display = "flex"
     dE("cyb_viewer").style.display = "none"
     dE("cyb_edit").style.display = "none"
@@ -840,7 +842,9 @@ function addItemToQLLIst() {
   }
   if (location1.includes("edit_test")) {
     var json = { qid: curr_qlid, mode: dE("aq_mode").value, title: getHTM("aq_qtext"), y_url: dE("aq_yurl").value, hint: dE("aq_hint").value, expl: getHTM("aq_expl"), type: qtype, answer: qans, op: qop, op1: qop1, op2: qop2, section: dE("aq_section").value }
-  } else {
+  } else if (location1.includes("edit_exams")) {
+    var json = {id: curr_qlid,name:dE("aq_examname").value,date:dE("aq_examdate").value,info:dE("aq_examinfo").value,syllabus:dE("aq_examsyllabus").value,mode:"exams"}
+  }else {
     var json = { id: curr_qlid, mode: dE("aq_mode").value, title: getHTM("aq_qtext"), y_url: dE("aq_yurl").value, hint: dE("aq_hint").value, expl: getHTM("aq_expl"), type: qtype, answer: qans, op: qop, op1: qop1, op2: qop2, section: dE("aq_section").value }
   }
   return json
@@ -866,6 +870,8 @@ async function changeItem(t) {
     iu(qyurl); io(qcont); io(qtype); io(qans); qif(qqall);
   } else if (mode == "lesson") {
     io(qyurl); iu(qcont); iu(qtype); iu(qans); qif(qqall);
+  }else if (mode == "exams") {
+    iu(qyurl); iu(qcont); iu(qtype); iu(qans); iu(qqall);
   }
   if (qtype.value == "mcq" || qtype.value == "mcq_multiple") {
     qif(qmcq); iu(qmat); iu(qans)
@@ -881,7 +887,11 @@ function rEQL(u) {
 function renderEditQLList(qno) {
   if (qno == "+") {
     let po = editqllist.length
-    editqllist[po] = { id: Date.now() + Math.random().toString(36).substr(2), mode: "", title: "", y_url: "", img: "", hint: "", expl: "", type: "mcq", answer: ["1"], op: ["1", "2", "3", "4"], op1: [], op2: [], section: "Unfiled" }
+    if (window.location.hash.includes("edit_exams")){
+      editqllist[po] = { id: Date.now() + Math.random().toString(36).substr(2), name:"",date:"",info:"",syllabus:"",mode:"exams"}
+    }else {
+      editqllist[po] = { id: Date.now() + Math.random().toString(36).substr(2), mode: "", title: "", y_url: "", img: "", hint: "", expl: "", type: "mcq", answer: ["1"], op: ["1", "2", "3", "4"], op1: [], op2: [], section: "Unfiled" }
+    }
     if (window.location.hash.includes("edit_qubank") || window.location.hash.includes("edit_test")) { editqllist[po].mode = "question" }
     if (location1.includes("edit_test")) {
       editqllist[po].qid = editqllist[po].id
@@ -902,6 +912,14 @@ function renderEditQLList(qno) {
   } else {
   }
   var op = editqllist[curr_qlno - 1]
+  if (window.location.href.includes("edit_exams")){
+    dE("aq_examname").value = op.name
+    dE("aq_examdate").value = op.date
+    dE("aq_examinfo").value = op.info
+    dE("aq_examsyllabus").value = op.syllabus
+    changeItem()
+    return;
+  }
   if (location1.includes("edit_test")) {
     curr_qlid = op.qid
   } else {
@@ -973,6 +991,10 @@ async function prepareTopicQBank(iun) {
     dE("aq_qbc_save").style.display = "none"
     dE("aq_tst_save").style.display = "none"
     dE("aq_test_extra").style.display = "none"
+    dE("aq_exam_save").style.display = "none"
+    dE("aq_exams").style.display = "none"
+    dE("aq_all").style.display = "flex"
+    dE("aq_ans_hold").style.display = "flex"
   } else if (iun == 2) {
     // QBank
     col = 'qbank'
@@ -983,6 +1005,10 @@ async function prepareTopicQBank(iun) {
     dE("aq_tst_save").style.display = "none"
     dE("aq_test_extra").style.display = "none"
     dE("aq_qbc_save").style.display = "block"
+    dE("aq_exam_save").style.display = "none"
+    dE("aq_exams").style.display = "none"
+    dE("aq_all").style.display = "flex"
+    dE("aq_ans_hold").style.display = "flex"
   } else if (iun == 3) {
     // Tests
     col = 'tests'
@@ -993,6 +1019,23 @@ async function prepareTopicQBank(iun) {
     dE("aq_qbc_save").style.display = "none"
     dE("aq_test_extra").style.display = "flex"
     dE("aq_tst_save").style.display = "block"
+    dE("aq_exam_save").style.display = "none"
+    dE("aq_exams").style.display = "none"
+    dE("aq_all").style.display = "flex"
+    dE("aq_ans_hold").style.display = "flex"
+  } else if (iun == 4){
+    col = 'quarkz'
+    id = 'exams'
+    dE("fu_topic_title").innerText = "Add/Edit Exams"
+    dE("aq_mode").innerHTML = `<option value="exam">Exam</option>`
+    dE("aq_tpc_save").style.display = "none"
+    dE("aq_qbc_save").style.display = "none"
+    dE("aq_test_extra").style.display = "none"
+    dE("aq_exam_save").style.display = "block"
+    dE("aq_tst_save").style.display = "none"
+    dE("aq_exams").style.display = "flex"
+    dE("aq_all").style.display = "none"
+    dE("aq_ans_hold").style.display = "none"
   }
   try {
     let docSnap = await getDoc(doc(db, col, id))
@@ -1028,6 +1071,10 @@ async function prepareTopicQBank(iun) {
         if (docSnap3.exists()) { var docJSON3 = docSnap3.data(); a = docJSON3.questions }
         editqllist = mergeById(q, a)
         renderEditQLList(0)
+      } else if (iun == 4){
+        var docJSON = docSnap.data();
+        editqllist = docJSON.examinfo
+        renderEditQLList(0)
       }
 
     }
@@ -1062,6 +1109,8 @@ async function updateTopicQBank(iun) {
   } else if (iun == 3) {
     col = 'tests'
     id = window.location.hash.split("edit_tests/")[1]
+  } else if (iun == 4){
+    col = 'quarkz';id = "exams"
   }
   if (iun == 1 || iun == 2) {
     try {
@@ -1109,6 +1158,10 @@ async function updateTopicQBank(iun) {
       })
     } catch {
     }
+  } else if (iun == 4){
+    const docRef = await updateDoc(doc(db, col, id), {
+      examinfo:editqllist
+    })
   }
 }
 function qbkclicker() {
@@ -1452,6 +1505,16 @@ async function authStateObserver(user) {
       // locationHandler("dashboard", 1);
       window.location.hash = "#/dashboard"
       autosignin = 1;
+    }
+    var docRef = doc(db, "quarkz", "exams")
+    var docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      var docJSON = docSnap.data();
+      dE("db_exam_list").innerHTML = ""
+      for (var i =0;i<docJSON.examinfo.length;i++){
+        var f = docJSON.examinfo[i]
+        dE("db_exam_list").insertAdjacentHTML("beforeend",`<div class = "tlinks_min rpl"><span style="font-size: 16px;" onclick = "examlog('`+f.name+`','`+f.date+`','`+f.info+`','`+f.syllabus+`')">`+f.name+`</span></div>`)
+      }
     }
     locationHandler(window.location.hash.split("#/")[1], 1)
   } else {
@@ -2386,6 +2449,7 @@ function defineEvents() {
   function uQL() { updateTopicQBank(1) }
   function uQL2() { updateTopicQBank(2) }
   function uQL3() { updateTopicQBank(3) }
+  function uQL4() { updateTopicQBank(4) }
   var simbtn = dE("sim_btn").addEventListener("click", simHand)
   var sgnbtn = dE("sgn_in").addEventListener("click", signIn);
   // var sgngglbtn = dE("sgn_in_google").addEventListener("click", signInwithGoogle);
@@ -2406,6 +2470,7 @@ function defineEvents() {
   var aqsave = dE("aq_tpc_save").addEventListener("click", uQL)
   var aqsave = dE("aq_qbc_save").addEventListener("click", uQL2)
   var aqsave = dE("aq_tst_save").addEventListener("click", uQL3)
+  var aqsave = dE("aq_exam_save").addEventListener("click", uQL4)
   var unsave = dE("un_save").addEventListener("click", unotes1)
   var unprint = dE("un_print").addEventListener("click", unotes2)
   var tstinfbtn = dE("tstinf_btn").addEventListener("click", tstinfHand)
