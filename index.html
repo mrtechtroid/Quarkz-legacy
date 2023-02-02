@@ -716,7 +716,7 @@
             <span style="width: 60vw;"><span id="tb_q_qno" style="color: coral;"></span>
                 <div id="tb_q_qtext" style="width:100%;height:max-content;min-height: 12vh;">Question</div>
             </span>
-            <img id="tb_q_img" src="/assets/Quarkz.png">
+            <!-- <img id="tb_q_img" src="/assets/Quarkz.png"> -->
             <div id="tb_q_ans_hold">
                 <input type="answer" id="tb_q_answer" class="_in_aq" placeholder="Answer">
                 <div id="tb_q_mcq_con" class="flex_type">
@@ -768,16 +768,11 @@
         </div>
         <hr width="100%" color="white">
         <div id="tp_lesson" style="width: 80%;">
-            <center>
                 <div id="tp_full_vid">
-                    <div
-                        style="">
                         <!-- <iframe id = "video" style = "width:80%; height: 450px; border-style: solid; ;border-width: 10px;" hidden = "True"  allow = "autoplay"></iframe> -->
-                        <div style="pointer-events: none;width:80vw;height: 400px;">
-                            <div id="player" style="height: 80%;width: 100%;"></div>
-                        </div>
+                    <div style="pointer-events: none;height: 300px;">
+                            <div><div id="player" style="width: 100%;"></div></div>
                     </div>
-
                     <div id="toolbar"
                         style="align-items: center; z-index: 3;width:68vw;color: white;border-radius: 0px 0px 12px 12px;display:flex;flex-direction:row;justify-content: space-evenly;width:30vw">
                         <span class="material-icons" id="tp_bw_btn" onclick="player.seekTo(player.getCurrentTime()-10)"
@@ -805,7 +800,6 @@
                     <div id="tp_expl" style="height:max-content;min-height: 12vh;text-align: left;">Explanation</div>
                     <img id="tp_lsimg">
                 </div>
-            </center>
         </div>
 
         <div id="tp_question" style="width: 80%;align-items: center;display: flex;flex-direction: column;">

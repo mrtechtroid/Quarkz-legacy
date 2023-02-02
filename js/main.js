@@ -519,8 +519,8 @@ function vidSlideController(docJSON) {
   var tpmatrix = dE("tb_q_matrix")
   var tpanswer = dE("tb_q_answer")
   tpmcqcon.innerHTML = ""
-  dE("tb_q_qtext").innerText = docJSON.title
-  dE("tb_q_img").src = docJSON.img
+  dE("tb_q_qtext").innerHTML = docJSON.title + "<span class = 'sp_txt'>("+docJSON.type+")</span>"
+  // dE("tb_q_img").src = docJSON.img
   if (docJSON.type == "mcq" || docJSON.type == "mcq_multiple") {
     qif(tpmcqcon); iu(tpmatrix); iu(tpanswer)
     var qop = docJSON.op; var asi = "";
@@ -534,10 +534,10 @@ function vidSlideController(docJSON) {
     var qop2 = docJSON.op2;
     var qopn1 = qop1.length
     for (var i = 0; i < qopn1; i++) {
-      document.getElementsByClassName("tp_i1")[i].innerText = qop1[i]
+      document.getElementsByClassName("tp_i1")[i].innerHTML = qop1[i]
     }
     for (var i = 0; i < qopn1; i++) {
-      document.getElementsByClassName("tp_i2")[i].innerText = qop2[i]
+      document.getElementsByClassName("tp_i2")[i].innerHTML = qop2[i]
     }
   } else if (docJSON.type == "numerical" || docJSON.type == "fill") {
     iu(tpmcqcon); iu(tpmatrix); io(tpanswer)
@@ -585,8 +585,10 @@ async function prepareVideo() {
           ti++
         } else if (jno == qllist.length - 1) {
           dE("qbnk_vid_end").style.display = "flex"
-          mediaRecorder.stop()
-          dE("qbnk_vid_btn").style.display = "block"
+          setTimeout(function(){
+            mediaRecorder.stop()
+            dE("qbnk_vid_btn").style.display = "block"
+          },5000)
           clearInterval(iou);
         } else if (ji == 0 || ji == 1) {
           vidSlideController(qllist[jno])
@@ -606,8 +608,8 @@ async function prepareVideo() {
             asi += '<div class="tb_q_mcq_p rpl" style = "background-color:green">' + qllist[jno].answer[i] + '</div>'
           }
           dE("tb_q_ans").innerHTML = asi
-          dE("tb_q_hint").innerText = qllist[jno].hint
-          dE("tb_q_expl").innerText = qllist[jno].expl
+          dE("tb_q_hint").innerHTML = qllist[jno].hint
+          dE("tb_q_expl").innerHTML = qllist[jno].expl
           ji = 0;
           jno++
         }
@@ -2450,11 +2452,12 @@ function defineEvents() {
   function uQL2() { updateTopicQBank(2) }
   function uQL3() { updateTopicQBank(3) }
   function uQL4() { updateTopicQBank(4) }
+  function rgbtn() {log("Note","By Clicking on 'Accept And Register' you agree that you accept all Terms And Conditions and Privacy Policy of Quarkz!",signUp,"Accept And Register")}
   var simbtn = dE("sim_btn").addEventListener("click", simHand)
   var sgnbtn = dE("sgn_in").addEventListener("click", signIn);
   // var sgngglbtn = dE("sgn_in_google").addEventListener("click", signInwithGoogle);
   var regbtn = dE("reg_in").addEventListener("click", regHand);;
-  var rgbtn = dE("rg_in").addEventListener("click", signUp);
+  var rgbtn = dE("rg_in").addEventListener("click", rgbtn);
   var sgnout = dE("lgt_btn").addEventListener("click", signOutUser);
   var tmtbtn = dE("tmt_btn").addEventListener("click", tmtHand);
   var prfbtn = dE("prf_btn").addEventListener("click", prfHand);

@@ -289,7 +289,6 @@ body {
 
 .fqu_mcq_p,
 .tp_mcq_p,
-.tb_q_mcq_p,
 .lq_mcq {
   height: max-content;
   border: yellow 1px solid;
@@ -301,7 +300,17 @@ body {
   color: white;
 
 }
-
+.tb_q_mcq_p{
+  height: max-content;
+  border: yellow 1px solid;
+  padding: 2px;
+  width: 30vw;
+  border-radius: 100px;
+  margin: 6px;
+  /* background-color: #393E46; */
+  color: white;
+  padding-left:8px;
+}
 .fqu_mcq {
   width: 100%;
   background-color: black;
@@ -693,7 +702,11 @@ body {
   border-radius: 10px;
   font-size: 18px;
 }
-
+#tp_full_vid{
+  display: flex;
+  flex-direction: column;
+  
+}
 #dsh_btn:hover {
   background-color: rgba(18, 48, 146, 0.5);
 }
