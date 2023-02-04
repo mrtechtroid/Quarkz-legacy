@@ -80,9 +80,16 @@
             <span id="lgn_err" class="err_txt" style="display: none;">ERROR:Wrong Username Or Password</span>
             <span style="margin:auto;font-size:14px;text-decoration: none;"><a href="/#/about"
                     style="color: white;">About</a>&nbsp;&nbsp;<a href="/#/legal"
-                    style="color: white;">Legal</a>&nbsp;&nbsp;<a href="/#/bugreport" style="color: white;">Report A
-                    Bug</a></span>
+                    style="color: white;">Legal</a>&nbsp;&nbsp;<a href="/#/bugreport" style="color: white;">Report A Bug</a>
+            </span>
+            <span style="margin:auto;font-size:14px;text-decoration: none;">
+                <a href="/#/mainsformulas" style="color: white;">Formula Sheets</a>&nbsp;&nbsp;
+                <a href="/#/downloads" style="color: white;">Downloads</a>
+            </span>
         </div>
+    </div>
+    <div id="guest_dashboard" class="full_page flex_type">
+        
     </div>
     <div id="appinfo" class="full_page flex_type">
         <span style="font-size: 5vh;">App Info</span>
@@ -448,7 +455,7 @@
             <hr style="width: 100%;">
             <span style="font-size: small;">© 2021-23 Quarkz!</span>
         </div>
-        <div style="display: flex;flex-direction: row;flex-wrap: wrap;margin-left: 10px;align-items: flex-start;height:100%;margin-top: 15px;justify-content: space-evenly;">
+        <div style="display: flex;flex-direction: row;flex-wrap: wrap;margin-left: 10px;align-items: flex-start;height:100%;margin-top: 15px;justify-content: space-evenly;overflow-y: scroll;">
             <div id="db_exam_info" style="display:flex;flex-direction:column;overflow-y: scroll;height: 30vh;border:grey solid 2px;width:400px;border-radius: 10px 10px 10px 10px;align-items: center;margin:5px;">
                 <span style = "font-size: 25px;color:yellow">Exam Info</span>
                 <div id = "db_exam_list"></div>
@@ -460,8 +467,8 @@
             </div>
             <div id="db_study_resources" style="display:flex;flex-direction:column;height: 30vh;border:grey solid 2px;width:400px;border-radius: 10px 10px 10px 10px;align-items: center;margin:5px;text-align: center;">
                 <span style = "font-size: 25px;color:yellow">Additional Study Resources</span>
-                <div class = "tlinks_min rpl" onclick = "window.location.hash = '/mainsformulas/'"><span style="font-size: 16px;">JEE Mains Formula Sheets</span></div>
-                <div class = "tlinks_min rpl" onclick = "window.location.hash = '/downloads/'"><span style="font-size: 16px;">FREE PDF Downloads</span></div>
+                <div class = "tlinks_min rpl" onclick = "window.location.hash = '/mainsformulas'"><span style="font-size: 16px;">JEE Mains Formula Sheets</span></div>
+                <div class = "tlinks_min rpl" onclick = "window.location.hash = '/downloads'"><span style="font-size: 16px;">FREE PDF Downloads</span></div>
             </div>
         </div>
     </div>
@@ -598,13 +605,12 @@
         <div style="width:80vw;overflow-y: scroll;border:yellow 3px solid;display: flex;flex-direction: column;">
             <span style="font-size:5vh;text-align: center;">Please Read The Instructions And Terms Carefully</span>
             <ol>
-                <li>Total Duration of Examination is <span id="test_time">180 minutes.</span></li>
                 <li>The Exam Must Be Completed In 1 Sitting. You Will Be Able To Open It Once. </li>
                 <li>Read Every Question Carefully And Select Your Answer</li>
                 <li>Try To Answer As Many Questions As Possible In The Exam</li>
                 <li>When the timer reaches zero, the examination will end by itself. You will not be required to end or
                     submit your examination.</li>
-                <li>Make Sure To Have A Good Internet Connection</li>
+                <li>Make Sure To Have A Good Internet Connection. Loss in Internet Connectivity may prevent submission of answers. </li>
                 <li>DO NOT TRY TO Minimise The Full Screen Mode Of The Exam. You Will Recieive 1 Warning For Doing So
                     After Which Your Test Will End</li>
                 <li>I have read and understood all the instructions. </li>
@@ -623,6 +629,17 @@
     </div>
     <div id="testv1" class="full_page flex_type"
         style="flex-direction: row;flex-wrap: wrap;height:max-content;min-height: 90vh;">
+        <div id="t1_msg_popup" class="overlay">
+            <div class="popup">
+                <center>
+                    <h2 id="t1_msg_popup_txt">Note</h2>
+                </center>
+                <a class="close"
+                    onclick="document.getElementById('t1_msg_popup').style.visibility = 'hidden';document.getElementById('t1_msg_popup').style.opacity = '0';document.getElementById('t1_msg_action').onclick = ''">&times;</a>
+                <p id="t1_msg_popup_content"></p>
+                <button class = "tst_btn rpl" id = "t1_msg_action"></button>
+            </div>
+        </div>
         <div style="display: flex;flex-direction: column;width: 60vw;height:80vh;margin:10px;min-width: 300px;">
             <div id="tt_extrabx" style="display: flex;flex-direction:row;height: 40px;margin:10px;">
                 <span id="tt_timeleft"
@@ -1042,7 +1059,10 @@
             <button class = "tst_btn rpl" id = "msg_action"></button>
         </div>
     </div>
-    <div id = "downloads">
+    <div id = "downloads" class="full_page flex_type">
+
+    </div>
+    <div id = "mainsformulas" class="full_page flex_type">
 
     </div>
     <script src="js/main.js" type="module"></script>

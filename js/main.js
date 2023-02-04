@@ -144,6 +144,17 @@ function log(title, msg, action, actionname) {
   dE("msg_action").onclick = action
   dE("msg_action").innerText = actionname
 }
+function t_log(title, msg, action, actionname) {
+  dE("t1_msg_popup").style.visibility = "visible"
+  dE("t1_msg_popup").style.opacity = "1"
+  dE("t1_msg_action").style.display = "none"
+  document.getElementById("t1_msg_popup_txt").innerText = title
+  document.getElementById("t1_msg_popup_content").innerText = msg
+  if (action == undefined) { action = function () { } } else { dE("msg_action").style.display = "block" }
+  if (actionname == undefined) { actionname = "" }
+  dE("t1_msg_action").onclick = action
+  dE("t1_msg_action").innerText = actionname
+}
 const mergeById = (a1, a2) =>
   a1.map(itm => ({
     ...a2.find((item) => (item.qid === itm.qid) && item),
@@ -248,9 +259,10 @@ function signUp() {
               gen: stgender,
               sgndon: serverTimestamp(),
               roles: { user: true }
+            }).then(function(){
+              window.location.reload()
             });
           }
-
           catch (error) {
             console.error('Error Adding New User', error);
           }
@@ -290,6 +302,8 @@ function locationHandler(newlocation, n1) {
     case "dashboard": handlebox = "dashboard"; break;
     case "timetable": handlebox = "schedule"; break;
     case "logout": signOut(); break;
+    case "mainsformulas": handlebox = "mainsformulas";renderDownloadPage(1);break;
+    case "downloads": handlebox = "downloads";renderDownloadPage(2);break;
     case "livequiz": handlebox = "livequiz"; break;
     case "register": handlebox = "register"; break;
     case "testinfo": handlebox = "testinfo"; renderTestList("active"); break;
@@ -338,7 +352,7 @@ function locationHandler(newlocation, n1) {
   if (location1.includes("edit_exams") && iorole == true) { handlebox = "fu_topic"; prepareTopicQBank(4) }
   // if (location1.includes("redirect"))
   if (userrole == false || userrole == null || userrole == undefined) {
-    if (location1 == "login" || location1 == "register" || location1.includes("notes") || location1 == "legal" || location1 == "about" || location1 == "bugreport" || location1 == "appinfo") {
+    if (location1 == "login" || location1 == "register" || location1.includes("notes") || location1 == "legal" || location1 == "about" || location1 == "bugreport" || location1 == "appinfo" || location1 == "mainsformulas" || location1 == "downloads") {
 
     } else {
       handlebox = "error_page"
@@ -1314,6 +1328,27 @@ async function printQBank(type) {
     }
   }
   dE("printable").insertAdjacentHTML('beforeend', '<br></br>')
+}
+function renderDownloadPage(type){
+  if (type == 1){
+    dE("mainsformulas").innerHTML = `
+    <span style="font-size: 5vh;color:yellow" id="fm_title">Mains Formula Sheet</span>
+    <hr color="white" width="100%">
+    <div style="overflow-y: scroll;height:50vh;" class="flex_type">
+    <span class="tlinks rpl" onclick = "window.location.hash = '/notes/PHYFORMULAS'">Physics Formula Sheet</span>
+    <span class="tlinks rpl" onclick = "window.location.hash = '/notes/MATHFORMULAS'">Maths Formula Sheet</span>
+    </div>
+    <span style="font-size: 8px;">All PDF's Are Owned by their Respective Owners</span>
+    `
+  } else if (type == 2){
+    dE("downloads").innerHTML = `
+    <span style="font-size: 5vh;color:yellow" id="fm_title">Downloads</span>
+    <hr color="white" width="100%">
+    <div style="overflow-y: scroll;height:50vh;" class="flex_type">
+      
+    </div>
+    `
+  }
 }
 async function lessonRenderer(docJSON) {
   dE("tp_question").style.display = "none"
@@ -2422,7 +2457,7 @@ function defineEvents() {
   function lglHand() { changeLocationHash("legal", 1) }
   function qbaHand() { changeLocationHash("qblist", 1) }
   function chpHand() { changeLocationHash("chplist", 1) }
-  function sTestHand() { log("Warning", "Are You Sure You Want To End The Test", submitTest, "Yes,Submit") }
+  function sTestHand() { t_log("Warning", "Are You Sure You Want To End The Test", submitTest, "Yes,Submit") }
   function prvHand() { topicHandler(1) }
   function nxtHand() { topicHandler(2) }
   function actHand() { renderTestList("active") }
