@@ -79,11 +79,35 @@ function onPlayerReady(event) {
     player.setVolume(25)
   }
 }
+function progress(percent, $element) {
+  var progressBarWidth = percent * $element.width() / 100;
+
+// $element.find('div').animate({ width: progressBarWidth }, 500).html(percent + "%&nbsp;");
+
+  $('#yt_progressBar').animate({ width: progressBarWidth });
+}
 var yt_done = false;
+var mytimer;
 function onPlayerStateChange(event) {
   if (event.data == YT.PlayerState.PLAYING && !yt_done) {
     yt_done = true;
   }
+  if (event.data == YT.PlayerState.PLAYING){
+    $('#yt_progressBar').show();
+      var playerTotalTime = player.getDuration();
+
+      mytimer = setInterval(function() {
+        var playerCurrentTime = player.getCurrentTime();
+
+        var playerTimeDifference = (playerCurrentTime / playerTotalTime) * 100;
+
+
+        progress(playerTimeDifference, $('#progressBar'));
+      }, 1000);        
+    } else {
+      clearTimeout(mytimer);
+      $('#yt_progressBar').hide();
+    }
 }
 function stopVideo() {
   player.stopVideo();

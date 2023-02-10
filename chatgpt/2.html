@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      /* Add CSS styles here */
+      .mindmap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+      }
+      
+      .node {
+        border: 1px solid black;
+        padding: 10px;
+        margin: 10px;
+        background-color: lightgray;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+      }
+      
+      .branch {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        position: absolute;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" class="mindmap">
+      <!-- Add nodes and branches here -->
+    </div>
+    <button id="add-node-button">Add Node</button>
+  </body>
+  <script>
+    // Add JavaScript code here
+    const root = document.getElementById("root");
+    const addNodeButton = document.getElementById("add-node-button");
+
+    let nodeId = 0;
+
+    addNodeButton.addEventListener("click", function() {
+      const node = document.createElement("div");
+      node.classList.add("node");
+      node.innerHTML = `Node ${nodeId}`;
+      node.style.left = `${nodeId * 150}px`;
+      node.style.top = `${nodeId * 150}px`;
+      node.setAttribute("id", `node-${nodeId}`);
+      root.appendChild(node);
+      nodeId++;
+    });
+
+    root.addEventListener("click", function(event) {
+      if (event.target.classList.contains("node")) {
+        const node = event.target;
+        const branch = document.createElement("div");
+        branch.classList.add("branch");
+        branch.style.left = `${(node.offsetLeft + node.offsetWidth / 2)}px`;
+        branch.style.top = `${node.offsetTop + node.offsetHeight}px`;
+        branch.style.width = `${event.pageX - node.offsetLeft}px`;
+        branch.innerHTML = `<hr><div>Branch to Node ${nodeId}</div>`;
+        root.appendChild(branch);
+      }
+    });
+  </script>
+</html>

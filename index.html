@@ -36,8 +36,6 @@
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
-    <!-- Progress Bar-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/0.6.1/progressbar.min.js" integrity="sha512-7IoDEsIJGxz/gNyJY/0LRtS45wDSvPFXGPuC7Fo4YueWMNOmWKMAllEqo2Im3pgOjeEwsOoieyliRgdkZnY0ow==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
         .full_page {
             display: none
@@ -149,6 +147,7 @@
                 <li>If You Feel Any Content is violating your Copyright and want it to be removed from this site, contact us at the contact us page. We will make sure that we will remove the content in 24 Hours.</li>
                 <h3>Others</h3>
                 <li>These Rules/Terms may be changed without prior consent of any party/(users using the site) at any time.</li>
+                <li>Quarkz! doesnt warrant any discrapancies in the results or any inaccuracies found in the site.</li>
             </ol>
         </div>
     </div>
@@ -787,11 +786,12 @@
         <div id="tp_lesson" style="width: 80%;">
                 <div id="tp_full_vid">
                         <!-- <iframe id = "video" style = "width:80%; height: 450px; border-style: solid; ;border-width: 10px;" hidden = "True"  allow = "autoplay"></iframe> -->
-                    <div style="pointer-events: none;height: 300px;">
+                    <div style="pointer-events: none;width:100%;">
                             <div><div id="player" style="width: 100%;"></div></div>
+                            <div id = "yt_progressBar"><div></div></div>
                     </div>
                     <div id="toolbar"
-                        style="align-items: center; z-index: 3;width:68vw;color: white;border-radius: 0px 0px 12px 12px;display:flex;flex-direction:row;justify-content: space-evenly;width:30vw">
+                        style="border:3px solid grey; border-radius: 10px 10px 10px 10px;padding-left: 5px;padding-right: 5px;">
                         <span class="material-icons" id="tp_bw_btn" onclick="player.seekTo(player.getCurrentTime()-10)"
                             title="-10 Seconds">fast_rewind</span>
                         <span class="material-icons" id="tp_pl_btn" title="Play"
@@ -806,9 +806,8 @@
                             title="Mute/Unmute">volume_up</span>
                         <span id="mute" class="material-icons" id="tb_um_btn" title="Mute/Unmute"
                             onclick="fullscreen()">fit_screen</span>
-                        <span class="btncmd" id="tb_wy_btn" onclick="window.open(player.getVideoUrl())"
-                            title="Watch On Youtube"><img style="filter: invert(1)"
-                                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVdJREFUSEvt1rsuRFEUgOFvNBq3BonErZFo6Kj1EhoheAilQkcnwlOgxFt4Ai0icWsENbIm58Q4ZpjbmYnESVZ39vr3Xnvtvf+CNn2FNnH9g9PKd2AMk0mMImIEPehDV/LzK57wjGtcJXGBiEu8Zbc0W+pIvo1FdDdp/19whq1kEsW0peBxnKO/ScBsmkfMpPBS8DGWc4KmaY+wml3xPQZyBj9gMAt+zxmapi9WubTU1YJPkuard551g2PgHPYxXQe9IXDw4qyvY7fG3mgYnC42LpNNbKCzigo0DZyyJrCDpV/guYD3MN8qcMtL3ZbmiuN0gKkqmqnsw/SnLpA6FvllyLeuvksv8EYz/zD+FkPZuzqerJUcoZH6EGutFoF4EmfLiUBMJDwr1GehyepzmqhP+Fjxq6S3WdkLyQsfG0ZvBdkL4btJRC+krybZy3mLP9P/C33LSv0B2YpAH2FlNUoAAAAASUVORK5CYII="></span>
+                        <span class="material-symbols-outlined" id="tb_wy_btn" onclick="window.open(player.getVideoUrl())"
+                            title="Watch On Youtube">youtube_activity</span>
                         <input type="range" min="0" max="100" value="50" id="tb_vl_br" style="background-color: grey;"
                             onchange="volumechange()" oninput="volumechange()">
                     </div>
@@ -1021,7 +1020,7 @@
         </div>
     </div>
     <div id = "usernotes" class="full_page flex_type" style="flex-direction: row;">
-        <div id = "un_list" style="border:3px solid grey;width:20vw;height:90%">
+        <div id = "un_list" style="border:3px solid grey;width:25vw;height:90%">
 
         </div>
         <div id = "un_render" style="width:77vw;height:100%">

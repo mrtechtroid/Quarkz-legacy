@@ -410,11 +410,13 @@ async function getUserNotes() {
       type: "private",
       lastupdated: serverTimestamp()
     })
+    await updateDoc(doc(db, "users", userinfo.uuid), {
+      usernotes:arrayUnion({color:"black",id:docRef.id,title:"Notes Title"})
+    })
     locationHandler("#/usernotes/" + docRef.id, 1)
   } else if (window.location.hash.includes("usernotes/delete")) {
     await deleteDoc(doc(db, "usernotes", window.location.hash.split("usernotes/delete/")[1]));
-  } else if (window.location.hash == ("")) {
-    getUserNotesList()
+  } else if (window.location.hash == "#/usernotes/") {
   } else {
     var docRef = doc(db, 'usernotes', window.location.hash.split("usernotes/")[1])
     var docSnap = await getDoc(docRef);
@@ -432,8 +434,8 @@ function uNotesClicker() {
 async function getUserNotesList() {
   for (var i = 0; i < userinfo.usernotes.length; i++) {
     dE("un_list").insertAdjacentHTML("beforeend", "<div class='t_notes' id='uno" + userinfo.usernotes[i].id + "' style='background-color: " + userinfo.usernotes[i].color + "'><span class='tntc2' id='" + userinfo.usernotes[i].id + "'>" + userinfo.usernotes[i].title + "</span></div>")
+    dE("uno" + userinfo.usernotes[i].id).addEventListener("click", uNotesClicker)
   }
-  dE("uno" + userinfo.usernotes[i].id).addEventListener("click", uNotesClicker)
 }
 async function getPDF() {
   var id = window.location.hash.split("notes/")[1]
@@ -478,9 +480,14 @@ async function sndMsg() {
     }
   }
 }
-function displayMessage(id, time, name, text) {
-  var d = "<div id = 'dM" + id + "'><span class = 'dmName'>" + name + ": </span><span class = 'dmText'>" + text + "</span><span class = 'dmtime'>" + time + "</span></div>"
+function displayMessage(id, time, name, text,userid) {
+  if (userid == "shh5oUIhRpdBkEKQ3GCZwoKE9u42"){
+    var d = "<div id = 'dM" + id + "'><span class = 'dmName'>" + name + "👑: </span><span class = 'dmText'>" + text + "</span><span class = 'dmtime'>" + time + "</span></div>"
   dE("forum_live").insertAdjacentHTML(forum_d, d)
+  }else{
+    var d = "<div id = 'dM" + id + "'><span class = 'dmName'>" + name + ": </span><span class = 'dmText'>" + text + "</span><span class = 'dmtime'>" + time + "</span></div>"
+    dE("forum_live").insertAdjacentHTML(forum_d, d)
+  }
 }
 function deleteMessage(id) { dE("dM" + id).remove() }
 let recentMessagesQuery;
@@ -499,7 +506,7 @@ async function gtMsg(type) {
           }
           var message = change.doc.data();
           displayMessage(change.doc.id, "", message.name,
-            message.message,);
+            message.message,message.userid);
           forum_length = forum_length + 1
         }
       });
@@ -1353,7 +1360,12 @@ function renderDownloadPage(type){
 async function lessonRenderer(docJSON) {
   dE("tp_question").style.display = "none"
   dE("tp_lesson").style.display = "block"
-  loadVid(docJSON.y_url)
+  if (docJSON.y_url == ""){
+    dE("tp_full_vid").style.display = "none"
+  }else{
+    dE("tp_full_vid").style.display = "flex"
+    loadVid(docJSON.y_url)
+  }
   dE("tp_lsno").innerText = docJSON.title
   dE("tp_expl").innerHTML = docJSON.expl
   // dE("tp_lsimg").src = docJSON.img
@@ -1548,12 +1560,16 @@ async function authStateObserver(user) {
     if (docSnap.exists()) {
       var docJSON = docSnap.data();
       dE("db_exam_list").innerHTML = ""
+      if (docJSON.warning != ""){
+        log("Notice",docJSON.warning)
+      }
       for (var i =0;i<docJSON.examinfo.length;i++){
         var f = docJSON.examinfo[i]
         dE("db_exam_list").insertAdjacentHTML("beforeend",`<div class = "tlinks_min rpl"><span style="font-size: 16px;" onclick = "examlog('`+f.name+`','`+f.date+`','`+f.info+`','`+f.syllabus+`')">`+f.name+`</span></div>`)
       }
     }
     locationHandler(window.location.hash.split("#/")[1], 1)
+    getUserNotesList()
   } else {
     // uname.textContent = ""
     name.textContent = ""
@@ -1717,8 +1733,8 @@ async function newTest() {
       totalmarks: 0,
       timeallotted: 0,
       syllabus: "",
-      strson: "",
-      endon: "",
+      strton: serverTimestamp(),
+      endon: serverTimestamp(),
       questionnos: 0,
       finished: [],
       batch: []
@@ -2051,15 +2067,17 @@ async function getTestInfo() {
     testActionLogger.push({ type: "start", time: it, value: "1" })
     
   }
-
-  testTimerfunction = setInterval(function () {
-    var seconds = testInfo.timeallotted - 1;
-    testInfo.timeallotted -= 1
-    dE("tt_timeleft").innerText = Math.floor(seconds % (3600 * 24) / 3600) + ":" + Math.floor(seconds % 3600 / 60) + ":" + Math.floor(seconds % 60);
-    if (seconds == 0) {
-      submitTest()
-    }
-  }, 1000);
+  if (window.location.hash.includes("/attempt/")){
+    testTimerfunction = setInterval(function () {
+      var seconds = testInfo.timeallotted - 1;
+      testInfo.timeallotted -= 1
+      dE("tt_timeleft").innerText = Math.floor(seconds % (3600 * 24) / 3600) + ":" + Math.floor(seconds % 3600 / 60) + ":" + Math.floor(seconds % 60);
+      
+      if (seconds == 0) {
+        submitTest()
+      }
+    }, 1000);
+  }
   window.onbeforeunload = function (e) {
     e.preventDefault;
     submitTest()
@@ -2073,7 +2091,7 @@ async function getTestInfo() {
   dE("tp_pnt").style.display = "none"
   dE("tp_pnt").style.display = "none";
   var tbox = dE("testv1")
-  fullEle(tbox)
+  try {fullEle(tbox)}catch{}
   inittestHandler()
 }
 function tqH() {
@@ -2404,7 +2422,8 @@ async function submitTest() {
     log("Error", "Performing Test Operations in Test Reports Is Prohibited")
     return 1;
   }
-
+  var it = new Date()
+  testActionLogger.push({ type: "end", time: it, value: "1" })
   var testid = window.location.hash.split("#/attempt/")[1]
   window.onbeforeunload = function () { }
   window.onhashchange = locationHandler
@@ -2572,9 +2591,9 @@ function immersiveMode() {
 }
 var Quarkz = {
   "copyright": "Mr Techtroid 2021-23",
-  "vno": "v0.2.1",
+  "vno": "v0.3.0",
   "author": "Mr Techtroid",
-  "last-updated": "05/01/2023(IST)",
+  "last-updated": "10/02/2023(IST)",
   "serverstatus": "firebase-online",
 }
 var handlebox = "login";
@@ -2583,8 +2602,6 @@ var userinfo;
 var topicJSON = {};
 var topicJSONno = 0;
 var editorrole, adminrole, userrole;
-var topiclist = []
-var qlist = []
 var simlist = []
 var chapterlist = []
 var userdetails = []
