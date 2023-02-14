@@ -106,6 +106,7 @@
             <button id="lgl_btn" class="tst_btn rpl">Legal</button>
             <button id="rbu_btn" class="tst_btn rpl" onclick="window.location = '/#/bugreport'">Report Bugs</button>
             <button id="apinf_btn" class="tst_btn rpl" onclick="window.location = '/#/appinfo'">App Info</button>
+            <a id="contq_btn" href = "https://docs.google.com/forms/d/e/1FAIpQLSfLZ2_GUDv6EYRR3kz53BYtsP3SaTIMfCo8az-xPzUi1nb91A/viewform" class="tst_btn rpl" target="_blank">Contact Us</a>
         </div>
     </div>
 
@@ -159,37 +160,23 @@
             style="background-color: black;color:white"></iframe>
     </div>
     <div id="profile" class="full_page flex_type">
-        <span style="font-size: 5vh;">Profile</span>
-        <table class="pro_table" style="border:gray 3px solid;">
-            <tr>
-                <td class="sp_txt">Name:</td>
-                <td id="prf_name"></td>
-            </tr>
-            <tr>
-                <td class="sp_txt">Phone:</td>
-                <td id="prf_phone"></td>
-            </tr>
-            <tr>
-                <td class="sp_txt">Email:</td>
-                <td id="prf_email"></td>
-            </tr>
-            <tr>
-                <td class="sp_txt">Class:</td>
-                <td id="prf_class"></td>
-            </tr>
-            <tr>
-                <td class="sp_txt">Batch:</td>
-                <td id="prf_batch"></td>
-            </tr>
-            <tr>
-                <td class="sp_txt">Gender:</td>
-                <td id="prf_gender"></td>
-            </tr>
-            <tr>
-                <td class="sp_txt">Created On:</td>
-                <td id="prf_crton"></td>
-            </tr>
-        </table>
+        <div id = "prf_tab_t" style = "">
+            <div id = "prf_tab_t_t" style = "height:30vh;">
+                <img id = "prf_tab_t_t_img" src = "/assets/Quarkz-T.png" style = "height:100px;width:100px;">
+                <div style = "display: flex;flex-direction: column;height:7vh;margin-left: 5px;height:max-content">
+                    <span id="prf_name" style = "font-size: 5vh;color:rgb(0, 0, 0);font-weight: bold;"></span>
+                    <span style = "font-size: 2vh;color:rgb(80, 79, 79)">
+                        <span id="prf_email" ></span>&nbsp;•&nbsp;<span id = "prf_gender"></span>
+                    </span>
+                    <span style = "font-size: 2vh;color:rgb(80, 79, 79)">
+                        <span id="prf_phone"></span>&nbsp;•&nbsp;<span id = "prf_class"></span>
+                    </span>
+                    <span style = "font-size: 2vh;color:rgb(80, 79, 79)">
+                        <span id="prf_batch"></span>&nbsp;•&nbsp;<span id = "prf_crton"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
         <button id="pass_rst_btn" class="tst_btn rpl">Reset/Change Password</button>
     </div>
     <div id="register" class="full_page flex_type">
@@ -789,7 +776,7 @@
                         <!-- <iframe id = "video" style = "width:80%; height: 450px; border-style: solid; ;border-width: 10px;" hidden = "True"  allow = "autoplay"></iframe> -->
                     <div style="pointer-events: none;width:100%;">
                             <div><div id="player" style="width: 100%;"></div></div>
-                            <div id = "yt_progressBar"><div></div></div>
+                            <div id = "yt_progressBar" style ="width:100%;"><div id = "yt_progressBar_in"></div></div>
                     </div>
                     <div id="toolbar"
                         style="border:3px solid grey; border-radius: 10px 10px 10px 10px;padding-left: 5px;padding-right: 5px;">

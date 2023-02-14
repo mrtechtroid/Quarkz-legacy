@@ -79,13 +79,6 @@ function onPlayerReady(event) {
     player.setVolume(25)
   }
 }
-function progress(percent, $element) {
-  var progressBarWidth = percent * $element.width() / 100;
-
-// $element.find('div').animate({ width: progressBarWidth }, 500).html(percent + "%&nbsp;");
-
-  $('#yt_progressBar').animate({ width: progressBarWidth });
-}
 var yt_done = false;
 var mytimer;
 function onPlayerStateChange(event) {
@@ -98,11 +91,9 @@ function onPlayerStateChange(event) {
 
       mytimer = setInterval(function() {
         var playerCurrentTime = player.getCurrentTime();
-
         var playerTimeDifference = (playerCurrentTime / playerTotalTime) * 100;
-
-
-        progress(playerTimeDifference, $('#progressBar'));
+        var progressBarWidth = playerTimeDifference + "%"
+        dE('yt_progressBar_in').style.width =  progressBarWidth
       }, 1000);        
     } else {
       clearTimeout(mytimer);

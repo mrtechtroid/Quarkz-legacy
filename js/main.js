@@ -5,6 +5,7 @@ import { getAuth, onAuthStateChanged, setPersistence,browserLocalPersistence,  G
 import { getFirestore, orderBy, limit, writeBatch, collection, addDoc, onSnapshot, arrayUnion, arrayRemove, setDoc, updateDoc, getDocs, doc, serverTimestamp, getDoc, query, where } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, } from 'https://www.gstatic.com/firebasejs/9.6.0/firebase-storage.js';
 import { sysaccess } from '/js/reworkui.js'
+
 const firebaseConfig = {
   apiKey: "AIzaSyDN8T7Pmw5e-LzmC3nAHEqI0Uk7FF7y6fc",
   authDomain: "quarkz.firebaseapp.com",
@@ -123,7 +124,6 @@ function sortObj(objs, param, type) {
   } if (type == 1) {
     sorter2 = (sortBy) => (a, b) => a[sortBy] > b[sortBy] ? -1 : 1;
   }
-  console.log(objs.sort(sorter2(param)))
   return objs.sort(sorter2(param));
 }
 // Make Elements Latex Rendered
@@ -362,7 +362,9 @@ function locationHandler(newlocation, n1) {
   stpVid()
   editqllist = []
   if (location1 == "forum") { gtMsg(1); } else { gtMsg(2); forum_length = 1; forum_d = "afterbegin" }
-  // console.log({ userinfo, topicJSON, topicJSONno, editorrole, adminrole, userrole, topiclist, qlist, simlist, chapterlist, userdetails, curr_qlno, curr_qlid, editqllist, autosignin, testList, activeTestList, upcomingTestList, finishedTestList, testInfo, testQuestionList, testResponseList, activequestionid })
+  // console.log({ userinfo, topicJSON, topicJSONno, editorrole, adminrole, userrole, simlist, chapterlist, userdetails, curr_qlno, curr_qlid, editqllist, autosignin, testList, activeTestList, upcomingTestList, finishedTestList, testInfo, testQuestionList, testResponseList, activequestionid })
+  testQuestionList = [];testResponseList = [];testInfo = [];activequestionid = ""
+
 }
 // ----------------------
 // BATCHES
@@ -1509,7 +1511,7 @@ async function authStateObserver(user) {
       phone.textContent = docJSON.mblno
       email.textContent = docJSON.email
       stclass.textContent = docJSON.class
-      crton.textContent = new Date(docJSON.sgndon.seconds * 1000)
+      crton.textContent = new Date(docJSON.sgndon.seconds * 1000).toDateString()
       gender.textContent = docJSON.gen
       batchno = docJSON.batch
       courseno = docJSON.course
@@ -1525,8 +1527,10 @@ async function authStateObserver(user) {
     }
     if (docJSON.gen == "Male") {
       dE("prf_tab_img").src = '/assets/q_male.svg'
+      dE("prf_tab_t_t_img").src = "/assets/q_male.svg"
     } else if (docJSON.gen == "Female") {
       dE("prf_tab_img").src = '/assets/q_female.svg'
+      dE("prf_tab_t_t_img").src = "/assets/q_female.svg"
     }
     try {
       var docRef = doc(db, "batch", batchno)
@@ -2594,7 +2598,7 @@ function immersiveMode() {
 }
 var Quarkz = {
   "copyright": "Mr Techtroid 2021-23",
-  "vno": "v0.3.0",
+  "vno": "v0.3.1",
   "author": "Mr Techtroid",
   "last-updated": "10/02/2023(IST)",
   "serverstatus": "firebase-online",
