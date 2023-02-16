@@ -53,37 +53,36 @@
         </div>
     </div>
     <div id="watermark">
-        <span id="logo"><img id="ovr_l_1" src="/assets/Quarkz-WT.png" style="height:6vh"><img style="height:6vh"
+        <span id="logo"><img id="ovr_l_1" src="/assets/Quarkz-WT.png"><img
                 id="ovr_l_2" src="/assets/Quarkz.png"></span>
         <div id="w_holder">
             <span id="spoints" class="no-print"></span>
             <span id="dsh_btn" class="no-print">☰</span>
         </div>
     </div>
-    <div class="full_page flex_type" id="bugreport" style="display:flex;align-items: center;justify-content: center;">
-        <iframe
+    <div class="full_page flex_type" id="bugreport">
+        <iframe id = "bgrep_frame" 
             src="https://docs.google.com/forms/d/e/1FAIpQLSeo2JZDaBApBiTeXmAnkVX60hSuJGHJkd9jsF9ePg0iM9ufjA/viewform?embedded=true"
-            style="width:90vw;height:90vh;border:none;" frameborder="0" marginheight="0"
+            frameborder="0" marginheight="0"
             marginwidth="0">Loading…</iframe>
     </div>
-    <div id="login" class="full_page flex_type" style="justify-content: center;">
+    <div id="login" class="full_page flex_type">
         <div id="lgn_bx">
-            <span style="font-size: 5vh;">Welcome to Quarkz</span>
+            <span class = "in_t">Welcome to Quarkz</span>
             <input type="text" id="lg_uname" class="text_bx_1" placeholder="Username">
             <input type="password" id="lg_pass" class="text_bx_1" placeholder="Password">
             <div>
                 <button class="tst_btn rpl" id="sgn_in">Sign In</button>
-                <!-- <button class="tst_btn rpl" id="sgn_in_google">Sign In With Google</button> -->
                 <button class="tst_btn rpl" id="reg_in">Register</button>
             </div>
-            <span id="lgn_err" class="err_txt" style="display: none;">ERROR:Wrong Username Or Password</span>
-            <span style="margin:auto;font-size:14px;text-decoration: none;"><a href="/#/about"
-                    style="color: white;">About</a>&nbsp;&nbsp;<a href="/#/legal"
-                    style="color: white;">Legal</a>&nbsp;&nbsp;<a href="/#/bugreport" style="color: white;">Report A Bug</a>
+            <span id="lgn_err" class="err_txt">ERROR:Wrong Username Or Password</span>
+            <span class = "lgn_c_1"><a href="/#/about"
+                >About</a>&nbsp;&nbsp;<a href="/#/legal"
+                >Legal</a>&nbsp;&nbsp;<a href="/#/bugreport">Report A Bug</a>
             </span>
-            <span style="margin:auto;font-size:14px;text-decoration: none;">
-                <a href="/#/mainsformulas" style="color: white;">Formula Sheets</a>&nbsp;&nbsp;
-                <a href="/#/downloads" style="color: white;">Downloads</a>
+            <span class = "lgn_c_1">
+                <a href="/#/mainsformulas">Formula Sheets</a>&nbsp;&nbsp;
+                <a href="/#/downloads">Downloads</a>
             </span>
         </div>
     </div>
@@ -91,18 +90,18 @@
         
     </div>
     <div id="appinfo" class="full_page flex_type">
-        <span style="font-size: 5vh;">App Info</span>
+        <span class = "in_t">App Info</span>
         <pre id="ren_appinf"></pre>
     </div>
     <div id="aboutus" class="full_page flex_type">
-        <span style="font-size: 5vh;">About Us</span>
+        <span class = "in_t">About Us</span>
         <img id="abt_img" src="https://avatars1.githubusercontent.com/u/64828294?s=460&amp;v=4" alt="MTT Photo">
         <span>I Am Mr Techtroid The Main Developer Of <span class="sp_txt">Quarkz!</span></span>
         <span>I Built This Website As A Way For Schools To Head Towards Online Learning</span>
         <span>Its Built In A Way That It Is Easy For Both Teachers And Students To Use</span>
         <span>Quarkz Is Currently Under Beta Version And Many Features Will Come In The Future</span>
         <span>Contact Mail: <span class="sp_txt">mrtechtroid@outlook.com</span></span>
-        <div style="display: flex;flex-direction: row;overflow-y: auto;">
+        <div id = "abt_c_1">
             <button id="lgl_btn" class="tst_btn rpl">Legal</button>
             <button id="rbu_btn" class="tst_btn rpl" onclick="window.location = '/#/bugreport'">Report Bugs</button>
             <button id="apinf_btn" class="tst_btn rpl" onclick="window.location = '/#/appinfo'">App Info</button>
@@ -110,10 +109,10 @@
         </div>
     </div>
 
-    <div id="legal" class="full_page flex_type" style="text-align: center;">
-        <span style="font-size: 5vh;">Terms And Conditions</span>
+    <div id="legal" class="full_page flex_type">
+        <span class = "in_t">Terms And Conditions</span>
         <span class="sp_txt">Copyright 2021-23 Quarkz By Mr Techtroid</span>
-        <span style ="font-size: 2vh;">Last Updated: 10 Jan 2023(IST)</span>
+        <span class = "in_t_2">Last Updated: 10 Jan 2023(IST)</span>
         <div id="lgl_container">
             <ol>
                 <h3>Account Information And User Generated Content</h3>
@@ -155,23 +154,22 @@
     </div>
 
     <div id="schedule" class="full_page flex_type">
-        <span style="font-size: 5vh;">Schedule</span>
-        <iframe id="tmt_frame" src="" style="border: 0" width="100%" height="90%" frameborder="0" scrolling="no"
-            style="background-color: black;color:white"></iframe>
+        <span class = "in_t">Schedule</span>
+        <iframe id="tmt_frame" src="" style="border: 0" width="100%" height="90%" frameborder="0" scrolling="no"></iframe>
     </div>
     <div id="profile" class="full_page flex_type">
-        <div id = "prf_tab_t" style = "">
-            <div id = "prf_tab_t_t" style = "height:30vh;">
-                <img id = "prf_tab_t_t_img" src = "/assets/Quarkz-T.png" style = "height:100px;width:100px;">
-                <div style = "display: flex;flex-direction: column;height:7vh;margin-left: 5px;height:max-content">
-                    <span id="prf_name" style = "font-size: 5vh;color:rgb(0, 0, 0);font-weight: bold;"></span>
-                    <span style = "font-size: 2vh;color:rgb(80, 79, 79)">
+        <div id = "prf_tab_t">
+            <div id = "prf_tab_t_t" style = "">
+                <img id = "prf_tab_t_t_img" src = "/assets/Quarkz-T.png">
+                <div id = "prf_tab_t_hold">
+                    <span id="prf_name"></span>
+                    <span class = "prf_det">
                         <span id="prf_email" ></span>&nbsp;•&nbsp;<span id = "prf_gender"></span>
                     </span>
-                    <span style = "font-size: 2vh;color:rgb(80, 79, 79)">
+                    <span class = "prf_det">
                         <span id="prf_phone"></span>&nbsp;•&nbsp;<span id = "prf_class"></span>
                     </span>
-                    <span style = "font-size: 2vh;color:rgb(80, 79, 79)">
+                    <span class = "prf_det">
                         <span id="prf_batch"></span>&nbsp;•&nbsp;<span id = "prf_crton"></span>
                     </span>
                 </div>
@@ -205,7 +203,7 @@
         <button class="tst_btn rpl" id="rg_in">Register</button>
     </div>
     <div id="printable" class="full_page flex_type">
-        <span style="font-size: 5vh;" class="no-print">Export</span>
+        <span class = "in_t" class="no-print">Export</span>
         <hr color="white" width="100%" class="no-print">
         <span class="no-print"><button class="tst_btn rpl no-print" onclick="print()">Print</button><button
                 class="tst_btn rpl no-print" id="shf_btn">Shuffle</button><button class="tst_btn rpl no-print"
@@ -237,18 +235,17 @@
                         id="pe_mat_nno" class="_in_pq" value="-4"></span>
             </div>
         </div>
-        <div id="eqb_instr" style="text-align: left;width:90%;font-size: 14px;"><span style="color: green;">General
+        <div id="eqb_instr"><span style="color: green;">General
                 Instructions:&nbsp;&nbsp;</span><span id="equ_gi"></span>
             <hr color="white" width="100%">
         </div>
 
-        <div id="eqb_add" style="width:90%;font-size: 14px;z-index: 1;" type="1">
+        <div id="eqb_add" type="1">
         </div>
     </div>
-    <div id="functions" class="full_page flex_type" style="overflow-y: scroll;">
-        <span style="font-size: 5vh;" class="">Functions</span>
-        <div class="flex_type"
-            style="flex-direction: column;align-items: center;overflow-y: scroll;width: 50vw;height:60vh;">
+    <div id="functions" class="full_page flex_type">
+        <span class = "in_t" class="">Functions</span>
+        <div id = "func_hold" class="flex_type">
             <div class="dshbox_v2 rpl" onclick="window.location.hash = '#/add/tpc'">Add Topics</div>
             <div class="dshbox_v2 rpl" onclick="window.location.hash = '#/add/qubank'">Add Question Bank</div>
             <div class="dshbox_v2 rpl" onclick="window.location.hash = '#/add/simulation'">Add Simulations</div>
@@ -259,18 +256,18 @@
             <div class="dshbox_v2 rpl" onclick="window.location.hash = '#/edit_exams'">Edit Exams</div>
         </div>
     </div>
-    <div id="fu_uplimg" class="full_page flex_type" style="overflow-y: scroll;">
+    <div id="fu_uplimg" class="full_page flex_type ovr-scroll">
         <input type="file" id="aq_file" class="_in_aq">
         <button class="tst_btn rpl" id="upl_files"></button>
         <input class="_in_aq" id="aq_uplurl" type="text">
     </div>
-    <div id="fu_simulation" class="full_page flex_type" style="overflow-y: scroll;">
-        <span style="font-size: 5vh;" class="">Add/Edit Simulation</span>
+    <div id="fu_simulation" class="full_page flex_type ovr-scroll">
+        <span class = "in_t" class="">Add/Edit Simulation</span>
         <input type="text" id="aq_simname" class="_in_aq" placeholder="Simulation Name">
         <input type="url" id="aq_simurl" class="_in_aq" placeholder="Simulation URL">
         <input type="text" id="aq_simprov" class="_in_aq" placeholder="Simulation Provider">
         <input type="text" id="aq_simlicense" class="_in_aq" placeholder="Simulation License">
-        <select name="type" id="aq_simsubj" class="_in_aq" style="color:red">
+        <select name="type" id="aq_simsubj" class="_in_aq col-red">
             <option value="physics">Physics</option>
             <option value="chemistry">Chemistry</option>
             <option value="maths">Maths</option>
@@ -281,16 +278,16 @@
         </select>
         <button class="tst_btn rpl" id="aq_sims_save">Save</button>
     </div>
-    <div id="fu_topic" class="full_page flex_type" style="overflow-y: scroll;">
-        <span style="font-size: 5vh;" class="" id="fu_topic_title">Add/Edit Topic</span>
+    <div id="fu_topic" class="full_page flex_type ovr-scroll">
+        <span class = "in_t" class="" id="fu_topic_title">Add/Edit Topic</span>
         <input type="text" id="aq_tpcname" class="_in_aq" placeholder="Tests/Topic/Question Bank Name">
-        <select name="type" id="aq_tpclevel" class="_in_aq" style="color:red">
+        <select name="type" id="aq_tpclevel" class="_in_aq col-red">
             <option value="jee">JEE</option>
             <option value="neet">NEET</option>
             <option value="foundation">Foundation</option>
         </select>
         <input type="text" id="aq_tpc_chapterid" class="_in_aq" placeholder="Chapter ID">
-        <select name="type" id="aq_tpc_subj" class="_in_aq" style="color:red">
+        <select name="type" id="aq_tpc_subj" class="_in_aq col-red">
             <option value="physics">Physics</option>
             <option value="chemistry">Chemistry</option>
             <option value="maths">Maths</option>
@@ -313,7 +310,7 @@
             </div>
             <div
                 style="border: 2px lime solid;width:75vw;display: flex;flex-direction: column;overflow-y: scroll;height:50vh;">
-                <select name="type" id="aq_mode" class="_in_aq" style="color:red">
+                <select name="type" id="aq_mode" class="_in_aq col-red">
                     <option value="question">Question</option>
                     <option value="lesson">Lesson</option>
                     <option value="exam">Exam</option>
@@ -331,7 +328,7 @@
                     <div class="summernote" id="aq_expl">Explanation</div>
                     <textarea type="answer" id="aq_hint" class="_in_aq" style="resize: none;overflow-y: scroll;"
                         placeholder="Hint"></textarea>
-                    <select name="type" id="aq_section" class="_in_aq" style="color:red">
+                    <select name="type" id="aq_section" class="_in_aq col-red">
                         <option value="Physics">Physics</option>
                         <option value="Chemistry">Chemistry</option>
                         <option value="Math">Math</option>
@@ -342,7 +339,7 @@
                     </select>
                 </div>
                 <div id="aq_ans_hold">
-                    <select name="type" id="aq_type" class="_in_aq" style="color:red">
+                    <select name="type" id="aq_type" class="_in_aq col-red">
                         <option value="mcq">MCQ</option>
                         <option value="mcq_multiple">MCQ Multiple</option>
                         <option value="matrix">Matrix</option>
@@ -474,7 +471,7 @@
         </div>
     </div>
     <div id="singletestreport" class="full_page flex_type">
-        <span style="font-size: 5vh;">Random Test 1</span>
+        <span class = "in_t">Random Test 1</span>
         <hr color="white" width="100%">
         <div class="progressbar_tr">
             <div class="pb_tr_in" style="width: 70%;"><span>70%</span></div>
@@ -553,7 +550,7 @@
         </table>
     </div>
     <div id="testsummary" class="full_page flex_type">
-        <span style="font-size: 5vh;">Test Summary</span>
+        <span class = "in_t">Test Summary</span>
         <hr color="white" width="100%">
         <table class="pro_table">
             <tr>
@@ -577,7 +574,7 @@
         </table>
     </div>
     <div id="testinfo" class="full_page flex_type">
-        <span style="font-size: 5vh;">Tests</span>
+        <span class = "in_t">Tests</span>
         <hr color="white" width="100%">
         <div><button class="tst_btn rpl" id="ti_act">Active Tests</button><button class="tst_btn rpl"
                 id="ti_fin">Finished Tests</button><button class="tst_btn rpl" id="ti_upc">Upcoming Tests</button></div>
@@ -587,7 +584,7 @@
         </div>
     </div>
     <div id="test_instructions" class="full_page flex_type">
-        <span style="font-size: 5vh;">Test Instructions</span>
+        <span class = "in_t">Test Instructions</span>
         <hr color="white" width="100%">
         <div style="width:80vw;overflow-y: scroll;border:yellow 3px solid;display: flex;flex-direction: column;">
             <span style="font-size:5vh;text-align: center;">Please Read The Instructions And Terms Carefully</span>
@@ -684,7 +681,7 @@
         </div>
     </div>
     <div id="test_end" class="full_page flex_type">
-        <span style="font-size: 5vh;" id="te_title">The Test Has Ended</span>
+        <span class = "in_t" id="te_title">The Test Has Ended</span>
         <span style="font-size:3vh;">Your Results Will Be Released After<span id="te_endtime"></span></span>
         <a class="tst_btn rpl" href="/#/dashboard">Go To Dashboard</a>
         <hr color="white" width="100%">
@@ -841,18 +838,18 @@
         </div>
     </div>
     <div id="chapter" class="full_page flex_type">
-        <span style="font-size: 5vh;" id="chp_chaptername">Topic</span>
-        <span style="font-size: 5vh;">Topic</span>
+        <span class = "in_t" id="chp_chaptername">Topic</span>
+        <span class = "in_t">Topic</span>
         <hr color="white" width="100%">
         <div id="chp_tpc_list" style="overflow-y: scroll;height:30vh;" class="flex_type">
         </div>
-        <span style="font-size: 5vh;">Question Banks</span>
+        <span class = "in_t">Question Banks</span>
         <hr color="white" width="100%">
         <div id="chp_qbk_list" style="overflow-y: scroll;height:30vh;" class="flex_type">
         </div>
     </div>
     <div id="chapterlist" class="full_page flex_type">
-        <span style="font-size: 5vh;">Chapters</span>
+        <span class = "in_t">Chapters</span>
         <hr color="white" width="100%">
         <div style="display: flex;flex-direction: row;flex-wrap: wrap;">
             <button class="tst_btn rpl" id="pchb">Physics</button>
@@ -867,7 +864,7 @@
         </div>
     </div>
     <div id="simlist" class="full_page flex_type">
-        <span style="font-size: 5vh;">Simulations List</span>
+        <span class = "in_t">Simulations List</span>
         <hr color="white" width="100%">
         <div style="display: flex;flex-direction: row;flex-wrap: wrap;">
             <button class="tst_btn rpl" id="psims">Physics</button>
@@ -882,9 +879,9 @@
         </div>
     </div>
     <div id="simulations" class="full_page flex_type">
-        <span style="font-size: 5vh;">Simulations</span>
+        <span class = "in_t">Simulations</span>
         <hr color="white" width="100%">
-        <div style="display: flex;flex-direction: row;flex-wrap: wrap;"><span style="font-size: 5vh;" id="sms_name">Sim
+        <div style="display: flex;flex-direction: row;flex-wrap: wrap;"><span class = "in_t" id="sms_name">Sim
                 Name</span><button class="tst_btn rpl" id="sms_edit" style="display: none;"
                 onclick='window.location.hash = "#/edit_sim/" + window.location.hash.split("#/sims/")[1]'>Edit
                 Sim</button></div>
@@ -918,7 +915,7 @@
     </div>
     <div id="cyberhunt" class="full_page flex_type">
         <div id="cyb_code" class="flex_type">
-            <span style="font-size: 5vh;">Join Cyberhunt!</span>
+            <span class = "in_t">Join Cyberhunt!</span>
             <hr color="white" width="100%">
             <span>Do You Want To Join A Cyberhunt?Enter The Cyberhunt Code Below:</span>
             <input id="cyb_cd_in" class="_in_aq" placeholder="i2a01pmzshn1">
