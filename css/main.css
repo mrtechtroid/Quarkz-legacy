@@ -67,6 +67,10 @@ body {
   font-size: 2vh;
 }
 
+.in_t_3 {
+  font-size: 3vh;
+}
+
 #legal {
   text-align: center;
 }
@@ -83,9 +87,11 @@ body {
   text-decoration: none;
   color: white;
 }
-.lgn_c_1 a{
+
+.lgn_c_1 a {
   color: white;
 }
+
 #bgrep_frame {
   width: 90vw;
   height: 90vh;
@@ -181,6 +187,19 @@ body {
 
 ._open {
   display: flex !important;
+}
+
+#pe_gi_ins {
+  resize: none;
+  overflow-y: scroll;
+}
+
+#pe_tst_mrk {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 }
 
 .flex_type {
@@ -355,7 +374,8 @@ body {
 #tmt_frame {
   filter: invert(.9) saturate(0.5) hue-rotate(145deg);
   background-color: black;
-  color: white
+  color: white;
+  border: 0;
 }
 
 .t_endon {
@@ -840,6 +860,59 @@ body {
   width: 300px;
 }
 
+#tt_infobx {
+  width: 250px;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  overflow-y: scroll;
+  border: grey 1px solid;
+  border-radius: 30px 0px 0px 30px;
+  margin: 10px;
+}
+.tt_question hr{
+  background-color:grey;
+}
+#tt_question{
+  height:70vh;
+  border:grey 3px solid;
+  overflow-y: scroll;
+  /* min-width: 600px; */
+}
+#tt_timeleft, #tt_marksaward,#tt_timespent,#tt_testname{
+  padding-left:20px;
+  padding-right: 20px;
+  border-radius: 5px 5px 5px 5px;
+  border: grey 1px solid;
+}
+#testv1{
+  flex-direction: row;flex-wrap: wrap;height:max-content;min-height: 90vh;
+}
+#tw_Physics_c,#tw_Chemistry_c,#tw_Math_c,#tw_Computer_c,#tw_Biology_c,#tw_Statistics_c,#tw_Unfiled_c{
+  display: flex;flex-direction: row;flex-wrap:wrap;height:auto
+}
+#tw_Physics,#tw_Chemistry,#tw_Math,#tw_Computer,#tw_Biology,#tw_Statistics,#tw_Unfiled{
+  display: flex;
+  flex-direction: column;
+}
+#tt_qnobx {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border-radius: 30px 0px 0px 30px;
+  padding: 10px;
+  width: 250px;
+  height: 40vh;
+  margin: 10px;
+  overflow-y: scroll;
+  border: grey 1px solid;
+}
+.fto_small{
+  font-size: 12px;
+  color: grey;
+  margin: 5px
+}
 .t_gre {
   background-color: #122235;
   border-radius: 5px 5px 5px 5px;
@@ -881,11 +954,11 @@ body {
 
 #volumebar::-webkit-slider-thumb {
   -webkit-appearance: none;
-  /* Override default look */
   appearance: none;
   background: red;
 }
 
+/* Copyright: Quarkz! */
 #yt_progressBar {
   width: 960px;
   height: 6px;
@@ -894,20 +967,26 @@ body {
   margin-top: 1px;
 }
 
-#prf_tab_t {
+#prf_tab_t,#abt_tab_t {
   height: 30vh;
   object-fit: cover;
   width: 100%;
-  background: url("/assets/prf_background.webp"), url("/assets/prf_background.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
   justify-content: center;
+  justify-content: space-around;
 }
-
+#abt_tab_t{
+  /* background: url("/assets/banner.webp"), url("/assets/banner.png"); */
+  background-position: center;
+  background-size: 50px;
+}
+#prf_tab_t{
+  background: url("/assets/prf_background.webp"), url("/assets/prf_background.png");
+}
 #prf_email::before {
   content: "✉ "
 }
@@ -917,12 +996,19 @@ body {
   color: rgb(0, 0, 0);
   font-weight: bold;
 }
-
+#abt_name{
+  font-size: 4vh;
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+}
 .prf_det {
   font-size: 2vh;
   color: rgb(80, 79, 79)
 }
-
+.abt_det{
+  font-size: 2vh;
+  color: rgb(155, 137, 137)
+}
 #prf_phone::before {
   content: "☎ "
 }
@@ -935,7 +1021,7 @@ body {
   content: "Joined On "
 }
 
-#prf_tab_t_t {
+#prf_tab_t_t,#abt_tab_t_t {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -943,19 +1029,30 @@ body {
   height: 30vh;
 }
 
-#prf_tab_t_t_img {
+#prf_tab_t_t_img{
   height: 100px;
   width: 100px;
 }
-
-#prf_tab_t_hold {
+#abt_tab_t_t_img{
+  border:#06D85F 2px solid;
+  border-radius: 30px;
+  width: 200px;
+  height:200px
+}
+#prf_tab_t_hold,#abt_tab_t_hold {
   display: flex;
   flex-direction: column;
   height: 7vh;
   margin-left: 5px;
-  height: max-content
+  height: max-content;
+  justify-content: left;
 }
-
+#abt_tab_t_hold{
+  margin:10px;
+}
+circle text {
+  fill: #fff;
+}
 #yt_progressBar div {
   height: 100%;
   width: 0;
@@ -1004,11 +1101,9 @@ body {
   width: 120px;
   height: 120px;
   -webkit-animation: spin 2s linear infinite;
-  /* Safari */
   animation: spin 2s linear infinite;
 }
 
-/* Safari */
 @-webkit-keyframes spin {
   0% {
     -webkit-transform: rotate(0deg);
@@ -1100,7 +1195,7 @@ body {
 }
 
 .tts_review {
-  background-image: url("data:image/svg+xml,%0A%3Csvg version='1.2' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32'%3E%3Ctitle%3ENew Project%3C/title%3E%3Cdefs%3E%3Cimage width='32' height='32' id='img1' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgAQMAAABJtOi3AAAAAXNSR0IB2cksfwAAAANQTFRF////p8QbyAAAAAxJREFUeJxjYBjcAAAAoAABsAZiGAAAAABJRU5ErkJggg=='/%3E%3C/defs%3E%3Cstyle%3E .s0 %7B fill: %2300ffff %7D %3C/style%3E%3Cuse id='Background' href='%23img1' x='0' y='0'/%3E%3Crect id='Shape 1' class='s0' x='1' y='1' width='30' height='30' rx='10'%3E%3C/rect%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDY0IDY0IiB3aWR0aD0iNjQiIGhlaWdodD0iNjQiPjxkZWZzPjxpbWFnZSAgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBpZD0iaW1nMSIgaHJlZj0iZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlWQk9SdzBLR2dvQUFBQU5TVWhFVWdBQUFFQUFBQUJBQVFNQUFBQ1FwK09kQUFBQUFYTlNSMElCMmNrc2Z3QUFBQU5RVEZSRkFBQUFwM285MmdBQUFBRjBVazVUQUVEbTJHWUFBQUFQU1VSQlZIaWNZMkFZQmFPQWZBQUFBa0FBQVZrMm9RTUFBQUFBU1VWT1JLNUNZSUk9Ii8+PC9kZWZzPjxzdHlsZT4uYXtmaWxsOiMwZmZ9PC9zdHlsZT48dXNlICBocmVmPSIjaW1nMSIgeD0iMCIgeT0iMCIvPjxwYXRoIGNsYXNzPSJhIiBkPSJtMSAxMWMwLTUuNSA0LjUtMTAgMTAtMTBoNDJjNS41IDAgMTAgNC41IDEwIDEwdjQyYzAgNS41LTQuNSAxMC0xMCAxMGgtNDJjLTUuNSAwLTEwLTQuNS0xMC0xMHoiLz48L3N2Zz4=");
 }
 
 .tts_ansreview {
@@ -1129,7 +1224,6 @@ body {
   width: 50vw;
   border-radius: 100px;
   margin: 6px;
-  /* background-color: #393E46; */
   color: white;
 
 }
@@ -1137,7 +1231,6 @@ body {
 .aq_mcq {
   width: 100%;
   background-color: black;
-  /* pointer-events: none; */
   color: white;
   border: none;
   text-decoration: none;
@@ -1231,7 +1324,6 @@ body {
   width: 150px;
   cursor: pointer;
   border-radius: 0;
-  /* iOS */
 }
 
 ::-webkit-slider-runnable-track {
@@ -1241,13 +1333,10 @@ body {
 ::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 20px;
-  /* 1 */
   height: 40px;
   background: #fff;
   box-shadow: -200px 0 0 200px rgb(156, 189, 11);
-  /* 2 */
   border: 2px solid #999;
-  /* 1 */
 }
 
 .popup .close:hover {

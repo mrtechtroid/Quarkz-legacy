@@ -49,7 +49,8 @@ For permission requests, please contact [Mr Techtroid] at mrtechtroid@outlook.co
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
-    <!-- Custom PDF Viewer -->
+    <!-- Custom Charts -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         .full_page {
             display: none
@@ -67,9 +68,9 @@ For permission requests, please contact [Mr Techtroid] at mrtechtroid@outlook.co
     </div>
     <div id="watermark">
         <span id="logo"><img id="ovr_l_1" src="/assets/Quarkz-WT.png"><img id="ovr_l_2" src="/assets/Quarkz.png"></span>
-        <div id="w_holder">
-            <span id="spoints" class="no-print"></span>
-            <span id="dsh_btn" class="no-print">☰</span>
+        <div id="w_holder" class="no-print">
+            <span id="spoints"></span>
+            <span id="dsh_btn">☰</span>
         </div>
     </div>
     <div class="full_page flex_type" id="bugreport">
@@ -104,13 +105,20 @@ For permission requests, please contact [Mr Techtroid] at mrtechtroid@outlook.co
         <pre id="ren_appinf"></pre>
     </div>
     <div id="aboutus" class="full_page flex_type">
-        <span class="in_t">About Us</span>
-        <img id="abt_img" src="https://avatars1.githubusercontent.com/u/64828294?s=460&amp;v=4" alt="MTT Photo">
-        <span>I Am Mr Techtroid The Main Developer Of <span class="sp_txt">Quarkz!</span></span>
-        <span>I Built This Website As A Way For Schools To Head Towards Online Learning</span>
-        <span>Its Built In A Way That It Is Easy For Both Teachers And Students To Use</span>
-        <span>Quarkz Is Currently Under Beta Version And Many Features Will Come In The Future</span>
-        <span>Contact Mail: <span class="sp_txt">mrtechtroid@outlook.com</span></span>
+        <span class="in_t">About</span>
+        <img id="abt_tab_t_t_img" src="https://avatars1.githubusercontent.com/u/64828294?s=460&amp;v=4">
+        <div id="abt_tab_t_hold">
+            <span id="abt_name">Mr Techtroid</span>
+            <span class="abt_det">
+                <span id="abt_email">mrtechtroid@outlook.com</span>
+            </span>
+            <div style="font-size: 12px;width:400px;align-items: flex-end;">
+                <span>I Am Mr Techtroid The Main Developer Of <span class="sp_txt">Quarkz!</span></span>
+                <span>I Built This Website As A Way For Schools To Head Towards Online Learning</span>
+                <span>Its Built In A Way That It Is Easy For Both Teachers And Students To Use</span>
+                <span>Quarkz Is Currently Under Beta Version And Many Features Will Come In The Future</span>
+            </div>
+        </div>
         <div id="abt_c_1">
             <button id="lgl_btn" class="tst_btn rpl">Legal</button>
             <button id="rbu_btn" class="tst_btn rpl" onclick="window.location = '/#/bugreport'">Report Bugs</button>
@@ -173,12 +181,11 @@ For permission requests, please contact [Mr Techtroid] at mrtechtroid@outlook.co
 
     <div id="schedule" class="full_page flex_type">
         <span class="in_t">Schedule</span>
-        <iframe id="tmt_frame" src="" style="border: 0" width="100%" height="90%" frameborder="0"
-            scrolling="no"></iframe>
+        <iframe id="tmt_frame" src="" width="100%" height="90%" frameborder="0" scrolling="no"></iframe>
     </div>
     <div id="profile" class="full_page flex_type">
         <div id="prf_tab_t">
-            <div id="prf_tab_t_t" style="">
+            <div id="prf_tab_t_t">
                 <img id="prf_tab_t_t_img" src="/assets/Quarkz-T.png">
                 <div id="prf_tab_t_hold">
                     <span id="prf_name"></span>
@@ -197,7 +204,7 @@ For permission requests, please contact [Mr Techtroid] at mrtechtroid@outlook.co
         <button id="pass_rst_btn" class="tst_btn rpl">Reset/Change Password</button>
     </div>
     <div id="register" class="full_page flex_type">
-        <span style="font-size:5vh;">Register</span>
+        <span class="in_t">Register</span>
         <input type="tel" id="rg_mbleno" class="_in_reg" placeholder="Mobile No">
         <input type="text" id="rg_uname" class="_in_reg" placeholder="Email Address">
         <input type="password" id="rg_pass" class="_in_reg" placeholder="Password">
@@ -232,14 +239,13 @@ For permission requests, please contact [Mr Techtroid] at mrtechtroid@outlook.co
                 class="tst_btn rpl no-print" id="tremove_btn">Remove
                 All</button></span>
         <hr color="white" width="100%">
-        <span style="font-size: 3vh;" id="qb_title">ERROR</span>
+        <span class="in_t_3" id="qb_title">ERROR</span>
         <hr color="white" width="100%">
         <div id="pe_tst_info" class="flex_type no-print">
             <span>Test<input id="pe_tst_type_1" type="checkbox"></span>
             <span id="">General Instructions<input id="pe_tst_type_2" type="checkbox"></span>
-            <textarea type="answer" id="pe_gi_ins" class="_in_aq" style="resize: none;overflow-y: scroll;"
-                placeholder="General Instructions"></textarea>
-            <div style="display: flex;flex-direction: row;flex-wrap: wrap;align-items: center;justify-content: center;">
+            <textarea type="answer" id="pe_gi_ins" class="_in_aq" placeholder="General Instructions"></textarea>
+            <div id="pe_tst_mrk">
                 <span>MCQ:<input type="number" id="pe_mcq_pno" class="_in_pq" value="3"><input type="number"
                         id="pe_mcq_nno" class="_in_pq" value="-1"></span>
                 <span>MCQ Multiple:<input type="number" id="pe_mcmul_pno" class="_in_pq" value="3"><input type="number"
@@ -347,6 +353,8 @@ For permission requests, please contact [Mr Techtroid] at mrtechtroid@outlook.co
                     <div class="summernote" id="aq_expl">Explanation</div>
                     <textarea type="answer" id="aq_hint" class="_in_aq" style="resize: none;overflow-y: scroll;"
                         placeholder="Hint"></textarea>
+                    <input type="number" id="aq_posmrks" class="_in_aq" placeholder="Marks For Correct">
+                    <input type="number" id="aq_negmrks" class="_in_aq" placeholder="Marks For Incorrect">
                     <select name="type" id="aq_section" class="_in_aq col-red">
                         <option value="Physics">Physics</option>
                         <option value="Chemistry">Chemistry</option>
@@ -401,7 +409,7 @@ For permission requests, please contact [Mr Techtroid] at mrtechtroid@outlook.co
         <button class="tst_btn rpl" id="aq_export">Export</button>
     </div>
     <div id="users" class="full_page flex_type">
-        <span style="font-size:5vh;">Users</span>
+        <span class="in_t">Users</span>
         <hr color="white" width="100%">
         <div
             style="border:orangered 3px solid;border-radius: 30px;display: flex;flex-direction: column;align-items: center;width:80%;">
@@ -412,7 +420,7 @@ For permission requests, please contact [Mr Techtroid] at mrtechtroid@outlook.co
         <input type="answer" id="us_user" class="_in_aq" placeholder="username">
     </div>
     <div id="error_page" class="full_page flex_type">
-        <span style="font-size:5vh;">404</span>
+        <span class="in_t">404</span>
         <hr color="white" width="100%">
 
         <span style="font-size: 3vh;">You don't have access to this page.</span>
@@ -498,109 +506,6 @@ For permission requests, please contact [Mr Techtroid] at mrtechtroid@outlook.co
             </div>
         </div>
     </div>
-    <div id="singletestreport" class="full_page flex_type">
-        <span class="in_t">Random Test 1</span>
-        <hr color="white" width="100%">
-        <div class="progressbar_tr">
-            <div class="pb_tr_in" style="width: 70%;"><span>70%</span></div>
-        </div><br>
-        <table class="pro_table">
-            <tr>
-                <th>Parameters</th>
-                <th>Your Stats</th>
-            </tr>
-            <tr>
-                <td>Rank:</td>
-                <td>4</td>
-            </tr>
-            <tr>
-                <td>Percent:</td>
-                <td>70%</td>
-            </tr>
-            <tr>
-                <td>Positive:</td>
-                <td>74</td>
-            </tr>
-            <tr>
-                <td>Negitive:</td>
-                <td>-4</td>
-            </tr>
-            <tr>
-                <td>Total Questions:</td>
-                <td>100</td>
-            </tr>
-            <tr>
-                <td>Time Taken:</td>
-                <td>1:55:12</td>
-            </tr>
-            <tr>
-                <td>Top 3:</td>
-                <td>A,B,C</td>
-            </tr>
-        </table><br>
-        <table class="pro_table">
-            <tr>
-                <th>Parameters</th>
-                <th>Your Stats</th>
-                <th>Average</th>
-                <th>Highest</th>
-            </tr>
-            <tr>
-                <td>Marks:</td>
-                <td>70/100</td>
-                <td>35/100</td>
-                <td>84/100</td>
-            </tr>
-            <tr>
-                <td>Physics:</td>
-                <td>24/25</td>
-                <td>12/25</td>
-                <td>24/25</td>
-            </tr>
-            <tr>
-                <td>Chemistry:</td>
-                <td>13/25</td>
-                <td>12/25</td>
-                <td>24/25</td>
-            </tr>
-            <tr>
-                <td>Maths:</td>
-                <td>13/25</td>
-                <td>12/25</td>
-                <td>24/25</td>
-            </tr>
-            <tr>
-                <td>Biology:</td>
-                <td>20/25</td>
-                <td>12/25</td>
-                <td>24/25</td>
-            </tr>
-        </table>
-    </div>
-    <div id="testsummary" class="full_page flex_type">
-        <span class="in_t">Test Summary</span>
-        <hr color="white" width="100%">
-        <table class="pro_table">
-            <tr>
-                <th>Test Name</th>
-                <th>Percent</th>
-                <th>Marks/Total</th>
-                <th>Class Average</th>
-                <th>Class Highest</th>
-                <th>Rank</th>
-                <th>Date</th>
-            </tr>
-            <tr>
-                <td>Random Test 1</td>
-                <td>70%</td>
-                <td>70/100</td>
-                <td>35/100</td>
-                <td>84/100</td>
-                <td>4</td>
-                <td>26th Aug 2021</td>
-            </tr>
-        </table>
-    </div>
     <div id="testinfo" class="full_page flex_type">
         <span class="in_t">Tests</span>
         <hr color="white" width="100%">
@@ -616,22 +521,64 @@ For permission requests, please contact [Mr Techtroid] at mrtechtroid@outlook.co
         <hr color="white" width="100%">
         <div style="width:80vw;overflow-y: scroll;border:yellow 3px solid;display: flex;flex-direction: column;">
             <span style="font-size:5vh;text-align: center;">Please Read The Instructions And Terms Carefully</span>
-            <ol>
-                <li>The Exam Must Be Completed In 1 Sitting. You Will Be Able To Open It Once. </li>
-                <li>Read Every Question Carefully And Select Your Answer</li>
-                <li>Try To Answer As Many Questions As Possible In The Exam</li>
+            <span style="font-size:18px;">General Instructions:</span>
+            <ol style="font-size: 14px;">
+                <li>The Exam Must Be Completed In 1 Sitting. You Will Be Able To Open This Test Window Only Once. </li>
+                <li>Read Every Question Carefully And Select Your Answer and Try To Answer As Many Questions As Possible
+                    In The Exam.</li>
+                <li>The Questions Palette displayed on the right side of screen will show the status of each question
+                    using one of the following symbols:</li>
+                <div>
+                    <div style="margin:9px"><span class="tts_notvisit">12</span>You have not visited the question yet.
+                    </div>
+                    <div style="margin:9px"><span class="tts_notanswer">21</span>You have not answered the question.
+                    </div>
+                    <div style="margin:9px"><span class="tts_answered">45</span>You have answered the question.</div>
+                    <div style="margin:9px"><span class="tts_review">30</span>You have NOT answered the question, but
+                        have marked the question for review.</div>
+                    <div style="margin:9px"><span class="tts_ansreview">37</span>The question(s) "Answered and Marked
+                        for Review" will be considered for evalution.</div>
+                </div>
                 <li>When the timer reaches zero, the examination will end by itself. You will not be required to end or
                     submit your examination.</li>
                 <li>Make Sure To Have A Good Internet Connection. Loss in Internet Connectivity may prevent submission
                     of answers. </li>
                 <li>DO NOT TRY TO Minimise The Full Screen Mode Of The Exam. You Will Recieive 1 Warning For Doing So
                     After Which Your Test Will End</li>
+            </ol>
+            <span style="font-size:18px;">Navigating to a Question:</span>
+            <ol style="font-size:14px;">
+                <li>To view/answer a question, do the following: Click on the question number in the Question Palette at
+                    the right of your screen to go to that numbered question directly. Note that using this option does
+                    NOT save your answer to the current question.</li>
+            </ol>
+            <span style="font-size:18px;">Answering a Question:</span>
+            <ol style="font-size:14px;">
+                Procedure for answering a multiple choice type question:
+                <li>To select you answer, click on the button of one of the options.</li>
+                <li>To deselect your chosen answer, click on the button of the chosen option again or click on the Clear
+                    Response button</li>
+                <li>To change your chosen answer, click on the button of another option</li>
+                <li>To save your answer, you MUST click on the Save button.</li>
+                <li>To mark the question for review, click on the Mark for Review button.</li>
+                <li>To change your answer to a question that has already been answered, first select that question for
+                    answering and then follow the procedure for answering that type of question.</li>
+            </ol>
+            <span style="font-size:18px;">Navigating through sections:</span>
+            <ol style="font-size:14px;">
+                <li>All Questions are Visible in the Question Pallete along under the respective sections/subjects</li>
+            </ol>
+            <span style="font-size:18px;">Terms And Conditions:</span>
+            <span style="font-size:14px;">By Clicking On Start I Agree On All Terms And Conditions:</span>
+            <ol style="font-size:14px;">
                 <li>I have read and understood all the instructions. </li>
-                <li>All computer hardware allotted to me are in proper working condition. </li>
-                <li>Once the test has started, the clock will be set on the server. If you close the test window without
-                    completing the test then the clock will still be running on the window.</li>
+                <li>I agree that all computer hardware allotted to me are in proper working condition. </li>
                 <li>I declare that i am not in possession of / not wearing / not carrying any prohibited gadget like
                     mobile phone,bluetooth devices etc. /any prohibited material with me into the Examination Hall.</li>
+                <li>I also agree that I will not tamper with any software/technologies/devices alloted to me while
+                    attempting
+                    this test.
+                </li>
                 <li>I agree that in case of not adhering to the instructions, I shall be liable to be debarred from this
                     Test and/or to disciplinary action, which may include ban from future Test / Examinations</li>
             </ol>
@@ -640,8 +587,7 @@ For permission requests, please contact [Mr Techtroid] at mrtechtroid@outlook.co
                 onclick='window.location.hash = "#/attempt/" + window.location.hash.split("#/instructions/")[1]'>Start</button>
         </div>
     </div>
-    <div id="testv1" class="full_page flex_type"
-        style="flex-direction: row;flex-wrap: wrap;height:max-content;min-height: 90vh;">
+    <div id="testv1" class="full_page flex_type">
         <div id="t1_msg_popup" class="overlay">
             <div class="popup">
                 <center>
@@ -653,58 +599,61 @@ For permission requests, please contact [Mr Techtroid] at mrtechtroid@outlook.co
                 <button class="tst_btn rpl" id="t1_msg_action"></button>
             </div>
         </div>
-        <div style="display: flex;flex-direction: column;width: 60vw;height:80vh;margin:10px;min-width: 300px;">
-            <div id="tt_extrabx" style="display: flex;flex-direction:row;height: 40px;margin:10px;">
-                <span id="tt_timeleft"
-                    style="padding-left:20px;padding-right: 20px;background-color: rgb(100, 100, 52);border-radius: 5px 5px 5px 5px;">00:00:00</span>
-                <span id="tt_marksaward"
-                    style="padding-left:20px;padding-right: 20px;background-color: rgb(18, 88, 218);;border-radius: 5px 5px 5px 5px;"></span>
-                <span id="tt_timespent"
-                    style="padding-left:20px;padding-right: 20px;background-color: rgb(171, 18, 218);border-radius: 5px 5px 5px 5px;margin-left:5px;"></span>
-                <span id="tt_testname"
-                    style="padding-left:20px;padding-right: 20px;border-radius: 5px 5px 5px 5px;width: 100%;background-color: rgb(38, 88, 19);text-align: right;margin-left: 5px;">TEST
-                    NAME</span>
-                <button id="tt_sub" class="tst_btn rpl">Submit</button>
+        <div style="border: grey 2px dashed;flex-direction: row;margin:10px;" class="flex_type">
+            <div style="display: flex;flex-direction: column;width: 60vw;height:80vh;margin:10px;min-width: 300px;">
+                <div id="tt_extrabx" style="display: flex;flex-direction:row;height: 40px;margin:10px;">
+                    <span id="tt_timeleft">00:00:00</span>
+                    <span id="tt_marksaward"></span>
+                    <span id="tt_timespent" style="margin-left:5px;"></span>
+                    <span id="tt_testname" style="width: 100%;text-align: right;margin-left: 5px;">TEST
+                        NAME</span>
+                    <button id="tt_sub" class="tst_btn rpl">Submit</button>
+                </div>
+                <div id="tt_question">
+                    <div style="font-size: larger;">Question <span id="tt_qno">12</span></div>
+                    <hr>
+                    <div id="tt_qtitle">Who Is The President Of India?</div>
+                    <hr>
+                </div>
+                <div id="tt_footer" style="display:flex;">
+                    <button class="tst_btn rpl" id="tt_save">Save</button>
+                    <button class="tst_btn rpl" id="tt_clear">Clear</button>
+                    <button class="tst_btn rpl" id="tt_review">Mark For Review</button>
+                    <button class="tst_btn rpl" id="tt_ansreview">Save And Mark For Review</button>
+                </div>
             </div>
-            <div id="tt_question" style="height:70vh;border:lime 3px solid;overflow-y: scroll;">
-                <div style="font-size: larger;">Question <span id="tt_qno">12</span></div>
-                <hr>
-                <div style="" id="tt_qtitle">Who Is The President Of India?</div>
-                <hr>
-            </div>
-            <div id="tt_footer" style="display:flex;">
-                <button class="tst_btn rpl" id="tt_save">Save</button>
-                <button class="tst_btn rpl" id="tt_clear">Clear</button>
-                <button class="tst_btn rpl" id="tt_review">Mark For Review</button>
-                <button class="tst_btn rpl" id="tt_ansreview">Save And Mark For Review</button>
-            </div>
-        </div>
-        <div>
-            <div id="tt_infobx"
-                style="width: 250px;height:140px;display: flex;flex-direction: column;border-radius:30px;background-color: rgb(78, 72, 61);padding:10px;overflow-y: scroll;">
-                <div style="margin:9px"><span class="tts_notvisit">12</span>Not Visited</div>
-                <div style="margin:9px"><span class="tts_notanswer">21</span>Not Answered</div>
-                <div style="margin:9px"><span class="tts_answered">45</span>Answered</div>
-                <div style="margin:9px"><span class="tts_review">3</span>Review</div>
-                <div style="margin:9px"><span class="tts_ansreview">37</span>Review And Answered</div>
-            </div>
-            <div id="tt_qnobx"
-                style="display: flex;flex-direction: row;flex-wrap:wrap;border-radius:30px;background-color: rgb(78, 72, 61);padding:10px;width: 250px;height: 40vh;margin:10px;overflow-y: scroll;">
-                <div>
-                    <span>Physics</span>
-                    <div id="tw_Physics" style="display: flex;flex-direction: row;flex-wrap:wrap;height:auto"></div>
-                    <span>Chemistry</span>
-                    <div id="tw_Chemistry" style="display: flex;flex-direction: row;flex-wrap:wrap;height:auto"></div>
-                    <span>Math</span>
-                    <div id="tw_Math" style="display: flex;flex-direction: row;flex-wrap:wrap;height:auto"></div>
-                    <span>Computer</span>
-                    <div id="tw_Computer" style="display: flex;flex-direction: row;flex-wrap:wrap;height:auto"></div>
-                    <span>Biology</span>
-                    <div id="tw_Biology" style="display: flex;flex-direction: row;flex-wrap:wrap;height:auto"></div>
-                    <span>Statistics</span>
-                    <div id="tw_Statistics" style="display: flex;flex-direction: row;flex-wrap:wrap;height:auto"></div>
-                    <span>Unfiled</span>
-                    <div id="tw_Unfiled" style="display: flex;flex-direction: row;flex-wrap:wrap;height:auto"></div>
+            <div>
+                <div id="tt_infobx">
+                    <div style="margin:9px"><span class="tts_notvisit">12</span>Not Visited</div>
+                    <div style="margin:9px"><span class="tts_notanswer">21</span>Not Answered</div>
+                    <div style="margin:9px"><span class="tts_answered">45</span>Answered</div>
+                    <div style="margin:9px"><span class="tts_review">30</span>Review</div>
+                    <div style="margin:9px"><span class="tts_ansreview">37</span>Review And Answered</div>
+                </div>
+                <div id="tt_qnobx">
+                    <div>
+                        <div id="tw_Physics"><span>Physics</span>
+                            <div id="tw_Physics_c"></div>
+                        </div>
+                        <div id="tw_Chemistry"><span>Chemistry</span>
+                            <div id="tw_Chemistry_c"></div>
+                        </div>
+                        <div id="tw_Math"><span>Math</span>
+                            <div id="tw_Math_c"></div>
+                        </div>
+                        <div id="tw_Computer"><span>Computer</span>
+                            <div id="tw_Computer_c"></div>
+                        </div>
+                        <div id="tw_Biology"><span>Biology</span>
+                            <div id="tw_Biology_c"></div>
+                        </div>
+                        <div id="tw_Statistics"><span>Statistics</span>
+                            <div id="tw_Statistics_c"></div>
+                        </div>
+                        <div id="tw_Unfiled"><span>Unfiled</span>
+                            <div id="tw_Unfiled_c"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -716,7 +665,7 @@ For permission requests, please contact [Mr Techtroid] at mrtechtroid@outlook.co
         <hr color="white" width="100%">
     </div>
     <div id="livequiz" class="full_page flex_type">
-        <span style="font-size:5vh;">Live Quiz</span>
+        <span class="in_t">Live Quiz</span>
         <div>
             <span style="font-size: 5vh;color:yellow" id="lq_title">Tests</span>
         </div>
@@ -973,7 +922,8 @@ For permission requests, please contact [Mr Techtroid] at mrtechtroid@outlook.co
                 style="display:flex;flex-direction:row;flex-wrap:wrap;border: solid grey 2px;border-radius: 10px 10px 10px;width:90%;height:40vh;padding:10px;overflow-y: scroll;">
                 <div class="cyb_v_plist_p"
                     style="display: flex;flex-direction: column;width:100px;height:50px;border: solid grey 2px;border-radius: 10px 10px 10px;text-align: center;">
-                    <span>Mr Techtroid</span></div>
+                    <span>Mr Techtroid</span>
+                </div>
             </div>
         </div>
 
@@ -988,15 +938,17 @@ For permission requests, please contact [Mr Techtroid] at mrtechtroid@outlook.co
             </div>
             <div class="fto_box">
                 <div class="fto_box_title">CORRECT</div>
-                <div class="fto_box_content" id="fto_correct">45</div>
+                <div class="fto_box_content"><span id="fto_correct">45</span><span class="fto_small">marks</span></div>
             </div>
             <div class="fto_box">
                 <div class="fto_box_title">INCORRECT</div>
-                <div class="fto_box_content" id="fto_incorrect">-5</div>
+                <div class="fto_box_content"><span id="fto_incorrect">45</span><span class="fto_small">marks</span>
+                </div>
             </div>
             <div class="fto_box">
                 <div class="fto_box_title">UNANSWERED</div>
-                <div class="fto_box_content" id="fto_unanswered">20</div>
+                <div class="fto_box_content"><span id="fto_unanswered">45</span><span class="fto_small">marks</span>
+                </div>
             </div>
             <div class="fto_box">
                 <div class="fto_box_title">RANK</div>
@@ -1027,7 +979,10 @@ For permission requests, please contact [Mr Techtroid] at mrtechtroid@outlook.co
             <div>Legend: <span style="color:green">Correct</span>&nbsp;<span
                     style="color:red">Incorrect</span>&nbsp;<span style="color:orange">Unattempted</span></div>
         </div>
-
+        <div style="display:flex;flex-direction:column;flex-wrap:wrap;">
+            <span style="font-size: 3vh;">Time Spent Per Question</span>
+            <div id="fto_draw" style="display: flex;flex-direction: column;"></div>
+        </div>
     </div>
     <div id="forum" class="full_page flex_type">
         <span style="font-size: 5vh;color:yellow" id="fm_title">Forum</span>

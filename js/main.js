@@ -12,7 +12,7 @@ and certain other noncommercial uses permitted by copyright law.
 For permission requests, please contact [Mr Techtroid] at mrtechtroid@outlook.com .
 */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, setPersistence,browserLocalPersistence,  GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence, GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
 import { getFirestore, orderBy, limit, writeBatch, collection, addDoc, onSnapshot, arrayUnion, arrayRemove, setDoc, updateDoc, getDocs, doc, serverTimestamp, getDoc, query, where } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, } from 'https://www.gstatic.com/firebasejs/9.6.0/firebase-storage.js';
 import { sysaccess } from '/js/reworkui.js'
@@ -122,13 +122,13 @@ function getServerTime(url) {
 function fullEle(ele) {
   if (ele.requestFullscreen) {
     ele.requestFullscreen();
-  } else if (ele.mozRequestFullScreen) { 
+  } else if (ele.mozRequestFullScreen) {
     /* Firefox */
     ele.mozRequestFullScreen();
-  } else if (ele.webkitRequestFullscreen) { 
+  } else if (ele.webkitRequestFullscreen) {
     /* Chrome, Safari and Opera */
     ele.webkitRequestFullscreen();
-  } else if (ele.msRequestFullscreen) { 
+  } else if (ele.msRequestFullscreen) {
     /* IE/Edge */
     ele.msRequestFullscreen();
   }
@@ -137,6 +137,7 @@ function fullEle(ele) {
 function dE(ele) {
   return document.getElementById(ele)
 }
+// Sort An Object based on a parameter.
 function sortObj(objs, param, type) {
   var sorter2;
   if (type == 0) {
@@ -145,6 +146,25 @@ function sortObj(objs, param, type) {
     sorter2 = (sortBy) => (a, b) => a[sortBy] > b[sortBy] ? -1 : 1;
   }
   return objs.sort(sorter2(param));
+}
+function sortObjv2(objs, param1, param2, type) {
+  var sorter2;
+  if (type == 0) {
+    sorter2 = (sortBy1, sortBy2) => (a, b) => {
+      if (a[sortBy1] === b[sortBy1]) {
+        return a[sortBy2] > b[sortBy2] ? 1 : -1;
+      }
+      return a[sortBy1] > b[sortBy1] ? 1 : -1;
+    };
+  } else if (type == 1) {
+    sorter2 = (sortBy1, sortBy2) => (a, b) => {
+      if (a[sortBy1] === b[sortBy1]) {
+        return a[sortBy2] > b[sortBy2] ? -1 : 1;
+      }
+      return a[sortBy1] > b[sortBy1] ? -1 : 1;
+    };
+  }
+  return objs.sort(sorter2(param1, param2));
 }
 // Make Elements Latex Rendered
 function renderMarkedMath(eleid, toid) {
@@ -164,17 +184,19 @@ function log(title, msg, action, actionname) {
   dE("msg_action").onclick = action
   dE("msg_action").innerText = actionname
 }
+// Special Logging Function For Tests
 function t_log(title, msg, action, actionname) {
   dE("t1_msg_popup").style.visibility = "visible"
   dE("t1_msg_popup").style.opacity = "1"
   dE("t1_msg_action").style.display = "none"
   document.getElementById("t1_msg_popup_txt").innerText = title
   document.getElementById("t1_msg_popup_content").innerText = msg
-  if (action == undefined) { action = function () { } } else { dE("msg_action").style.display = "block" }
+  if (action == undefined) { action = function () { } } else { dE("t1_msg_action").style.display = "block" }
   if (actionname == undefined) { actionname = "" }
   dE("t1_msg_action").onclick = action
   dE("t1_msg_action").innerText = actionname
 }
+// Merge The Contents of Two Array's
 const mergeById = (a1, a2) =>
   a1.map(itm => ({
     ...a2.find((item) => (item.qid === itm.qid) && item),
@@ -229,10 +251,6 @@ async function signIn() {
       const user = userCredential.user;
       userdetails.email = email
       locationHandler("dashboard", 1);
-      dE("lg_uname").value = ""
-      dE("lg_pass").value = ""
-      spoints.style.display = "block"
-      dE("dsh_btn").style.display = "block"
     })
     .catch((error) => {
       const errorCode = error.code;
@@ -279,7 +297,8 @@ function signUp() {
               gen: stgender,
               sgndon: serverTimestamp(),
               roles: { user: true }
-            }).then(function(){
+            }).then(function () {
+              window.location.hash = "#/dashboard"
               window.location.reload()
             });
           }
@@ -322,8 +341,8 @@ function locationHandler(newlocation, n1) {
     case "dashboard": handlebox = "dashboard"; break;
     case "timetable": handlebox = "schedule"; break;
     case "logout": signOut(); break;
-    case "mainsformulas": handlebox = "mainsformulas";renderDownloadPage(1);break;
-    case "downloads": handlebox = "downloads";renderDownloadPage(2);break;
+    case "mainsformulas": handlebox = "mainsformulas"; renderDownloadPage(1); break;
+    case "downloads": handlebox = "downloads"; renderDownloadPage(2); break;
     case "livequiz": handlebox = "livequiz"; break;
     case "register": handlebox = "register"; break;
     case "testinfo": handlebox = "testinfo"; renderTestList("active"); break;
@@ -383,7 +402,7 @@ function locationHandler(newlocation, n1) {
   editqllist = []
   if (location1 == "forum") { gtMsg(1); } else { gtMsg(2); forum_length = 1; forum_d = "afterbegin" }
   // console.log({ userinfo, topicJSON, topicJSONno, editorrole, adminrole, userrole, simlist, chapterlist, userdetails, curr_qlno, curr_qlid, editqllist, autosignin, testList, activeTestList, upcomingTestList, finishedTestList, testInfo, testQuestionList, testResponseList, activequestionid })
-  testQuestionList = [];testResponseList = [];testInfo = [];activequestionid = ""
+  testQuestionList = []; testResponseList = []; testInfo = []; activequestionid = ""
 
 }
 // ----------------------
@@ -433,7 +452,7 @@ async function getUserNotes() {
       lastupdated: serverTimestamp()
     })
     await updateDoc(doc(db, "users", userinfo.uuid), {
-      usernotes:arrayUnion({color:"black",id:docRef.id,title:"Notes Title"})
+      usernotes: arrayUnion({ color: "black", id: docRef.id, title: "Notes Title" })
     })
     locationHandler("#/usernotes/" + docRef.id, 1)
   } else if (window.location.hash.includes("usernotes/delete")) {
@@ -502,11 +521,11 @@ async function sndMsg() {
     }
   }
 }
-function displayMessage(id, time, name, text,userid) {
-  if (userid == "shh5oUIhRpdBkEKQ3GCZwoKE9u42"){
+function displayMessage(id, time, name, text, userid) {
+  if (userid == "shh5oUIhRpdBkEKQ3GCZwoKE9u42") {
     var d = "<div id = 'dM" + id + "'><span class = 'dmName'>" + name + "👑: </span><span class = 'dmText'>" + text + "</span><span class = 'dmtime'>" + time + "</span></div>"
-  dE("forum_live").insertAdjacentHTML(forum_d, d)
-  }else{
+    dE("forum_live").insertAdjacentHTML(forum_d, d)
+  } else {
     var d = "<div id = 'dM" + id + "'><span class = 'dmName'>" + name + ": </span><span class = 'dmText'>" + text + "</span><span class = 'dmtime'>" + time + "</span></div>"
     dE("forum_live").insertAdjacentHTML(forum_d, d)
   }
@@ -528,7 +547,7 @@ async function gtMsg(type) {
           }
           var message = change.doc.data();
           displayMessage(change.doc.id, "", message.name,
-            message.message,message.userid);
+            message.message, message.userid);
           forum_length = forum_length + 1
         }
       });
@@ -562,7 +581,7 @@ function vidSlideController(docJSON) {
   var tpmatrix = dE("tb_q_matrix")
   var tpanswer = dE("tb_q_answer")
   tpmcqcon.innerHTML = ""
-  dE("tb_q_qtext").innerHTML = docJSON.title + "<span class = 'sp_txt'>("+docJSON.type+")</span>"
+  dE("tb_q_qtext").innerHTML = docJSON.title + "<span class = 'sp_txt'>(" + docJSON.type + ")</span>"
   // dE("tb_q_img").src = docJSON.img
   if (docJSON.type == "mcq" || docJSON.type == "mcq_multiple") {
     qif(tpmcqcon); iu(tpmatrix); iu(tpanswer)
@@ -628,10 +647,10 @@ async function prepareVideo() {
           ti++
         } else if (jno == qllist.length - 1) {
           dE("qbnk_vid_end").style.display = "flex"
-          setTimeout(function(){
+          setTimeout(function () {
             mediaRecorder.stop()
             dE("qbnk_vid_btn").style.display = "block"
-          },5000)
+          }, 5000)
           clearInterval(iou);
         } else if (ji == 0 || ji == 1) {
           vidSlideController(qllist[jno])
@@ -660,16 +679,16 @@ async function prepareVideo() {
     }
   } catch { }
 }
-async function getCyberhunt(){
-  if (window.location.hash.split("/cyberhunt/")[1] == "" || window.location.hash.split("/cyberhunt")[1] == ""){
+async function getCyberhunt() {
+  if (window.location.hash.split("/cyberhunt/")[1] == "" || window.location.hash.split("/cyberhunt")[1] == "") {
     dE("cyb_code").style.display = "flex"
     dE("cyb_viewer").style.display = "none"
     dE("cyb_edit").style.display = "none"
-  }else{
+  } else {
     dE("cyb_code").style.display = "none"
     dE("cyb_viewer").style.display = "flex"
     dE("cyb_edit").style.display = "none"
-    
+
   }
 }
 // -----------------------
@@ -886,11 +905,11 @@ function addItemToQLLIst() {
     qop2.push(document.getElementsByClassName("aq_i2")[i].value)
   }
   if (location1.includes("edit_test")) {
-    var json = { qid: curr_qlid, mode: dE("aq_mode").value, title: getHTM("aq_qtext"), y_url: dE("aq_yurl").value, hint: dE("aq_hint").value, expl: getHTM("aq_expl"), type: qtype, answer: qans, op: qop, op1: qop1, op2: qop2, section: dE("aq_section").value }
+    var json = { qid: curr_qlid, mode: dE("aq_mode").value, title: getHTM("aq_qtext"), y_url: dE("aq_yurl").value, hint: dE("aq_hint").value, expl: getHTM("aq_expl"), type: qtype, answer: qans, op: qop, op1: qop1, op2: qop2, section: dE("aq_section").value,pm:dE("aq_posmrks").value,nm:dE("aq_negmrks").value }
   } else if (location1.includes("edit_exams")) {
-    var json = {id: curr_qlid,name:dE("aq_examname").value,date:dE("aq_examdate").value,info:dE("aq_examinfo").value,syllabus:dE("aq_examsyllabus").value,mode:"exams"}
-  }else {
-    var json = { id: curr_qlid, mode: dE("aq_mode").value, title: getHTM("aq_qtext"), y_url: dE("aq_yurl").value, hint: dE("aq_hint").value, expl: getHTM("aq_expl"), type: qtype, answer: qans, op: qop, op1: qop1, op2: qop2, section: dE("aq_section").value }
+    var json = { id: curr_qlid, name: dE("aq_examname").value, date: dE("aq_examdate").value, info: dE("aq_examinfo").value, syllabus: dE("aq_examsyllabus").value, mode: "exams" }
+  } else {
+    var json = { id: curr_qlid, mode: dE("aq_mode").value, title: getHTM("aq_qtext"), y_url: dE("aq_yurl").value, hint: dE("aq_hint").value, expl: getHTM("aq_expl"), type: qtype, answer: qans, op: qop, op1: qop1, op2: qop2, section: dE("aq_section").value,pm:dE("aq_posmrks").value,nm:dE("aq_negmrks").value }
   }
   return json
 }
@@ -915,7 +934,7 @@ async function changeItem(t) {
     iu(qyurl); io(qcont); io(qtype); io(qans); qif(qqall);
   } else if (mode == "lesson") {
     io(qyurl); iu(qcont); iu(qtype); iu(qans); qif(qqall);
-  }else if (mode == "exams") {
+  } else if (mode == "exams") {
     iu(qyurl); iu(qcont); iu(qtype); iu(qans); iu(qqall);
   }
   if (qtype.value == "mcq" || qtype.value == "mcq_multiple") {
@@ -932,10 +951,10 @@ function rEQL(u) {
 function renderEditQLList(qno) {
   if (qno == "+") {
     let po = editqllist.length
-    if (window.location.hash.includes("edit_exams")){
-      editqllist[po] = { id: Date.now() + Math.random().toString(36).substr(2), name:"",date:"",info:"",syllabus:"",mode:"exams"}
-    }else {
-      editqllist[po] = { id: Date.now() + Math.random().toString(36).substr(2), mode: "", title: "", y_url: "", img: "", hint: "", expl: "", type: "mcq", answer: ["1"], op: ["1", "2", "3", "4"], op1: [], op2: [], section: "Unfiled" }
+    if (window.location.hash.includes("edit_exams")) {
+      editqllist[po] = { id: Date.now() + Math.random().toString(36).substr(2), name: "", date: "", info: "", syllabus: "", mode: "exams" }
+    } else {
+      editqllist[po] = { id: Date.now() + Math.random().toString(36).substr(2), mode: "", title: "", y_url: "", img: "", hint: "", expl: "", type: "mcq", answer: ["1"], op: ["1", "2", "3", "4"], op1: [], op2: [], section: "Unfiled",pm:4,nm:-1 }
     }
     if (window.location.hash.includes("edit_qubank") || window.location.hash.includes("edit_test")) { editqllist[po].mode = "question" }
     if (location1.includes("edit_test")) {
@@ -957,7 +976,7 @@ function renderEditQLList(qno) {
   } else {
   }
   var op = editqllist[curr_qlno - 1]
-  if (window.location.href.includes("edit_exams")){
+  if (window.location.href.includes("edit_exams")) {
     dE("aq_examname").value = op.name
     dE("aq_examdate").value = op.date
     dE("aq_examinfo").value = op.info
@@ -976,6 +995,8 @@ function renderEditQLList(qno) {
   dE("aq_type").value = op.type
   dE("aq_hint").value = op.hint
   dE("aq_section").value = op.section
+  dE("aq_posmrks").value = op.pm
+  dE("aq_negmrks").value = op.nm
   setHTM("aq_expl", op.expl)
   if (op.type == "mcq" || op.type == "mcq_multiple") {
     dE("aq_mcq_con").innerHTML = ""
@@ -1068,7 +1089,7 @@ async function prepareTopicQBank(iun) {
     dE("aq_exams").style.display = "none"
     dE("aq_all").style.display = "flex"
     dE("aq_ans_hold").style.display = "flex"
-  } else if (iun == 4){
+  } else if (iun == 4) {
     col = 'quarkz'
     id = 'exams'
     dE("fu_topic_title").innerText = "Add/Edit Exams"
@@ -1116,7 +1137,7 @@ async function prepareTopicQBank(iun) {
         if (docSnap3.exists()) { var docJSON3 = docSnap3.data(); a = docJSON3.questions }
         editqllist = mergeById(q, a)
         renderEditQLList(0)
-      } else if (iun == 4){
+      } else if (iun == 4) {
         var docJSON = docSnap.data();
         editqllist = docJSON.examinfo
         renderEditQLList(0)
@@ -1125,19 +1146,19 @@ async function prepareTopicQBank(iun) {
     }
   } catch { }
 }
-function removeEntry(){
-  for (var i = 0;i<editqllist.length;i++){
-    if (editqllist[i].qid == curr_qlid || editqllist.id == curr_qlid){
-      editqllist.splice(i,1)
+function removeEntry() {
+  for (var i = 0; i < editqllist.length; i++) {
+    if (editqllist[i].qid == curr_qlid || editqllist.id == curr_qlid) {
+      editqllist.splice(i, 1)
       renderEditQLList(0)
-      curr_qlid = editqllist[i-1].qid || editqllist[i-1].id
-      if (curr_qlid == undefined){curr_qlid = ""}
+      curr_qlid = editqllist[i - 1].qid || editqllist[i - 1].id
+      if (curr_qlid == undefined) { curr_qlid = "" }
     }
   }
 }
 async function updateTopicQBank(iun) {
-  for (var i = 0;i<editqllist.length;i++){
-    if (editqllist[i].qid == curr_qlid || editqllist.id == curr_qlid){
+  for (var i = 0; i < editqllist.length; i++) {
+    if (editqllist[i].qid == curr_qlid || editqllist.id == curr_qlid) {
       editqllist[i] = addItemToQLLIst()
     }
   }
@@ -1154,8 +1175,8 @@ async function updateTopicQBank(iun) {
   } else if (iun == 3) {
     col = 'tests'
     id = window.location.hash.split("edit_tests/")[1]
-  } else if (iun == 4){
-    col = 'quarkz';id = "exams"
+  } else if (iun == 4) {
+    col = 'quarkz'; id = "exams"
   }
   if (iun == 1 || iun == 2) {
     try {
@@ -1187,8 +1208,8 @@ async function updateTopicQBank(iun) {
     var a = [];
     for (var i = 0; i < editqllist.length; i++) {
       var ele = editqllist[i]
-      q.push({ qid: ele.qid, mode: ele.mode, title: ele.title, type: ele.type, op: ele.op, op1: ele.op1, op2: ele.op2, section: ele.section })
-      a.push({ qid: ele.qid, hint: ele.hint, expl: ele.expl, answer: ele.answer, section: ele.section })
+      q.push({ qid: ele.qid, mode: ele.mode, title: ele.title, type: ele.type, op: ele.op, op1: ele.op1, op2: ele.op2, section: ele.section,pm:ele.pm,nm:ele.nm })
+      a.push({ qid: ele.qid, hint: ele.hint, expl: ele.expl, answer: ele.answer, section: ele.section,pm:ele.pm,nm:ele.nm })
     }
     try {
       const docRef = await updateDoc(doc(db, col, id, "questions", "questions"), {
@@ -1203,9 +1224,9 @@ async function updateTopicQBank(iun) {
       })
     } catch {
     }
-  } else if (iun == 4){
+  } else if (iun == 4) {
     const docRef = await updateDoc(doc(db, col, id), {
-      examinfo:editqllist
+      examinfo: editqllist
     })
   }
 }
@@ -1358,8 +1379,8 @@ async function printQBank(type) {
   }
   dE("printable").insertAdjacentHTML('beforeend', '<br></br>')
 }
-function renderDownloadPage(type){
-  if (type == 1){
+function renderDownloadPage(type) {
+  if (type == 1) {
     dE("mainsformulas").innerHTML = `
     <span style="font-size: 5vh;color:yellow" id="fm_title">Mains Formula Sheet</span>
     <hr color="white" width="100%">
@@ -1372,7 +1393,7 @@ function renderDownloadPage(type){
     </div>
     <span style="font-size: 8px;">All PDF's Are Owned by their Respective Owners</span>
     `
-  } else if (type == 2){
+  } else if (type == 2) {
     dE("downloads").innerHTML = `
     <span style="font-size: 5vh;color:yellow" id="fm_title">Downloads</span>
     <hr color="white" width="100%">
@@ -1385,9 +1406,9 @@ function renderDownloadPage(type){
 async function lessonRenderer(docJSON) {
   dE("tp_question").style.display = "none"
   dE("tp_lesson").style.display = "block"
-  if (docJSON.y_url == ""){
+  if (docJSON.y_url == "") {
     dE("tp_full_vid").style.display = "none"
-  }else{
+  } else {
     dE("tp_full_vid").style.display = "flex"
     loadVid(docJSON.y_url)
   }
@@ -1574,7 +1595,8 @@ async function authStateObserver(user) {
         }
       }
     } catch { }
-
+    dE("lg_uname").value = ""
+    dE("lg_pass").value = ""
     spoints.style.display = "block"
     dE("dsh_btn").style.display = "block"
     if (window.location.hash == "" || window.location.hash == null || window.location.hash == undefined) {
@@ -1587,12 +1609,12 @@ async function authStateObserver(user) {
     if (docSnap.exists()) {
       var docJSON = docSnap.data();
       dE("db_exam_list").innerHTML = ""
-      if (docJSON.warning != ""){
-        log("Notice",docJSON.warning)
+      if (docJSON.warning != "") {
+        log("Notice", docJSON.warning)
       }
-      for (var i =0;i<docJSON.examinfo.length;i++){
+      for (var i = 0; i < docJSON.examinfo.length; i++) {
         var f = docJSON.examinfo[i]
-        dE("db_exam_list").insertAdjacentHTML("beforeend",`<div class = "tlinks_min rpl"><span style="font-size: 16px;" onclick = "examlog('`+f.name+`','`+f.date+`','`+f.info+`','`+f.syllabus+`')">`+f.name+`</span></div>`)
+        dE("db_exam_list").insertAdjacentHTML("beforeend", `<div class = "tlinks_min rpl"><span style="font-size: 16px;" onclick = "examlog('` + f.name + `','` + f.date + `','` + f.info + `','` + f.syllabus + `')">` + f.name + `</span></div>`)
       }
     }
     locationHandler(window.location.hash.split("#/")[1], 1)
@@ -1766,16 +1788,16 @@ async function newTest() {
       finished: [],
       batch: []
     })
-      var docRef1 = await setDoc(doc(db, 'tests',docRef.id,"questions","questions"), {
-        questions:[]
-      })
-      var docRef2 = await setDoc(doc(db, 'tests',docRef.id,"questions","answers"), {
-        questions:[]
-      })
-      var docRef4 = await setDoc(doc(db, 'tests',docRef.id,"responses","finished"), {
-        finished:[],
-        leaderboard:[]
-      })
+    var docRef1 = await setDoc(doc(db, 'tests', docRef.id, "questions", "questions"), {
+      questions: []
+    })
+    var docRef2 = await setDoc(doc(db, 'tests', docRef.id, "questions", "answers"), {
+      questions: []
+    })
+    var docRef4 = await setDoc(doc(db, 'tests', docRef.id, "responses", "finished"), {
+      finished: [],
+      leaderboard: []
+    })
 
     locationHandler("edit_tests/" + docRef.id, 1)
   } catch {
@@ -1813,15 +1835,15 @@ async function getSimpleTestReport() {
     testInfo = docSnap.data()
     var attempted = 0;
     dE("fti_title").innerText = testInfo.title
-    docRef = doc(db, "tests", testid,"responses","finished");
+    docRef = doc(db, "tests", testid, "responses", "finished");
     docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       for (var ele of docSnap.data().finished) {
-      if (auth.currentUser.uid == ele) {
-        attempted = 1;
-        break;
+        if (auth.currentUser.uid == ele) {
+          attempted = 1;
+          break;
+        }
       }
-    }
     }
     if (attempted == 0) {
       locationHandler("testend", 1)
@@ -1888,8 +1910,20 @@ async function getSimpleTestReport() {
                 dE("fto_leaderboard").insertAdjacentHTML("beforeend", '<div class = "tlinks" style = "flex-direction:row;width:25vw;justify-content:space-between;"><span class = "t_gre">&nbsp;' + e + '</span><span class = "t_name">' + leaderboard[i].name + '</span><span class = "t_gre">&nbsp;&nbsp;' + leaderboard[i].marks + '</span></div>')
               }
             } catch {
-
+              
             }
+            var data = []
+            for (var i = 0;i<reQW.length;i++){
+              if (analysedActions.questions[reQW[i].qid] == undefined){
+                data.push({qid:reQW[i].qid,type:reQW[i].type,time:0,no:i+1})
+              }else{
+                data.push({qid:reQW[i].qid,type:reQW[i].type,time:analysedActions.questions[reQW[i].qid].time,no:i+1})
+              }
+              
+            }
+            console.log(data)
+            window.questionGraph("fto_draw",data)
+
           }
           catch {
             dE("te_title").innerText = "ERROR"
@@ -1919,13 +1953,15 @@ async function analyseActions(typi) {
   for (var i = 0; i < testActionLogger.length; i++) {
     testActionLogger[i].time = testActionLogger[i].time.seconds
   }
-  var tAL = sortObj(testActionLogger, "time", 0)
+  var tAL = sortObjv2(testActionLogger, "time", "type", 0)
   var curr_time;
   var next_time;
+  var aqid = ""
   for (var i = 0; i < tAL.length; i++) {
-    if (tAL[i].type == "start") {
+    if (tAL[i].type == "b") {
       curr_time = tAL[i].time
-    } else if (tAL[i].type == "change") {
+      aqid = tAL[i].value
+    } else if (tAL[i].type == "a" && aqid == tAL[i].value) {
       next_time = tAL[i].time
       if (qnos[tAL[i].value] == undefined) {
         qnos[tAL[i].value] = {}
@@ -1958,7 +1994,7 @@ async function analyseActions(typi) {
             subJTimes[tQList[i].section].unattempted += ele.time
             un = un + ele.time
           } else {
-            if (reQW[i].marks == 4) {
+            if (reQW[i].marks == tQList[i].pm) {
               subJTimes[tQList[i].section].correct += ele.time
               c = c + ele.time
             } else {
@@ -1985,15 +2021,15 @@ async function getTestReport() {
     testInfo = docSnap.data()
     var attempted = 0;
     dE("tt_testname").innerText = testInfo.title
-    docRef = doc(db, "tests", testid,"responses","finished");
+    docRef = doc(db, "tests", testid, "responses", "finished");
     docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       for (var ele of docSnap.data().finished) {
-      if (auth.currentUser.uid == ele) {
-        attempted = 1;
-        break;
+        if (auth.currentUser.uid == ele) {
+          attempted = 1;
+          break;
+        }
       }
-    }
     }
     if (attempted == 0) {
       locationHandler("testend", 1)
@@ -2076,31 +2112,33 @@ async function getTestInfo() {
     var yuta = docSnap.data().answers
     testActionLogger = docSnap.data().actions
     for (var prop in yuta) {
-      testResponseList.push({ qid: prop, ans: yuta[prop].ans, type: yuta[prop].type, time: yuta[prop].time});
+      testResponseList.push({ qid: prop, ans: yuta[prop].ans, type: yuta[prop].type, time: yuta[prop].time });
       // timetaken:yuta[prop].timetaken
     }
   } else {
     var trL = {};
     for (var t = 0; t < testQuestionList.questions.length; t++) {
       trL[`${testQuestionList.questions[t].qid}`] = { type: "tts_notvisit", answer: [] }
-      testResponseList.push({qid:testQuestionList.questions[t].qid,type: "tts_notvisit", answer: [],timetaken:0})
+      testResponseList.push({ qid: testQuestionList.questions[t].qid, type: "tts_notvisit", answer: [], timetaken: 0 })
     }
     var it = new Date()
     await setDoc(doc(db, "tests", testid, "responses", auth.currentUser.uid), {
       answers: trL,
       strton: serverTimestamp(),
       warning: [],
-      actions: [{ type: "start", time: it, value: "1" }]
+      actions: [{ type: "start", time: it, value: "1" }],
+      testversion: "1"
     })
     testActionLogger.push({ type: "start", time: it, value: "1" })
-    
+
   }
-  if (window.location.hash.includes("/attempt/")){
+  if (window.location.hash.includes("/attempt/")) {
     testTimerfunction = setInterval(function () {
       var seconds = testInfo.timeallotted - 1;
       testInfo.timeallotted -= 1
       dE("tt_timeleft").innerText = Math.floor(seconds % (3600 * 24) / 3600) + ":" + Math.floor(seconds % 3600 / 60) + ":" + Math.floor(seconds % 60);
-      
+      testQTime +=1
+      dE("tt_timespent").innerText = Math.floor(testQTime % (3600 * 24) / 3600) + ":" + Math.floor(testQTime % 3600 / 60) + ":" + Math.floor(testQTime % 60);
       if (seconds == 0) {
         submitTest()
       }
@@ -2119,7 +2157,7 @@ async function getTestInfo() {
   dE("tp_pnt").style.display = "none"
   dE("tp_pnt").style.display = "none";
   var tbox = dE("testv1")
-  try {fullEle(tbox)}catch{}
+  try { fullEle(tbox) } catch { }
   inittestHandler()
 }
 function tqH() {
@@ -2155,7 +2193,6 @@ async function computeResult(type) {
     trA = docSnap.data().questions
   }
   var u = 0, c = 0, ic = 0;
-  var t = trA.length * 4
   var subjectmarks = {
     "Physics": { correct: 0, unattempted: 0, incorrect: 0, total: 0 },
     "Chemistry": { correct: 0, unattempted: 0, incorrect: 0, total: 0 }, "Math": { correct: 0, unattempted: 0, incorrect: 0, total: 0 },
@@ -2166,30 +2203,31 @@ async function computeResult(type) {
     for (var j = 0; j < trL.length; j++) {
       if (trA[i].qid == trL[j].qid) {
         var ele = trL[j]
-        if (ele.ans == undefined){
+        if (ele.ans == undefined) {
           ele.ans = []
         }
         if (ele.ans.length == 0) {
           marksList.push({ qid: trA[i].qid, marks: 0, type: "unattempted" })
-          u = u + 4
-          subjectmarks[trA[i].section].unattempted += 4
-          subjectmarks[trA[i].section].total += 4
+          u = u + parseFloat(trA[i].pm)
+          subjectmarks[trA[i].section].unattempted += parseFloat(trA[i].pm)
+          subjectmarks[trA[i].section].total += parseFloat(trA[i].pm)
         } else {
           if (areEqual(trA[i].answer, ele.ans)) {
-            marksList.push({ qid: trA[i].qid, marks: +4, type: "correct" })
-            c = c + 4
-            subjectmarks[trA[i].section].correct += 4
-            subjectmarks[trA[i].section].total += 4
+            marksList.push({ qid: trA[i].qid, marks: parseFloat(trA[i].pm), type: "correct" })
+            c = c + parseFloat(trA[i].pm)
+            subjectmarks[trA[i].section].correct += parseFloat(trA[i].pm)
+            subjectmarks[trA[i].section].total += parseFloat(trA[i].pm)
           } else {
-            marksList.push({ qid: trA[i].qid, marks: -1, type: "incorrect" })
-            ic = ic - 1
-            subjectmarks[trA[i].section].incorrect += -1
-            subjectmarks[trA[i].section].total += 4
+            marksList.push({ qid: trA[i].qid, marks: parseFloat(trA[i].nm), type: "incorrect" })
+            ic = ic + parseFloat(trA[i].nm)
+            subjectmarks[trA[i].section].incorrect += parseFloat(trA[i].nm)
+            subjectmarks[trA[i].section].total += parseFloat(trA[i].pm)
           }
         }
       }
     }
   }
+  var t = subjectmarks["Physics"].total+subjectmarks["Chemistry"].total+subjectmarks["Math"].total+subjectmarks["Biology"].total+subjectmarks["Computer"].total+subjectmarks["Statistics"].total+subjectmarks["Unfiled"].total
   var tFinal = { correct: c, incorrect: ic, unattempted: u, mList: marksList, total: t, usermarks: c + ic, subjectmarks: subjectmarks }
   if (type == 1) {
     if (!areObjectsEqual(tFinal, fg)) {
@@ -2222,9 +2260,13 @@ function testqHandler(id, no) {
   var FILL = `<div id="tt_fill"><input type = "text" class = "q_ans"></div>`
   var MATRIX = `<div id = "tt_matrix"><div>A<span><input type="checkbox" value="a" id="q_ans_a" name = "q_op">1</span><span><input type="checkbox" value="b" id="q_ans_a" name = "q_op">2</span><span><input type="checkbox" value="c" id="q_ans_a" name = "q_op">3</span><span><input type="checkbox" value="d" id="q_ans_a" name = "q_op">4</span></div><div>B<span><input type="checkbox" value="a" id="q_ans_a" name = "q_op">1</span><span><input type="checkbox" value="b" id="q_ans_a" name = "q_op">2</span><span><input type="checkbox" value="c" id="q_ans_a" name = "q_op">3</span><span><input type="checkbox" value="d" id="q_ans_a" name = "q_op">4</span></div><div>C<span><input type="checkbox" value="a" id="q_ans_a" name = "q_op">1</span><span><input type="checkbox" value="b" id="q_ans_a" name = "q_op">2</span><span><input type="checkbox" value="c" id="q_ans_a" name = "q_op">3</span><span><input type="checkbox" value="d" id="q_ans_a" name = "q_op">4</span></div><div>D<span><input type="checkbox" value="a" id="q_ans_a" name = "q_op">1</span><span><input type="checkbox" value="b" id="q_ans_a" name = "q_op">2</span><span><input type="checkbox" value="c" id="q_ans_a" name = "q_op">3</span><span><input type="checkbox" value="d" id="q_ans_a" name = "q_op">4</span></div></div>`
   var u = new Date()
-  testActionLogger.push({ type: "change", time: u, value: id })
+  testQTime = 0;
+  if (window.location.hash.includes("/attempt/")) { if (activequestionid != id) { testActionLogger.push({ type: "a", time: u, value: activequestionid }) } }
   dE("tt_qno").innerText = no;
-  activequestionid = id
+  try { dE(activequestionid).style.border = ""; } catch { }
+  activequestionid = id;
+  if (window.location.hash.includes("/attempt/")) { testActionLogger.push({ type: "b", time: u, value: activequestionid }) }
+  dE(activequestionid).style.border = "purple 3px solid";
   for (let ele of testQuestionList.questions) {
     if (id == ele.qid) {
       dE("tt_qtitle").innerHTML = ""
@@ -2276,7 +2318,11 @@ function testqHandler(id, no) {
           if (id == ele.qid) {
             tyio = ele.answer
             if (analysedActions != undefined) {
-              dE("tt_timespent").innerText = sd(analysedActions.questions[ele.qid].time)
+              if (analysedActions.questions[ele.qid] == undefined){
+                dE("tt_timespent").innerText = "0 seconds"
+              }else{
+                dE("tt_timespent").innerText = sd(analysedActions.questions[ele.qid].time)
+              }
             }
             var lio = '<div id="tg_answer">Answer: ' + ele.answer + '</div><div id="tg_expl">Explanation: ' + ele.expl + '</div>'
             dE("tt_qtitle").insertAdjacentHTML('beforeend', lio)
@@ -2290,7 +2336,7 @@ function testqHandler(id, no) {
           for (var i = 0; i < document.getElementsByClassName("q_ans").length; i++) {
             var ele32 = document.getElementsByClassName("q_ans")[i]
             if (ele.type == "mcq" || ele.type == "mcq_multiple") {
-              if (ele23.ans == undefined){ele23.ans = []}
+              if (ele23.ans == undefined) { ele23.ans = [] }
               for (let el433 of ele23.ans) {
                 if (ele32.value == el433) {
                   ele32.checked = true;
@@ -2316,38 +2362,39 @@ function testqHandler(id, no) {
           }
         }
       }
-      if (fghu == 0){
-        var fghut = 0;
-        for (var k =0;k<testResponseList.length;k++){
-          if (testResponseList[k].qid == activequestionid){
+      // var fghut = 0;
+      for (var k = 0; k < testResponseList.length; k++) {
+        if (testResponseList[k].qid == activequestionid) {
+          if (testResponseList[k].type == "tts_notvisit" && window.location.hash.includes("attempt")) {
             testResponseList[k].type = "tts_notanswer"
+            testOperator("tts_notanswer")
             testResponseList[k].ans = []
-            fghut = 1
+            // fghut = 1
             dE(activequestionid).classList.remove("tts_notanswer", "tts_notvisit", "tts_answered", "tts_review", "tts_ansreview")
             dE(activequestionid).classList.add("tts_notanswer")
           }
         }
-        if (fghut == 0){
-          testResponseList.push({ qid: activequestionid, ans: [], type: "tts_notanswer" })
-        }
       }
+      // if (fghut == 0) {
+      //   testResponseList.push({ qid: activequestionid, ans: [], type: "tts_notanswer" })
+      // }
       break;
     }
   }
 }
 function inittestHandler() {
   var a = 1;
-  dE("tw_Physics").innerHTML = ''
-  dE("tw_Chemistry").innerHTML = ''
-  dE("tw_Math").innerHTML = ''
-  dE("tw_Computer").innerHTML = ''
-  dE("tw_Statistics").innerHTML = ''
-  dE("tw_Biology").innerHTML = ''
-  dE("tw_Unfiled").innerHTML = ''
+  var itsections = ["tw_Physics", "tw_Chemistry", "tw_Math", "tw_Computer", "tw_Statistics", "tw_Biology", "tw_Unfiled"];
+  for (let e2le3 of itsections) {
+    dE(e2le3 + "_c").innerHTML = "";
+    dE(e2le3).style.display = 'none'
+  }
+
   for (let ele of testQuestionList.questions) {
     var box = '<span class = "tts_notvisit" id = "' + ele.qid + '">' + a + '</span>'
     a = a + 1
-    dE("tw_" + ele.section).insertAdjacentHTML("beforeend", box)
+    dE("tw_" + ele.section + "_c").insertAdjacentHTML("beforeend", box)
+    dE("tw_" + ele.section).style.display = "flex"
     dE(ele.qid).addEventListener("click", tqH)
   }
   if (!window.location.hash.includes("attempt")) {
@@ -2356,7 +2403,7 @@ function inittestHandler() {
       for (let ele of testReportAnswers.questions) {
         if (id == ele.qid) {
           var tyio = ele.answer
-          if (ele23.ans == undefined){
+          if (ele23.ans == undefined) {
             ele23.ans = []
           }
           if (areEqual(ele23.ans, tyio)) {
@@ -2372,6 +2419,8 @@ function inittestHandler() {
       }
     }
     analyseActions(2)
+  }else{
+    dE("tt_sub").style.display = "block"
   }
   for (let ele of testResponseList) {
     dE(ele.qid).classList.replace("tts_notvisit", ele.type)
@@ -2443,7 +2492,6 @@ async function testOperator(type) {
   dE(activequestionid).classList.remove("tts_notanswer", "tts_notvisit", "tts_answered", "tts_review", "tts_ansreview")
   dE(activequestionid).classList.add(type)
 
-
 }
 async function submitTest() {
   if (!window.location.hash.includes("attempt")) {
@@ -2451,6 +2499,7 @@ async function submitTest() {
     return 1;
   }
   var it = new Date()
+  testActionLogger.push({ type: "a", time: it, value: activequestionid })
   testActionLogger.push({ type: "end", time: it, value: "1" })
   var testid = window.location.hash.split("#/attempt/")[1]
   window.onbeforeunload = function () { }
@@ -2459,7 +2508,7 @@ async function submitTest() {
     endon: serverTimestamp(),
     actions: testActionLogger,
     warning: []
-  })
+  }).then(function(){testResponseList = [];})
   await updateDoc(doc(db, "tests", testid, "responses", "finished"), {
     finished: arrayUnion(auth.currentUser.uid),
   }).then(computeResult(0))
@@ -2471,10 +2520,10 @@ async function submitTest() {
   finishedTestList = []
   testInfo = []
   testQuestionList = []
-  testResponseList = [];
   activequestionid = ""
   dE("dsh_btn").style.display = "block"
   dE("tp_pnt").style.display = "none"
+  clearInterval(testTimerfunction);
 }
 window.onbeforeunload = function (event) {
   updatePoints()
@@ -2534,7 +2583,7 @@ function defineEvents() {
   function uQL2() { updateTopicQBank(2) }
   function uQL3() { updateTopicQBank(3) }
   function uQL4() { updateTopicQBank(4) }
-  function rgbtn() {log("Note","By Clicking on 'Accept And Register' you agree that you accept all Terms And Conditions and Privacy Policy of Quarkz!",signUp,"Accept And Register")}
+  function rgbtn() { log("Note", "By Clicking on 'Accept And Register' you agree that you accept all Terms And Conditions and Privacy Policy of Quarkz!", signUp, "Accept And Register") }
   var simbtn = dE("sim_btn").addEventListener("click", simHand)
   var sgnbtn = dE("sgn_in").addEventListener("click", signIn);
   // var sgngglbtn = dE("sgn_in_google").addEventListener("click", signInwithGoogle);
@@ -2619,7 +2668,7 @@ function immersiveMode() {
 }
 var Quarkz = {
   "copyright": "Mr Techtroid 2021-23",
-  "vno": "v0.3.2",
+  "vno": "v0.4.0",
   "author": "Mr Techtroid",
   "last-updated": "10/02/2023(IST)",
   "serverstatus": "firebase-online",
@@ -2642,6 +2691,7 @@ var activeTestList = []
 var upcomingTestList = []
 var finishedTestList = []
 var testInfo = []
+var testQTime = 0;
 var testQuestionList = []
 var testResponseList = [];
 var activequestionid = ""
